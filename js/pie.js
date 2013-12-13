@@ -14,69 +14,153 @@ function create_data_set(dest,d){
     var grupos = document.createElement("DIV");
     grupos.setAttribute("id","attr-grupos");
     var ul = document.createElement("UL");
-    
-    var li = document.createElement("LI");
-    li.innerHTML = "<span contenteditable='true'>Grupo1</span>";
-    var ul2 = document.createElement("UL");
-    
-    _().each(d,function(i){
-        
-        if(i>=colores.length){
-            var color = colores[(i%colores.length)+2].hex;
-        }
-        else{
-            var color=colores[i].hex;   
-        }
-        var li2 = document.createElement("LI");
-        li2.className = "data-list-li";
-        var cont = document.createElement("DIV");
-        cont.className = "data-list-element";
-        var inpt_val = document.createElement("INPUT");
-        inpt_val.type = "number";
-        inpt_val.value = d[i]["value"];
-        inpt_val.className = "value";
-        var inpt_labl = document.createElement("INPUT");
-        inpt_labl.type = "text";
-        inpt_labl.value = d[i]["label"];
-        inpt_labl.className = "label";
-        var inpt_color = document.createElement("INPUT");
-        inpt_color.type = "color";
-        inpt_color.value = color;
-        inpt_color.className = "color";
-        cont.appendChild(inpt_labl);
-        cont.appendChild(inpt_val);
-        cont.appendChild(inpt_color);
-        li2.appendChild(cont);
-        ul2.appendChild(li2);
-    });
-    li.appendChild(ul2);
-    ul.appendChild(li);
     grupos.appendChild(create);
-    grupos.appendChild(ul);
+    if(localStorage.grupos){
+    var g = JSON.parse(localStorage.grupos);
+    
+    _().each(g,function(j,a){
+        var li = document.createElement("LI");
+        li.innerHTML = "<span contenteditable='true' class='grupo_tag'>"+a[j]+"</span>";
+        var ul2 = document.createElement("UL");
+        $(li).droppable({
+                addClasses : false,
+                accept: ".data-list-li",
+                drop: function(e,ui){
+                    console.log(ui);
+                    $(this).find("ul").append(ui.draggable)
+                }
+            });
+        _().each(d,function(i){
+            if(d[i].group != "" && d[i].group == a[j]){
+                if(d[i]["color"])color = d[i]["color"];
+            else if(i>=colores.length){
+                var color = colores[(i%colores.length)+2].hex;
+            }
+            else{
+                var color=colores[i].hex;
+            }
+            var li2 = document.createElement("LI");
+            li2.className = "data-list-li";
+            var cont = document.createElement("DIV");
+            cont.className = "data-list-element";
+            var inpt_val = document.createElement("INPUT");
+            inpt_val.type = "number";
+            inpt_val.value = d[i]["value"];
+            inpt_val.className = "value";
+            var inpt_labl = document.createElement("INPUT");
+            inpt_labl.type = "text";
+            inpt_labl.value = d[i]["label"];
+            inpt_labl.className = "label";
+            var inpt_color = document.createElement("INPUT");
+            inpt_color.type = "color";
+            inpt_color.value = color;
+            inpt_color.className = "color";
+            cont.appendChild(inpt_labl);
+            cont.appendChild(inpt_val);
+            cont.appendChild(inpt_color);
+            li2.appendChild(cont);
+            ul2.appendChild(li2);
+            $(li2).draggable({
+                    addClasses : false,
+                    revert: true,
+                });
+            }
+        });
+        li.appendChild(ul2);
+        ul.appendChild(li);
+        grupos.appendChild(ul);
+
+    });
+    }
+    else{
+        var li = document.createElement("LI");
+        li.innerHTML = "<span contenteditable='true' class='grupo_tag'>Grupo1</span>";
+        var ul2 = document.createElement("UL");
+
+        _().each(d,function(i,a){
+            console.log(d[i]["color"]);
+            if(d[i]["color"]){
+                color = d[i]["color"];
+                console.log(color);
+            }
+            else if(i>=colores.length){
+                var color = colores[(i%colores.length)+2].hex;
+            }
+            else{
+                var color=colores[i].hex;
+            }
+            var li2 = document.createElement("LI");
+            li2.className = "data-list-li";
+            var cont = document.createElement("DIV");
+            cont.className = "data-list-element";
+            var inpt_val = document.createElement("INPUT");
+            inpt_val.type = "number";
+            inpt_val.value = d[i]["value"];
+            inpt_val.className = "value";
+            var inpt_labl = document.createElement("INPUT");
+            inpt_labl.type = "text";
+            inpt_labl.value = d[i]["label"];
+            inpt_labl.className = "label";
+            var inpt_color = document.createElement("INPUT");
+            inpt_color.type = "color";
+            inpt_color.value = color;
+            inpt_color.className = "color";
+            cont.appendChild(inpt_labl);
+            cont.appendChild(inpt_val);
+            cont.appendChild(inpt_color);
+            li2.appendChild(cont);
+            ul2.appendChild(li2);
+            $(li2).draggable({
+                    addClasses : false,
+                    revert: true,
+                });
+
+        });
+        li.appendChild(ul2);
+        ul.appendChild(li);
+        grupos.appendChild(ul);
+    }
+
+
+
     var inpt_sub = document.createElement("BUTTON");
         inpt_sub.type = "submit";
         inpt_sub.innerHTML = "Dibujar";
         inpt_sub.className = "draw_button";
         inpt_sub.addEventListener('click',function(){
+            var grupos_list = [];
+            _().each(document.querySelectorAll(".grupo_tag"),function(i,a){
+                grupos_list.push(a[i].innerHTML);
+            });
+            localStorage.grupos = JSON.stringify(grupos_list, 2, 2);
+
             var data = [];
-           _().each(document.querySelectorAll("#attr-grupos ul>li div"),function(i,a){
+            _().each(document.querySelectorAll("#attr-grupos ul>li div"),function(i,a){
                values = [];
-              _().each(a[i].childNodes,function(j,c){
+               var grupo = $(a[i]).parent().parent().parent().find("span").text();
+            _().each(a[i].childNodes,function(j,c){
                 values.push(c[j].value);
               });
-              
-              data[i] = {
-                    label:values[0],
-                    value: parseFloat(values[1]),
-                };
-               if(i>=colores.length){
+                if(values[2])color = values[2];
+                else if(i>=colores.length){
                     colores[(i%colores.length)+2] = new Color(values[2]);
+                    color = colores[(i%colores.length)+2].hex;
                 }
                 else{
                     colores[i] = new Color(values[2]);
+                    color = colores[i].hex
                 }
+
+              data[i] = {
+                    label:values[0],
+                    value: parseFloat(values[1]),
+                    group: grupo,
+                    color: color,
+                };
+
                
            });
+            localStorage.data = JSON.stringify(data, 2, 2);
              dragevents();
             _("#graph").pie({data:data});
         },false);

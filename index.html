@@ -14,6 +14,7 @@
     <script src="js/pie.js"></script>
     
     <script>
+        var data;
         function xlsworker(data, cb) {
             var worker = new Worker('js/xlsworker.js');
             worker.onmessage = function(e) {
@@ -46,6 +47,7 @@
             var output = "";
             output = to_json(wb).Hoja1;
             data = JSON.stringify(output, 2, 2);
+            localStorage.clear();
             localStorage.data=data;
             
             _("#graph").pie({data:output});
@@ -107,8 +109,15 @@
                 data = JSON.parse(localStorage.data);
                 _("#graph").pie({data:data}); 
             }
+            $(document).on("click","nav ul li",function(){
+                switch($(this).text()){
+                    case "Tartas":
+                        _("#graph").pie({data:data});
+                        break;
+                }
+            });
             $(document).on("click","#create-group",function(){
-                var x = $("<li><span contenteditable='true'>Grupo</span></li>");
+                var x = $("<li><span contenteditable='true' class='grupo_tag'>Grupo</span></li>");
                 var ul = $("<ul></ul>");
                 x.append(ul);
                 $("#attr-grupos>ul").append(x);
@@ -122,7 +131,6 @@
                 });
             });
             dragevents();
-            var data;
             function restaurarColores(){
                 colores = standard.slice(0);
                 _("#graph").pie({data:data});
