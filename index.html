@@ -1,0 +1,158 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Graph API</title>
+    <link rel="stylesheet" href="iconos.css">
+    <link rel="stylesheet" href="theme.css">
+    <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.7.4.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" ></script>
+     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script src="js/color.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/xls.js"></script>
+    <script src="js/pie.js"></script>
+    
+    <script>
+        function xlsworker(data, cb) {
+            var worker = new Worker('js/xlsworker.js');
+            worker.onmessage = function(e) {
+                switch(e.data.t) {
+                    case 'ready': break;
+                    case 'e': console.error(e.data.d);
+                    case 'xls': cb(e.data.d); break;
+                }
+            };
+            worker.postMessage(data);
+        }
+        function to_json(workbook) {
+            var result = {};
+            workbook.SheetNames.forEach(function(sheetName) {
+                var roa = XLS.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                if(roa.length > 0){
+                    result[sheetName] = roa;
+                }
+            });
+            return result;
+        }
+        
+        function b64it() {
+            var cfb = XLS.CFB.read(tarea.value, {type: 'base64'});
+            var wb = XLS.parse_xlscfb(cfb);
+            process_wb(wb);
+        }
+        
+        function process_wb(wb) {
+            var output = "";
+            output = to_json(wb).Hoja1;
+            data = JSON.stringify(output, 2, 2);
+            localStorage.data=data;
+            
+            _("#graph").pie({data:output});
+        }
+        
+        function handleDrop(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var files = e.dataTransfer.files;
+            var i,f;
+            for (i = 0, f = files[i]; i != files.length; ++i) {
+                var reader = new FileReader();
+                var name = f.name;
+                reader.onload = function(e) {
+                    var data = e.target.result;
+                    if(typeof Worker !== 'undefined') {
+                        xlsworker(data, process_wb);
+                    } else {
+                        var cfb = XLS.CFB.read(data, {type: 'binary'});
+                        //var arr = String.fromCharCode.apply(null, new Uint8Array(data));
+                        //var cfb = XLS.CFB.read(btoa(arr), {type: 'base64'});
+                        var wb = XLS.parse_xlscfb(cfb);
+                        process_wb(wb);
+                    }
+                };
+                reader.readAsBinaryString(f);
+                //reader.readAsArrayBuffer(f);
+            }
+        }
+        function dragevents(){
+            $(".data-list-li").draggable({
+                addClasses : false,
+                revert: true,
+            });
+            $("#attr-grupos>ul>li").droppable({
+                addClasses : false,
+                accept: ".data-list-li", 
+                drop: function(e,ui){
+                    console.log(ui);
+                    $(this).find("ul").append(ui.draggable)
+                }
+            });
+        }
+        function handleDragover(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        }
+        $(function(){
+            var tarea = document.getElementById('b64data');
+            var drop = document.getElementById('drop');
+            if(drop.addEventListener) {
+                drop.addEventListener('dragenter', handleDragover, false);
+                drop.addEventListener('dragover', handleDragover, false);
+                drop.addEventListener('drop', handleDrop, false);
+            }
+            _("nav ul").menu();
+            if(localStorage.data){
+                data = JSON.parse(localStorage.data);
+                _("#graph").pie({data:data}); 
+            }
+            $(document).on("click","#create-group",function(){
+                var x = $("<li><span contenteditable='true'>Grupo</span></li>");
+                var ul = $("<ul></ul>");
+                x.append(ul);
+                $("#attr-grupos>ul").append(x);
+                x.droppable({
+                addClasses : false,
+                accept: ".data-list-li", 
+                drop: function(e,ui){
+                    console.log(e);
+                    $(this).find("ul").append(ui.draggable)
+                }
+                });
+            });
+            dragevents();
+            var data;
+            function restaurarColores(){
+                colores = standard.slice(0);
+                _("#graph").pie({data:data});
+            }
+        });
+        
+
+    </script>
+    </head>
+<body>
+<aside>
+    <nav>
+        <ul>
+        </ul>
+    </nav>
+    <section id="tools">
+        <div id="buttons">
+        <button id="restaurar_colores" onclick="restaurarColores()">Restaurar Colores</button>
+        <div id="save">Guardar</div>    
+        </div>
+        <div id="drop"><div class="add-icon">+</div>Arrastra un archivo XLS</div>
+    </section>
+    <menu>
+    </menu>
+</aside>
+<main>
+    <section id="graph">
+    </section>
+    <section id="graph-data">
+    </section>
+</main>
+</body>
+</html>
