@@ -121,12 +121,14 @@
                 $("menu .active").removeClass("active");
                 $(this).addClass("active");
                 pie_mode = "simple";
+                localStorage.pie_mode = pie_mode;
             });
             $(document).on("click","#pie_complex",function(){
                 $(".complex_pie").removeClass("simple_pie");
                 $("menu .active").removeClass("active");
                 $(this).addClass("active");
                 pie_mode = "complex";
+                localStorage.pie_mode = pie_mode;
             });
             $(document).on("click","#create-group",function(){
                 var x = $("<li><span contenteditable='true' class='grupo_tag complex_pie' val='0'>Grupo</span></li>");

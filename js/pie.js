@@ -1,5 +1,10 @@
 var tartas = 1;
 var pie_mode = "simple";
+if(!localStorage.pie_mode)
+    localStorage.pie_mode = "simple";
+else{
+    pie_mode = localStorage.pie_mode;
+}
 function create_data_set(dest,d){
     dest.innerHTML = "";
     var f = document.createDocumentFragment();
@@ -249,6 +254,11 @@ _.prototype.draw = function(data,radio,text){
             this.writePieText(this.ctx, i,porciones,radio);
         }
     }
+    else{
+        for (var i = 0; i < data.length; i++) {
+            this.drawPieGroupText(this.ctx, i,porciones,radio+130);
+        }
+    }
 }
 
 _.prototype.drawPie = function(canvas,data){
@@ -261,17 +271,19 @@ _.prototype.drawPie = function(canvas,data){
         var grupos = this.grupos;
         var fragmentos = [];
         var total = 0;
-        _().each(this.grupos,function(i){
+        _().each(this.grupos,function(i,g){
             _().each(data, function(d){
                 if(data[d].group == grupos[i].label){
                     total += data[d].value;
                 }
             });
+            g[i].value = total;
             fragmentos.push({value: total, label: grupos[i].label});
             total = 0;
         });
         this.draw(fragmentos,180,false);
         radio = 180;
+        localStorage.grupos = JSON.stringify(fragmentos);
     }
     else{
         radio = 200;
@@ -314,6 +326,90 @@ _.prototype.drawPieSegment = function(context, i,porciones,r){
     _.layer.draw();
 
 }
+
+_.prototype.drawPieGroupText = function(context,i,porciones,r){
+    var centerx = Math.floor(context.canvas.width/2);
+    var centery = Math.floor(context.canvas.height/2);
+    radius = r+20;
+
+    var tc;
+    if(porciones[i]["color"].lab.l < 65)tc = "#FFF";
+    else tc = "#333";
+    var startingAngle = (this.sumTo(porciones,i));
+    var arcSize = porciones[i]["porcentaje"]-0.35;
+    var endingAngle = (startingAngle + arcSize/2);
+
+    var dy = Math.sin(endingAngle)/2;
+    var dx = 2*Math.cos(endingAngle)/3;
+    context.font = '16px "Mic 32 New Rounded"';
+    var width = context.measureText( this.grupos[i]["label"]).width;
+
+    context.fillStyle = "#FFF";
+
+    var group = new Kinetic.Group({
+        draggable:true,
+        dragBoundFunc: function(pos,e) {
+
+        var centerX = centerx - (dx*radius);
+        var centerY = Math.floor(context.canvas.height/2);
+        if(pos.x < 0){
+            if(e && ((e.x) < centerX)){
+                text_data.setFill("#333");
+                _.layer.draw();
+            }
+            else{
+                text_data.setFill(tc);
+                _.layer.draw();
+            }
+        }
+        else if(pos.x > 0){
+            if(e && ((e.x) > (centerX+(radius*2)))){
+                text_data.setFill("#333");
+                _.layer.draw();
+            }
+            else{
+                text_data.setFill(tc);
+                _.layer.draw();
+            }
+        }
+            return pos;
+        },
+        id: "pie_text_"+i}
+                                 );
+    var box = new Kinetic.Rect({
+            x: centerx + (dx*radius),
+            y: centery+ (dy*radius),
+            width: width+22,
+            height: 20,
+            fill: "#000",
+        });
+    var text_label = new Kinetic.Text({
+            x: centerx + (dx*radius) +5,
+            y: centery+ (dy*radius) ,
+            text: this.grupos[i]["label"],
+            fontSize: 16,
+            fontFamily: "Mic 32 New Rounded",
+            fill: "#fff",
+            padding: 2,
+            paddingLeft: -5,
+        });
+
+    console.log(this.grupos[i]);
+    var text_data = new Kinetic.Text({
+            x: centerx + (dx*radius),
+            y: centery+ (dy*radius) + 24,
+            fontSize: 12,
+            fontFamily: "Mic 32 New Rounded",
+            text: this.grupos[i]["value"]+"%",
+            fill: tc,
+            padding: 1,
+        });
+    group.add(box);
+    group.add(text_label);
+    group.add(text_data);
+    _.layer.add(group);
+    _.layer.draw();
+}
 _.prototype.writePieText = function(context,i,porciones,r){
     var centerx = Math.floor(context.canvas.width/2);
     var centery = Math.floor(context.canvas.height/2);
@@ -340,7 +436,7 @@ _.prototype.writePieText = function(context,i,porciones,r){
         var centerX = centerx - (dx*radius)-30;
         var centerY = Math.floor(context.canvas.height/2);
         if(pos.x < 0){
-            if((e.x) < centerX){
+            if(e && ((e.x) < centerX)){
                 text_data.setFill("#333");
                 _.layer.draw();
             }
@@ -350,7 +446,7 @@ _.prototype.writePieText = function(context,i,porciones,r){
             }
         }
         else if(pos.x > 0){
-            if((e.x) > (centerX+(radius*2))){
+            if(e && ((e.x) > (centerX+(radius*2))))
                 text_data.setFill("#333");
                 _.layer.draw();
             }
@@ -363,28 +459,57 @@ _.prototype.writePieText = function(context,i,porciones,r){
         }, 
         id: "pie_text_"+i}
                                  );
+    var width = context.measureText( this.data[i]["label"]).width;
+    var t =  this.data[i]["label"];
+    var texto = "",w = 0, l1 = 100, l2 = 150,ancho=0,lineas = 1;
+    var mayor = 0;
+    _().each(t.split(" "), function(k,te){
+       w=context.measureText(te[k]).width;
+        ancho += w;
+        if( ancho > l1){
+         if(ancho > l2){
+             texto += "\n"+te[k]+" ";
+             if(k != te.length-1)
+                 ancho=0;
+             else{
+                ancho =l1;
+             }
+             //console.log(te[k]+" "+ancho+" "+k+" "+te.length );
+             lineas++}
+        else {
+            texto+=te[k]+" ";
+        }
+       }
+        else{
+           texto+=te[k]+" ";
+            ancho += w;
+        }
+    });
+
+    if(lineas>1)width = ancho;
+    var padding = 20*lineas;
     var box = new Kinetic.Rect({
             x: centerx + (dx*radius),
             y: centery+ (dy*radius),
             width: width+22,
-            height: 20,
+            height: padding,
             fill: "#000",
         });
+
     var text_label = new Kinetic.Text({
             x: centerx + (dx*radius) +5,
             y: centery+ (dy*radius) ,
-            text: this.data[i]["label"],
+            text: texto,
             fontSize: 16,
             fontFamily: "Mic 32 New Rounded",
             fill: "#fff",
             padding: 2,
             paddingLeft: -5,
         });
-
     
     var text_data = new Kinetic.Text({
             x: centerx + (dx*radius),
-            y: centery+ (dy*radius) + 24,
+            y: centery+ (dy*radius) + padding+4,
             fontSize: 12,
             fontFamily: "Mic 32 New Rounded",
             text: this.data[i]["value"]+"%",
