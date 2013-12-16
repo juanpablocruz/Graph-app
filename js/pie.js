@@ -208,7 +208,11 @@ _.prototype.addTools = function(obj){
     f.appendChild(simple);
     f.appendChild(complex);
     menu.appendChild(f);
-
+    menu.innerHTML += '<ul>\
+          <li><a href="https://github.com/juanpablocruz/Graph-app/zipball/master">Download <strong>ZIP File</strong></a></li>\
+          <li><a href="https://github.com/juanpablocruz/Graph-app/tarball/master">Download <strong>TAR Ball</strong></a></li>\
+          <li><a href="https://github.com/juanpablocruz/Graph-app">View On <strong>GitHub</strong></a></li>\
+        </ul>';
     var data_content = document.querySelectorAll("#graph-data")[0];
     var f = document.createDocumentFragment();
     var complex = document.createElement("DIV");
