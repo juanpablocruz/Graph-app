@@ -1,49 +1,178 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Graph-app by juanpablocruz</title>
+<head>
+    <meta charset="UTF-8">
+    <title>Graph API</title>
+    <link rel="stylesheet" href="iconos.css">
+    <link rel="stylesheet" href="theme.css">
+    <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.7.4.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" ></script>
+     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script src="js/color.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/xls.js"></script>
+    <script src="js/pie.js"></script>
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>Graph-app</h1>
-        <p></p>
+    <script>
+        var data;
+        function xlsworker(data, cb) {
+            var worker = new Worker('js/xlsworker.js');
+            worker.onmessage = function(e) {
+                switch(e.data.t) {
+                    case 'ready': break;
+                    case 'e': console.error(e.data.d);
+                    case 'xls': cb(e.data.d); break;
+                }
+            };
+            worker.postMessage(data);
+        }
+        function to_json(workbook) {
+            var result = {};
+            workbook.SheetNames.forEach(function(sheetName) {
+                var roa = XLS.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                if(roa.length > 0){
+                    result[sheetName] = roa;
+                }
+            });
+            return result;
+        }
 
-        <p class="view"><a href="https://github.com/juanpablocruz/Graph-app">View the Project on GitHub <small>juanpablocruz/Graph-app</small></a></p>
+        function b64it() {
+            var cfb = XLS.CFB.read(tarea.value, {type: 'base64'});
+            var wb = XLS.parse_xlscfb(cfb);
+            process_wb(wb);
+        }
+
+        function process_wb(wb) {
+            var output = "";
+            output = to_json(wb).Hoja1;
+            data = JSON.stringify(output, 2, 2);
+            localStorage.clear();
+            localStorage.data=data;
+
+            _("#graph").pie({data:output});
+        }
+
+        function handleDrop(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var files = e.dataTransfer.files;
+            var i,f;
+            for (i = 0, f = files[i]; i != files.length; ++i) {
+                var reader = new FileReader();
+                var name = f.name;
+                reader.onload = function(e) {
+                    var data = e.target.result;
+                    if(typeof Worker !== 'undefined') {
+                        xlsworker(data, process_wb);
+                    } else {
+                        var cfb = XLS.CFB.read(data, {type: 'binary'});
+                        //var arr = String.fromCharCode.apply(null, new Uint8Array(data));
+                        //var cfb = XLS.CFB.read(btoa(arr), {type: 'base64'});
+                        var wb = XLS.parse_xlscfb(cfb);
+                        process_wb(wb);
+                    }
+                };
+                reader.readAsBinaryString(f);
+                //reader.readAsArrayBuffer(f);
+            }
+        }
+        function dragevents(){
+            $(".data-list-li").draggable({
+                addClasses : false,
+                revert: true,
+            });
+            $("#attr-grupos>ul>li").droppable({
+                addClasses : false,
+                accept: ".data-list-li",
+                drop: function(e,ui){
+                    console.log(ui);
+                    $(this).find("ul").append(ui.draggable)
+                }
+            });
+        }
+        function handleDragover(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        }
+        $(function(){
+            var tarea = document.getElementById('b64data');
+            var drop = document.getElementById('drop');
+            if(drop.addEventListener) {
+                drop.addEventListener('dragenter', handleDragover, false);
+                drop.addEventListener('dragover', handleDragover, false);
+                drop.addEventListener('drop', handleDrop, false);
+            }
+            _("nav ul").menu();
+            if(localStorage.data){
+                data = JSON.parse(localStorage.data);
+                _("#graph").pie({data:data});
+            }
+            $(document).on("click","nav ul li",function(){
+                switch($(this).text()){
+                    case "Tartas":
+                        _("#graph").pie({data:data});
+                        break;
+                }
+            });
+            $(document).on("click","#pie_simple",function(){
+                $(".complex_pie").addClass("simple_pie");
+                $("menu .active").removeClass("active");
+                $(this).addClass("active");
+                pie_mode = "simple";
+            });
+            $(document).on("click","#pie_complex",function(){
+                $(".complex_pie").removeClass("simple_pie");
+                $("menu .active").removeClass("active");
+                $(this).addClass("active");
+                pie_mode = "complex";
+            });
+            $(document).on("click","#create-group",function(){
+                var x = $("<li><span contenteditable='true' class='grupo_tag complex_pie'>Grupo</span></li>");
+                var ul = $("<ul></ul>");
+                x.append(ul);
+                $("#attr-grupos>ul").append(x);
+                x.droppable({
+                addClasses : false,
+                accept: ".data-list-li",
+                drop: function(e,ui){
+                    console.log(e);
+                    $(this).find("ul").append(ui.draggable)
+                }
+                });
+            });
+            dragevents();
+            function restaurarColores(){
+                colores = standard.slice(0);
+                _("#graph").pie({data:data});
+            }
+        });
 
 
+    </script>
+    </head>
+<body>
+<aside>
+    <nav>
         <ul>
-          <li><a href="https://github.com/juanpablocruz/Graph-app/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/juanpablocruz/Graph-app/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/juanpablocruz/Graph-app">View On <strong>GitHub</strong></a></li>
         </ul>
-      </header>
-      <section>
-        <h1>
-<a name="packages" class="anchor" href="#packages"><span class="octicon octicon-link"></span></a>Packages</h1>
-
-<ul>
-<li>cores.js</li>
-<li>pie.js</li>
-<li>-bars.js</li>
-<li>-historic.js</li>
-</ul>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/juanpablocruz">juanpablocruz</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
-  </body>
+    </nav>
+    <section id="tools">
+        <div id="buttons">
+        <button id="restaurar_colores" onclick="restaurarColores()"><div class='icon-droplet icono'></div>  Restaurar Colores</button>
+        <div id="save"><div class='icon-download icono'></div> Guardar</div>
+        </div>
+        <div id="drop"><div class="icon-box-add icono"></div>Arrastra un archivo XLS</div>
+    </section>
+    <menu>
+    </menu>
+</aside>
+<main>
+    <section id="graph">
+    </section>
+    <section id="graph-data">
+    </section>
+</main>
+</body>
 </html>
