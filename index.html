@@ -129,7 +129,7 @@
                 pie_mode = "complex";
             });
             $(document).on("click","#create-group",function(){
-                var x = $("<li><span contenteditable='true' class='grupo_tag complex_pie'>Grupo</span></li>");
+                var x = $("<li><span contenteditable='true' class='grupo_tag complex_pie' val='0'>Grupo</span></li>");
                 var ul = $("<ul></ul>");
                 x.append(ul);
                 $("#attr-grupos>ul").append(x);
@@ -166,11 +166,6 @@
         <div id="drop"><div class="icon-box-add icono"></div>Arrastra un archivo XLS</div>
     </section>
     <menu>
-        <ul>
-          <li><a href="https://github.com/juanpablocruz/Graph-app/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/juanpablocruz/Graph-app/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/juanpablocruz/Graph-app">View On <strong>GitHub</strong></a></li>
-        </ul>
     </menu>
 </aside>
 <main>
