@@ -148,9 +148,9 @@ input:focus{
     display:none;
 }
 .icono{
- font-size:1.5em; margin-right:1em;
+ font-size:1.5em; margin-right:1em;display:inline-block;
 }
-.icon-box-add{font-size: 2em;margin:auto;
+.icon-box-add{font-size: 2em;margin:auto;display:block;
 color: #333;}
 .icon-pie{margin-right: 1em;}
 .icon-download{margin-right: 1em;margin-left: 1em;}
@@ -166,6 +166,7 @@ color: #333;}
 .icon-spinner,.icon-spinner2{
     margin-left:1em;
 }
+
 #create-group:before{
     content: "+";
     margin-right:0.5em;

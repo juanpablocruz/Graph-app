@@ -1,5 +1,5 @@
 var tartas = 1;
-
+var pie_mode = "simple";
 function create_data_set(dest,d){
     dest.innerHTML = "";
     var f = document.createDocumentFragment();
@@ -134,7 +134,7 @@ function create_data_set(dest,d){
 
     var inpt_sub = document.createElement("BUTTON");
         inpt_sub.type = "submit";
-        inpt_sub.innerHTML = "Dibujar<span class='icon-pencil icono'></span> ";
+        inpt_sub.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
         inpt_sub.className = "draw_button";
         inpt_sub.addEventListener('click',function(){
             var grupos_list = [];
@@ -196,14 +196,14 @@ _.prototype.addTools = function(obj){
     var f = document.createDocumentFragment();
     var complex = document.createElement("DIV");
 
-    complex.innerHTML = "<span class='icon-spinner2 icono'></span>  Gráfico compuesto";
+    complex.innerHTML = "<div class='icon-spinner2 icono'></div>  Gráfico compuesto";
     if(pie_mode == "complex")complex.className = "active menu-button";
     else complex.className = "menu-button";
     complex.setAttribute("id","pie_complex");
     var simple = document.createElement("DIV");
     if(pie_mode == "simple")simple.className = "active menu-button";
     else simple.className = "menu-button";
-    simple.innerHTML = "<span class='icon-spinner icono'></span>  Gráfico simple";
+    simple.innerHTML = "<div class='icon-spinner icono'></div>  Gráfico simple";
     simple.setAttribute("id","pie_simple");
     f.appendChild(simple);
     f.appendChild(complex);

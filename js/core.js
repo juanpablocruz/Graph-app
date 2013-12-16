@@ -32,7 +32,7 @@ _.prototype = {
             var d = document.createDocumentFragment();
             var li=document.createElement("LI");
             li.className="active";
-            li.innerHTML = "<span class='icon-pie icono'></span> Tartas";
+            li.innerHTML = "<div class='icon-pie icono'></div> Tartas";
             
             d.appendChild(li);
             modules.push(d);
@@ -40,14 +40,14 @@ _.prototype = {
         if(typeof(barras) != "undefined"){
             var d = document.createDocumentFragment();
             var li=document.createElement("LI");
-            li.innerHTML = "<span class='icon-bars2 icono'></span> Barras";
+            li.innerHTML = "<div class='icon-bars2 icono'></div> Barras";
             d.appendChild(li);
             modules.push(d);
         }
         if(typeof(historic) != "undefined"){
             var d = document.createDocumentFragment();
             var li=document.createElement("LI");
-            li.innerHTML = "<span class='icon-stats icono'></span> Historicos";
+            li.innerHTML = "<div class='icon-stats icono'></div> Historicos";
             d.appendChild(li);
             modules.push(d);
         }
