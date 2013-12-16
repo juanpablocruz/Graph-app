@@ -1,5 +1,5 @@
 var modules = [];
-//var historic = barras = "";
+var historic = barras = "";
 var standard =[new Color("#82afc1"),new Color("#d3cec6"),
                new Color("#ad9172"),new Color("#4293af"),
                new Color("#cea072"),new Color("#d21f17"),
@@ -32,7 +32,7 @@ _.prototype = {
             var d = document.createDocumentFragment();
             var li=document.createElement("LI");
             li.className="active";
-            li.innerHTML = "Tartas";
+            li.innerHTML = "<span class='icon-pie icono'></span> Tartas";
             
             d.appendChild(li);
             modules.push(d);
@@ -40,14 +40,14 @@ _.prototype = {
         if(typeof(barras) != "undefined"){
             var d = document.createDocumentFragment();
             var li=document.createElement("LI");
-            li.innerHTML = "Barras";
+            li.innerHTML = "<span class='icon-bars2 icono'></span> Barras";
             d.appendChild(li);
             modules.push(d);
         }
         if(typeof(historic) != "undefined"){
             var d = document.createDocumentFragment();
             var li=document.createElement("LI");
-            li.innerHTML = "Historicos";
+            li.innerHTML = "<span class='icon-stats icono'></span> Historicos";
             d.appendChild(li);
             modules.push(d);
         }

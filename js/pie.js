@@ -10,6 +10,10 @@ function create_data_set(dest,d){
     
     var create = document.createElement("BUTTON");
     create.setAttribute("id","create-group");
+    if(pie_mode == "simple")
+        create.className = "complex_pie simple_pie";
+    else
+        create.className = "complex_pie";
     create.innerHTML = "Añadir Grupo";
     var grupos = document.createElement("DIV");
     grupos.setAttribute("id","attr-grupos");
@@ -20,13 +24,15 @@ function create_data_set(dest,d){
     
     _().each(g,function(j,a){
         var li = document.createElement("LI");
-        li.innerHTML = "<span contenteditable='true' class='grupo_tag simple_pie'>"+a[j]+"</span>";
+        if(pie_mode == "simple")
+            li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie'>"+a[j]+"</span>";
+        else
+            li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie'>"+a[j]+"</span>";
         var ul2 = document.createElement("UL");
         $(li).droppable({
                 addClasses : false,
                 accept: ".data-list-li",
                 drop: function(e,ui){
-                    console.log(ui);
                     $(this).find("ul").append(ui.draggable)
                 }
             });
@@ -74,7 +80,10 @@ function create_data_set(dest,d){
     }
     else{
         var li = document.createElement("LI");
-        li.innerHTML = "<span contenteditable='true' class='grupo_tag simple_pie'>Grupo1</span>";
+        if(pie_mode == "simple")
+           li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie'>Grupo1</span>";
+        else
+            li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie'>Grupo1</span>";
         var ul2 = document.createElement("UL");
 
         _().each(d,function(i,a){
@@ -125,7 +134,7 @@ function create_data_set(dest,d){
 
     var inpt_sub = document.createElement("BUTTON");
         inpt_sub.type = "submit";
-        inpt_sub.innerHTML = "Dibujar";
+        inpt_sub.innerHTML = "Dibujar<span class='icon-pencil icono'></span> ";
         inpt_sub.className = "draw_button";
         inpt_sub.addEventListener('click',function(){
             var grupos_list = [];
@@ -186,12 +195,15 @@ _.prototype.addTools = function(obj){
     menu.innerHTML = "";
     var f = document.createDocumentFragment();
     var complex = document.createElement("DIV");
-    complex.className = "menu-button";
-    complex.innerHTML = "Gráfico compuesto";
+
+    complex.innerHTML = "<span class='icon-spinner2 icono'></span>  Gráfico compuesto";
+    if(pie_mode == "complex")complex.className = "active menu-button";
+    else complex.className = "menu-button";
     complex.setAttribute("id","pie_complex");
     var simple = document.createElement("DIV");
-    simple.className = "active menu-button";
-    simple.innerHTML = "Gráfico simple";
+    if(pie_mode == "simple")simple.className = "active menu-button";
+    else simple.className = "menu-button";
+    simple.innerHTML = "<span class='icon-spinner icono'></span>  Gráfico simple";
     simple.setAttribute("id","pie_simple");
     f.appendChild(simple);
     f.appendChild(complex);

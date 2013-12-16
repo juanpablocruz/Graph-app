@@ -35,6 +35,24 @@
 .icon-pie:before {
 	content: "\e603";
 }
-.icon-record:before {
+.icon-pencil:before {
+	content: "\e605";
+}
+.icon-droplet:before {
+	content: "\e606";
+}
+.icon-stats:before {
 	content: "\e604";
+}
+.icon-bars:before {
+	content: "\e607";
+}
+.icon-bars2:before {
+	content: "\e608";
+}
+.icon-spinner:before {
+	content: "\e609";
+}
+.icon-spinner2:before {
+	content: "\e60a";
 }

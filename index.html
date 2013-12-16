@@ -15,6 +15,7 @@
     
     <script>
         var data;
+        var pie_mode = "simple";
         function xlsworker(data, cb) {
             var worker = new Worker('js/xlsworker.js');
             worker.onmessage = function(e) {
@@ -117,17 +118,19 @@
                 }
             });
             $(document).on("click","#pie_simple",function(){
-                $(".grupo_tag").addClass("simple_pie");
+                $(".complex_pie").addClass("simple_pie");
                 $("menu .active").removeClass("active");
                 $(this).addClass("active");
+                pie_mode = "simple";
             });
             $(document).on("click","#pie_complex",function(){
-                $(".simple_pie").removeClass("simple_pie");
+                $(".complex_pie").removeClass("simple_pie");
                 $("menu .active").removeClass("active");
                 $(this).addClass("active");
+                pie_mode = "complex";
             });
             $(document).on("click","#create-group",function(){
-                var x = $("<li><span contenteditable='true' class='grupo_tag'>Grupo</span></li>");
+                var x = $("<li><span contenteditable='true' class='grupo_tag complex_pie'>Grupo</span></li>");
                 var ul = $("<ul></ul>");
                 x.append(ul);
                 $("#attr-grupos>ul").append(x);
@@ -158,10 +161,10 @@
     </nav>
     <section id="tools">
         <div id="buttons">
-        <button id="restaurar_colores" onclick="restaurarColores()">Restaurar Colores</button>
-        <div id="save">Guardar</div>    
+        <button id="restaurar_colores" onclick="restaurarColores()"><span class='icon-droplet icono'></span>  Restaurar Colores</button>
+        <div id="save"><span class='icon-download icono'></span> Guardar</div>
         </div>
-        <div id="drop"><div class="add-icon">+</div>Arrastra un archivo XLS</div>
+        <div id="drop"><div class="icon-box-add icono"></div>Arrastra un archivo XLS</div>
     </section>
     <menu>
     </menu>

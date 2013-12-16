@@ -136,14 +136,35 @@ input:focus{
     text-align:left;
     margin-bottom:0.2em;
 }
+#data-list ul{width:25em;}
 #attr-grupos{
     flex:1;
 }
 #pie-segments{
     flex:1;
 }
+.complex_pie{display:block;}
 .simple_pie{
     display:none;
+}
+.icono{
+ font-size:1.5em; margin-right:1em;
+}
+.icon-box-add{font-size: 2em;margin:auto;
+color: #333;}
+.icon-pie{margin-right: 1em;}
+.icon-download{margin-right: 1em;margin-left: 1em;}
+.icon-pencil{
+ float:right;
+    margin-right:1em;
+    font-size:1.1em;
+}
+.icon-droplet{
+    margin-left:1em;
+    margin-right:1em;
+}
+.icon-spinner,.icon-spinner2{
+    margin-left:1em;
 }
 #create-group:before{
     content: "+";
