@@ -446,7 +446,7 @@ _.prototype.writePieText = function(context,i,porciones,r){
             }
         }
         else if(pos.x > 0){
-            if(e && ((e.x) > (centerX+(radius*2))))
+            if(e && ((e.x) > (centerX+(radius*2)))){
                 text_data.setFill("#333");
                 _.layer.draw();
             }
