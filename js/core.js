@@ -1,5 +1,5 @@
 var modules = [];
-var historic = barras = "";
+//var historic = barras = "";
 var standard =[new Color("#82afc1"),new Color("#d3cec6"),
                new Color("#ad9172"),new Color("#4293af"),
                new Color("#cea072"),new Color("#d21f17"),
