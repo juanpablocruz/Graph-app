@@ -20,7 +20,7 @@ function create_data_set(dest,d){
     
     _().each(g,function(j,a){
         var li = document.createElement("LI");
-        li.innerHTML = "<span contenteditable='true' class='grupo_tag'>"+a[j]+"</span>";
+        li.innerHTML = "<span contenteditable='true' class='grupo_tag simple_pie'>"+a[j]+"</span>";
         var ul2 = document.createElement("UL");
         $(li).droppable({
                 addClasses : false,
@@ -74,7 +74,7 @@ function create_data_set(dest,d){
     }
     else{
         var li = document.createElement("LI");
-        li.innerHTML = "<span contenteditable='true' class='grupo_tag'>Grupo1</span>";
+        li.innerHTML = "<span contenteditable='true' class='grupo_tag simple_pie'>Grupo1</span>";
         var ul2 = document.createElement("UL");
 
         _().each(d,function(i,a){
@@ -188,9 +188,11 @@ _.prototype.addTools = function(obj){
     var complex = document.createElement("DIV");
     complex.className = "menu-button";
     complex.innerHTML = "Gráfico compuesto";
+    complex.setAttribute("id","pie_complex");
     var simple = document.createElement("DIV");
-    simple.className = "menu-button";
+    simple.className = "active menu-button";
     simple.innerHTML = "Gráfico simple";
+    simple.setAttribute("id","pie_simple");
     f.appendChild(simple);
     f.appendChild(complex);
     menu.appendChild(f);
@@ -218,10 +220,14 @@ _.prototype.drawPie = function(canvas,data){
     
     
     _().each(data,function(i){
-        if(i>=colores.length){
-            var color = colores[(i%colores.length)+2].hex;
+        if(localStorage.data && JSON.parse(localStorage.data)[i]["color"])
+            var color = new Color(JSON.parse(localStorage.data)[i]["color"]);
+        else{
+            if(i>=colores.length){
+                var color = colores[(i%colores.length)+2];
+            }
+            else var color=colores[i];
         }
-        else var color=colores[i].hex; 
         var p = ( data[i]["value"] * 100 / suma)*( Math.PI*2/100);
         porciones.push({
             porcentaje : p,
@@ -246,12 +252,7 @@ _.prototype.sumTo = function(a,i) {
 
 _.prototype.drawPieSegment = function(context, i,porciones){
     context.save();
-    
-    if(i>=colores.length){
-        var color = colores[(i%colores.length)+2].hex;
-    }
-    else var color=colores[i].hex;                    
-    
+
     var startingAngle = (this.sumTo(porciones,i));
     var arcSize = porciones[i]["porcentaje"];
     var endingAngle = startingAngle + arcSize;
@@ -268,7 +269,7 @@ _.prototype.drawPieSegment = function(context, i,porciones){
             context.closePath();
             context.fillStrokeShape(this);
         },
-        fill: color,
+        fill: porciones[i]["color"].hex,
         stroke: "#FFF",
         strokeWidth: 1,
     });
@@ -281,14 +282,9 @@ _.prototype.writePieText = function(context,i,porciones){
     var centerx = Math.floor(context.canvas.width/2);
     var centery = Math.floor(context.canvas.height/2);
     radius = 200;
-    
-    if(i>=colores.length){
-        var color = colores[(i%colores.length)+2];
-    }
-    else var color=colores[i]; 
-    
+
     var tc;
-    if(color.lab.l < 65)tc = "#FFF";
+    if(porciones[i]["color"].lab.l < 65)tc = "#FFF";
     else tc = "#333";
     var startingAngle = (this.sumTo(porciones,i));
     var arcSize = porciones[i]["porcentaje"]-0.35;

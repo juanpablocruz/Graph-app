@@ -116,6 +116,16 @@
                         break;
                 }
             });
+            $(document).on("click","#pie_simple",function(){
+                $(".grupo_tag").addClass("simple_pie");
+                $("menu .active").removeClass("active");
+                $(this).addClass("active");
+            });
+            $(document).on("click","#pie_complex",function(){
+                $(".simple_pie").removeClass("simple_pie");
+                $("menu .active").removeClass("active");
+                $(this).addClass("active");
+            });
             $(document).on("click","#create-group",function(){
                 var x = $("<li><span contenteditable='true' class='grupo_tag'>Grupo</span></li>");
                 var ul = $("<ul></ul>");
