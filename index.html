@@ -12,9 +12,10 @@
     <script src="js/core.js"></script>
     <script src="js/xls.js"></script>
     <script src="js/pie.js"></script>
+    <script src="js/barras.js"></script>
     
     <script>
-        var data;
+        var data, tipo;
         function xlsworker(data, cb) {
             var worker = new Worker('js/xlsworker.js');
             worker.onmessage = function(e) {
@@ -49,8 +50,7 @@
             data = JSON.stringify(output, 2, 2);
             localStorage.clear();
             localStorage.data=data;
-            
-            _("#graph").pie({data:output});
+            cargar(output,tipo);
         }
         
         function handleDrop(e) {
@@ -96,6 +96,16 @@
             e.preventDefault();
             e.dataTransfer.dropEffect = 'copy';
         }
+        function cargar(data,tipo){
+            switch (tipo){
+                        case "Pie":
+                            _("#graph").pie({data:data});
+                            break;
+                        case "Bar":
+                            _("#graph").bars({data:data});
+                            break;
+                    }
+        }
         $(function(){
             var tarea = document.getElementById('b64data');
             var drop = document.getElementById('drop');
@@ -106,14 +116,26 @@
             }
             _("nav ul").menu();
             if(localStorage.data){
-                data = JSON.parse(localStorage.data);
-                _("#graph").pie({data:data}); 
+                if(localStorage.chartType) {
+                    data = JSON.parse(localStorage.data);
+                    tipo = localStorage.chartType;
+                    cargar(data,tipo);
+                }
             }
             $(document).on("click","nav ul li",function(){
                 switch($(this).text()){
                     case "Tartas":
                         _("#graph").pie({data:data});
                         break;
+                }
+            });
+            $(document).on("click","nav ul li", function(){
+                var tx = $(this).attr("tipo");
+                localStorage.chartType = tx;
+                $("nav .active").removeClass("active");
+                $(this).addClass("active");
+                if(localStorage.data){
+                    cargar(data,tx);
                 }
             });
             $(document).on("click","#pie_simple",function(){
@@ -147,7 +169,7 @@
             dragevents();
             function restaurarColores(){
                 colores = standard.slice(0);
-                _("#graph").pie({data:data});
+                cargar(data,tipo);
             }
         });
         

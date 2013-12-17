@@ -1,87 +1,85 @@
 var tartas = 1;
 var pie_mode = "simple";
-if(!localStorage.pie_mode)
+"use strict";
+if (!localStorage.pie_mode) {
     localStorage.pie_mode = "simple";
-else{
+} else {
     pie_mode = localStorage.pie_mode;
 }
-function create_data_set(dest,d){
+function create_data_set(dest, d) {
     dest.innerHTML = "";
-    var f = document.createDocumentFragment();
-    var contenedor = document.createElement("DIV");
-    contenedor.setAttribute("id","data-list");
+    var f = document.createDocumentFragment(), contenedor = document.createElement("DIV"),
+        create = document.createElement("BUTTON"), grupos = document.createElement("DIV");
+    contenedor.setAttribute("id", "data-list");
 
-    var f = document.createDocumentFragment();
-    
-    var create = document.createElement("BUTTON");
-    create.setAttribute("id","create-group");
-    if(pie_mode == "simple")
+    create.setAttribute("id", "create-group");
+    if (pie_mode === "simple") {
         create.className = "complex_pie simple_pie";
-    else
+    } else {
         create.className = "complex_pie";
+    }
     create.innerHTML = "Añadir Grupo";
-    var grupos = document.createElement("DIV");
-    grupos.setAttribute("id","attr-grupos");
+    grupos.setAttribute("id", "attr-grupos");
     var ul = document.createElement("UL");
     grupos.appendChild(create);
-    if(localStorage.grupos){
-    var g = JSON.parse(localStorage.grupos);
+    if (localStorage.grupos) {
+        var g = JSON.parse(localStorage.grupos);
     
-    _().each(g,function(j,a){
-        var li = document.createElement("LI");
-        if(pie_mode == "simple")
-            li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie'>"+a[j].label+"</span>";
-        else
-            li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie'>"+a[j].label+"</span>";
-        var ul2 = document.createElement("UL");
-        $(li).droppable({
+        _().each(g, function (j, a) {
+            var li = document.createElement("LI");
+            if (pie_mode === "simple")
+                li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie'>" + a[j].label + "</span>";
+            else
+                li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie'>" + a[j].label + "</span>";
+            var ul2 = document.createElement("UL");
+            $(li).droppable({
                 addClasses : false,
                 accept: ".data-list-li",
-                drop: function(e,ui){
-                    $(this).find("ul").append(ui.draggable)
+                drop: function (e, ui) {
+                    $(this).find("ul").append(ui.draggable);
                 }
             });
-        _().each(d,function(i){
-            if(d[i].group != "" && d[i].group == a[j].label){
-                if(d[i]["color"])color = d[i]["color"];
-            else if(i>=colores.length){
-                var color = colores[(i%colores.length)+2].hex;
-            }
-            else{
-                var color=colores[i].hex;
-            }
-            var li2 = document.createElement("LI");
-            li2.className = "data-list-li";
-            var cont = document.createElement("DIV");
-            cont.className = "data-list-element";
-            var inpt_val = document.createElement("INPUT");
-            inpt_val.type = "number";
-            inpt_val.value = d[i]["value"];
-            inpt_val.className = "value";
-            var inpt_labl = document.createElement("INPUT");
-            inpt_labl.type = "text";
-            inpt_labl.value = d[i]["label"];
-            inpt_labl.className = "label";
-            var inpt_color = document.createElement("INPUT");
-            inpt_color.type = "color";
-            inpt_color.value = color;
-            inpt_color.className = "color";
-            cont.appendChild(inpt_labl);
-            cont.appendChild(inpt_val);
-            cont.appendChild(inpt_color);
-            li2.appendChild(cont);
-            ul2.appendChild(li2);
-            $(li2).draggable({
-                    addClasses : false,
-                    revert: true,
-                });
-            }
-        });
-        li.appendChild(ul2);
-        ul.appendChild(li);
-        grupos.appendChild(ul);
+            _().each(d, function (i) {
+                if (d[i].group !== "" && d[i].group === a[j].label) {
+                    if(d[i]["color"])color = d[i]["color"];
+                else if(i>=colores.length){
+                    var color = colores[(i%colores.length)+2].hex;
+                }
+                else{
+                    var color=colores[i].hex;
+                }
+                var li2 = document.createElement("LI");
+                li2.className = "data-list-li";
+                var cont = document.createElement("DIV");
+                cont.className = "data-list-element";
+                var inpt_val = document.createElement("INPUT");
+                inpt_val.type = "number";
+                inpt_val.value = d[i]["value"];
+                inpt_val.className = "value";
+                var inpt_labl = document.createElement("INPUT");
+                inpt_labl.type = "text";
+                inpt_labl.value = d[i]["label"];
+                inpt_labl.className = "label";
+                var inpt_color = document.createElement("INPUT");
+                inpt_color.type = "color";
+                inpt_color.value = color;
+                inpt_color.className = "color";
+                cont.appendChild(inpt_labl);
+                cont.appendChild(inpt_val);
+                cont.appendChild(inpt_color);
+                li2.appendChild(cont);
+                ul2.appendChild(li2);
+                $(li2).draggable({
+                        addClasses : false,
+                        revert: true,
+                    });
+                }
+            });
+            li.appendChild(ul2);
+            ul.appendChild(li);
+            grupos.appendChild(ul);
 
-    });
+        });
     }
     else{
         var li = document.createElement("LI");
@@ -91,16 +89,14 @@ function create_data_set(dest,d){
             li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie' val='0'>Grupo1</span>";
         var ul2 = document.createElement("UL");
 
-        _().each(d,function(i,a){
-            console.log(d[i]["color"]);
-            if(d[i]["color"]){
+        _().each( d,function (i, a) {
+            if (d[i]["color"]) {
                 color = d[i]["color"];
-                console.log(color);
             }
-            else if(i>=colores.length){
+            else if (i>=colores.length) {
                 var color = colores[(i%colores.length)+2].hex;
             }
-            else{
+            else {
                 var color=colores[i].hex;
             }
             var li2 = document.createElement("LI");
@@ -183,19 +179,19 @@ function create_data_set(dest,d){
     contenedor.appendChild(f);
     dest.appendChild(contenedor);
 }
-_.prototype.pie= function(obj){
+_.prototype.pie= function (obj) {
     var id = this.id;
     
-    _().canvas(this.e[0],function(){
+    _().canvas(this.e[0],function() {
         this.data_content = document.querySelectorAll("#graph-data")[0];
         this.canvas = document.querySelectorAll(id+" canvas")[0];
-        this.addTools();
+        this.addPieTools();
         this.drawPie(this.canvas,obj.data); 
     });
     
     
 }
-_.prototype.addTools = function(obj){
+_.prototype.addPieTools = function (obj) {
     var menu = document.querySelectorAll("menu")[0];
     menu.innerHTML = "";
     var f = document.createDocumentFragment();
@@ -222,7 +218,7 @@ _.prototype.addTools = function(obj){
     data_content.appendChild(f);
 }
 
-_.prototype.draw = function(data,radio,text){
+_.prototype.draw = function (data, radio, text) {
     var suma = 0;
     var porciones = Array();
     
@@ -231,10 +227,10 @@ _.prototype.draw = function(data,radio,text){
     });
     
     
-    _().each(data,function(i){
-        if(localStorage.data && JSON.parse(localStorage.data)[i]["color"])
+    _().each(data,function (i) {
+        if (localStorage.data && JSON.parse(localStorage.data)[i]["color"])
             var color = new Color(JSON.parse(localStorage.data)[i]["color"]);
-        else{
+        else {
             if(i>=colores.length){
                 var color = colores[(i%colores.length)+2];
             }
@@ -244,29 +240,28 @@ _.prototype.draw = function(data,radio,text){
         porciones.push({
             porcentaje : p,
             color: color});
-    })
-    
-    for (var i = 0; i < data.length; i++) {
+    });
+    for ( var i = 0; i < data.length; i++) {
         this.drawPieSegment(this.ctx, i,porciones,radio);
     }
-    if(text){
-        for (var i = 0; i < data.length; i++) {
+    if (text) {
+        for ( var i = 0; i < data.length; i++) {
             this.writePieText(this.ctx, i,porciones,radio);
         }
     }
-    else{
-        for (var i = 0; i < data.length; i++) {
+    else {
+        for ( var i = 0; i < data.length; i++) {
             this.drawPieGroupText(this.ctx, i,porciones,radio+130);
         }
     }
 }
 
-_.prototype.drawPie = function(canvas,data){
+_.prototype.drawPie = function (canvas, data) {
     this.data = data;
     create_data_set(this.data_content,data);
     this.ctx = canvas.getContext("2d");
     var radio = 0;
-    if(pie_mode=="complex"){
+    if (pie_mode=="complex" && localStorage.grupos) {
         this.grupos = JSON.parse(localStorage.grupos);
         var grupos = this.grupos;
         var fragmentos = [];
@@ -278,21 +273,21 @@ _.prototype.drawPie = function(canvas,data){
                 }
             });
             g[i].value = total;
-            fragmentos.push({value: total, label: grupos[i].label});
+            if(total > 0)
+                fragmentos.push({value: total, label: grupos[i].label});
             total = 0;
         });
         this.draw(fragmentos,180,false);
         radio = 180;
         localStorage.grupos = JSON.stringify(fragmentos);
     }
-    else{
+    else {
         radio = 200;
     }
-    this.draw(data,radio-20,true);
-
+    this.draw(data, radio-20, true);
 
 }
-_.prototype.sumTo = function(a,i) {
+_.prototype.sumTo = function (a, i) {
     var sum = 0;
     for (var j = 0; j < i; j++) {
         sum += a[j]["porcentaje"];    	
@@ -300,9 +295,8 @@ _.prototype.sumTo = function(a,i) {
     return sum;
 }
 
-_.prototype.drawPieSegment = function(context, i,porciones,r){
-
-    var startingAngle = (this.sumTo(porciones,i));
+_.prototype.drawPieSegment = function (context, i, porciones, r) {
+    var startingAngle = (this.sumTo(porciones, i));
     var arcSize = porciones[i]["porcentaje"];
     var endingAngle = startingAngle + arcSize;
     
@@ -324,10 +318,9 @@ _.prototype.drawPieSegment = function(context, i,porciones,r){
     });
     _.layer.add(arc);
     _.layer.draw();
-
 }
 
-_.prototype.drawPieGroupText = function(context,i,porciones,r){
+_.prototype.drawPieGroupText = function (context, i, porciones, r) {
     var centerx = Math.floor(context.canvas.width/2);
     var centery = Math.floor(context.canvas.height/2);
     radius = r+20;
@@ -352,7 +345,7 @@ _.prototype.drawPieGroupText = function(context,i,porciones,r){
 
         var centerX = centerx - (dx*radius);
         var centerY = Math.floor(context.canvas.height/2);
-        if(pos.x < 0){
+        if (pos.x < 0) {
             if(e && ((e.x) < centerX)){
                 text_data.setFill("#333");
                 _.layer.draw();
@@ -362,12 +355,12 @@ _.prototype.drawPieGroupText = function(context,i,porciones,r){
                 _.layer.draw();
             }
         }
-        else if(pos.x > 0){
-            if(e && ((e.x) > (centerX+(radius*2)))){
+        else if (pos.x > 0) {
+            if (e && ((e.x) > (centerX+(radius*2)))) {
                 text_data.setFill("#333");
                 _.layer.draw();
             }
-            else{
+            else {
                 text_data.setFill(tc);
                 _.layer.draw();
             }
@@ -394,7 +387,6 @@ _.prototype.drawPieGroupText = function(context,i,porciones,r){
             paddingLeft: -5,
         });
 
-    console.log(this.grupos[i]);
     var text_data = new Kinetic.Text({
             x: centerx + (dx*radius),
             y: centery+ (dy*radius) + 24,
@@ -410,13 +402,13 @@ _.prototype.drawPieGroupText = function(context,i,porciones,r){
     _.layer.add(group);
     _.layer.draw();
 }
-_.prototype.writePieText = function(context,i,porciones,r){
+_.prototype.writePieText = function (context, i, porciones, r) {
     var centerx = Math.floor(context.canvas.width/2);
     var centery = Math.floor(context.canvas.height/2);
     radius = r+20;
 
     var tc;
-    if(porciones[i]["color"].lab.l < 65)tc = "#FFF";
+    if (porciones[i]["color"].lab.l < 65) tc = "#FFF";
     else tc = "#333";
     var startingAngle = (this.sumTo(porciones,i));
     var arcSize = porciones[i]["porcentaje"]-0.35;
@@ -435,22 +427,22 @@ _.prototype.writePieText = function(context,i,porciones,r){
         
         var centerX = centerx - (dx*radius)-30;
         var centerY = Math.floor(context.canvas.height/2);
-        if(pos.x < 0){
-            if(e && ((e.x) < centerX)){
+        if (pos.x < 0) {
+            if (e && ((e.x) < centerX)) {
                 text_data.setFill("#333");
                 _.layer.draw();
             }
-            else{
+            else {
                 text_data.setFill(tc);
                 _.layer.draw();
             }
         }
-        else if(pos.x > 0){
-            if(e && ((e.x) > (centerX+(radius*2)))){
+        else if (pos.x > 0) {
+            if (e && ((e.x) > (centerX+(radius*2)))) {
                 text_data.setFill("#333");
                 _.layer.draw();
             }
-            else{
+            else {
                 text_data.setFill(tc);
                 _.layer.draw();
             }
@@ -463,30 +455,30 @@ _.prototype.writePieText = function(context,i,porciones,r){
     var t =  this.data[i]["label"];
     var texto = "",w = 0, l1 = 100, l2 = 150,ancho=0,lineas = 1;
     var mayor = 0;
-    _().each(t.split(" "), function(k,te){
+    _().each(t.split(" "), function (k, te) {
        w=context.measureText(te[k]).width;
         ancho += w;
-        if( ancho > l1){
-         if(ancho > l2){
+        if (ancho > l1) {
+         if (ancho > l2) {
              texto += "\n"+te[k]+" ";
-             if(k != te.length-1)
+             if (k != te.length-1)
                  ancho=0;
-             else{
+             else {
                 ancho =l1;
              }
-             //console.log(te[k]+" "+ancho+" "+k+" "+te.length );
-             lineas++}
+             lineas++
+         }
         else {
             texto+=te[k]+" ";
         }
        }
-        else{
+        else {
            texto+=te[k]+" ";
             ancho += w;
         }
     });
 
-    if(lineas>1)width = ancho;
+    if (lineas > 1) width = ancho;
     var padding = 20*lineas;
     var box = new Kinetic.Rect({
             x: centerx + (dx*radius),
