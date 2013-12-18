@@ -98,7 +98,7 @@
         }
         function cargar(data,tipo){
             switch (tipo){
-                        case "Pie":
+                        case "Tartas":
                             if(typeof data[0] != "undefined" && Object.keys(data[0]).indexOf("label")>-1){
                                 _("#graph").pie({data:data});
                                 changeStep($(".current_step"),"next");
@@ -108,14 +108,13 @@
                                 alert("error de archivo");
                             }
                             break;
-                        case "Bar":
+                        case "Barras":
                             _("#graph").bars({data:data});
                             changeStep($(".current_step"),"next");
                             break;
                     }
         }
         function changeStep(obj,dir){
-            console.log(obj);
             switch(dir){
                 case "prev":
                     $(obj).removeClass("current_step").prev().first().addClass("current_step");
@@ -138,6 +137,8 @@
                     changeStep($(".current_step"),"next");
                 }
                 else{
+                    $("#step-info ul").html("");
+                    $("#step-info ul").append("<li><div class='halfCircleRight'>"+localStorage.chartType+"</div></li>");
                    changeStep($(".current_step"),"next");
                 }
             }
@@ -169,6 +170,8 @@
                 $(this).addClass("active");
                 localStorage.clear();
                 localStorage.chartType = tx;
+                $("#step-info ul").html("");
+                $("#step-info ul").append("<li><div class='halfCircleRight'>"+tx+"</div></li>");
                 changeStep($(this).parent().parent().parent(),"next");
             });
             $(document).on("click","#pie_simple",function(){
@@ -217,7 +220,9 @@
         </nav>
 </div>
 <div id="loadData" class="step">
+
     <section id="tools">
+        <div id="step-info"><ul></ul></div>
         <div id="drop"><div class="icon-box-add icono"></div>Arrastra un archivo XLS</div>
         <div class="back">Volver</div>
     </section>

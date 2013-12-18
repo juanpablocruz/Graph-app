@@ -1,7 +1,8 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,600);
 @font-face{ 
-	font-family:'mic32newrd-rg-webfont';
-	src: url('fonts/mic32newrd-rg-webfont.woff') format('woff')}
+	font-family:'mic32newrd';
+	src: url('fonts/mic32newrd-rg-webfont.woff') format('woff')
+}
 
 *{
     margin:0;
@@ -280,4 +281,37 @@ li ul{
 }
 #designer{
     align-items:flex-start;
+}
+#step-info{
+    background: #eee;
+    background: -moz-linear-gradient(top, #f8f8f8 0%, #dddddd 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f8f8f8), color-stop(100%,#dddddd));
+    background: -webkit-linear-gradient(top, #f8f8f8 0%,#dddddd 100%);
+    background: -o-linear-gradient(top, #f8f8f8 0%,#dddddd 100%);
+    background: -ms-linear-gradient(top, #f8f8f8 0%,#dddddd 100%);
+    background: linear-gradient(top, #f8f8f8 0%,#dddddd 100%);
+    border-radius: 5px;
+    border: 1px solid #d2d2d2;
+    box-shadow: inset #fff 0 1px 0, inset rgba(0,0,0,0.03) 0 -1px 0;
+    width:43%;
+    margin:auto;
+    margin-bottom:3em;
+}
+#step-info li div{
+   display:inline-block;
+}
+.halfCircleRight{
+     height:2em;
+     width:6em;
+     border-radius: 0 90px 90px 0;
+     -moz-border-radius: 0 90px 90px 0;
+     -webkit-border-radius:  0 90px 90px 0;
+     background: #d3d3d3;
+    vertical-align:middle;
+    color:#333;
+    font-weight:bold;
+    padding-top:0.5em;
+    padding-left:1em;
+    border:1px solid white;
+    box-shadow: inset #fff 0 1px 0, inset rgba(0,0,0,0.03) 0 -1px 0;
 }

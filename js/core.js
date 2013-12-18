@@ -8,6 +8,7 @@ var standard =[new Color("#d21f17"),new Color("#d3cec6"),
 var colores = standard.slice(0);
 "use strict";
 function _(id) {
+        _.zoom = 1;
         if (window === this) {
             return new _(id);   
         }
@@ -31,7 +32,7 @@ _.prototype = {
         if(typeof(tartas) != "undefined"){
             var d = document.createDocumentFragment();
             var li=document.createElement("LI");
-            li.setAttribute("tipo","Pie");
+            li.setAttribute("tipo","Tartas");
             li.innerHTML = "Tartas<div class='icon-pie icono'></div> ";
             
             d.appendChild(li);
@@ -40,7 +41,7 @@ _.prototype = {
         if(typeof(barras) != "undefined"){
             var d = document.createDocumentFragment();
             var li=document.createElement("LI");
-            li.setAttribute("tipo","Bar");
+            li.setAttribute("tipo","Barras");
             li.innerHTML = "Barras<div class='icon-bars2 icono'></div> ";
             d.appendChild(li);
             modules.push(d);
@@ -48,7 +49,7 @@ _.prototype = {
         if(typeof(historic) != "undefined"){
             var d = document.createDocumentFragment();
             var li=document.createElement("LI");
-            li.setAttribute("tipo","Historic");
+            li.setAttribute("tipo","Historicos");
             li.innerHTML = "Historicos<div class='icon-stats icono'></div> ";
             d.appendChild(li);
             modules.push(d);
