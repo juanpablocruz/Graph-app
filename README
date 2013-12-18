@@ -9,3 +9,17 @@ js/xls.js   Módulo para cargar y leer archivos excel .xls
 js/xlsworker.js Módulo para cargar xls con workers
 theme.css   Estilo principal de la UI
 iconos.css  CSS para cargar fuentes de iconos.
+
+
+Formato:
+
+Tartas.xls
+|  Label  |    Value  |  
+|  África |    3,4    |   
+|  Europa |    20,6   |
+
+Barras.xls
+|  Años  |  Etiqueta1  |  Etiqueta2  |
+|  2009  |    30000    |    20000    |
+|  2010  |    33000    |    34000    |
+|  2011  |    34000    |    23000    |

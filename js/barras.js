@@ -36,13 +36,6 @@ _.prototype.getMaxValue = function (){
     }
     return max;
 }
-Array.prototype.minVal = function(){
-    var min = Infinity;
-    _().each(this,function(i,a){
-        if(min==Infinity || this[i]<min)min = a[i];
-    });
-    return min;
-}
 _.prototype.getInterval = function(d){
     var tmp = [];
     for (var k=1; k < Object.keys(d).length;k++) {

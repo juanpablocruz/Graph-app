@@ -4,7 +4,7 @@ var standard =[new Color("#d21f17"),new Color("#d3cec6"),
                new Color("#cea072"),new Color("#82afc1"),
                new Color("#867c73"),new Color("#e2ddd8"),
               ];
-               var historic = "";
+               //var historic = "";
 var colores = standard.slice(0);
 var colores_barras = [standard[3],standard[2]];
 "use strict";
@@ -21,6 +21,15 @@ function _(id) {
         }  
         return this;
     }
+
+Array.prototype.minVal = function(){
+    var min = Infinity;
+    _().each(this,function(i,a){
+        if(min==Infinity || this[i]<min)min = a[i];
+    });
+    return min;
+}
+
 _.prototype = {
     get: function(selector) {
           return this;
