@@ -27,7 +27,7 @@ _.prototype.getMaxValue = function (){
     var max = 0;
     for(var i=0;i< this.data.length;i++){
         var tmp = 0;
-        for(var j=0; j < Object.keys(this.data[0]).length; j++) {
+        for(var j=1; j < Object.keys(this.data[0]).length; j++) {
             tmp += this.data[i][Object.keys(this.data[i])[j]];
         }
         if(tmp > max){
@@ -45,8 +45,7 @@ Array.prototype.minVal = function(){
 }
 _.prototype.getInterval = function(d){
     var tmp = [];
-    console.log(Object.keys(d).length);
-    for (var k=0; k < Object.keys(d).length;k++) {
+    for (var k=1; k < Object.keys(d).length;k++) {
         var sum = 0;
         var l = Object.keys(d[0])[k];
         for (var i=0; i<d.length; i++) {
@@ -101,7 +100,7 @@ _.prototype.drawBarra = function(maximo,i,j,h,height,layer,wBar,m){
         },
         stroke: "#FFF",
         strokeWidth: 1,
-        fill: colores_barras[i].hex,
+        fill: colores_barras[i-1].hex,
     });
     layer.add(barra);
 }
@@ -117,20 +116,21 @@ _.prototype.createBarsHorizontalAxis = function(max){
     var height_accumulated = 0;
     var labels = [];
     for (var j=0; j<this.data.length; j++){
-        for (var i=0; i< Object.keys(this.data[0]).length; i++){
+        for (var i=1; i< Object.keys(this.data[0]).length; i++){
             this.drawBarra(maximo,
                            i, j, h,
                            this.ctx.canvas.height-20-height_accumulated,
                            layer2,wBar,m);
-            height_accumulated+=(this.data[j][Object.keys(this.data[0])[i]]*h)/maximo;
+
             if(labels.indexOf(i)==-1){
                 labels.push(i);
 
                 var texto = Object.keys(this.data[0])[i];
                 console.log(this.data[0]);
                 var lwidth =  this.ctx.measureText(texto).width;
-                this.drawLabel(50,height_accumulated,lwidth,20,"#333","white",texto,layer2);
+                this.drawLabel(50,this.ctx.canvas.height-40-height_accumulated,lwidth,20,"#333","white",texto,layer2);
             }
+            height_accumulated+=(this.data[j][Object.keys(this.data[0])[i]]*h)/maximo;
         }
 
         height_accumulated=0;
