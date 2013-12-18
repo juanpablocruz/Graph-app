@@ -143,7 +143,6 @@ main section:first-child{
     }
 canvas{
     border:1px solid black !important;
-    position:inherit !important;
 }
 .draw_button,#create-group{
     width: 10em;

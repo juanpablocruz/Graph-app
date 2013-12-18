@@ -6,6 +6,7 @@ var standard =[new Color("#d21f17"),new Color("#d3cec6"),
               ];
                var historic = "";
 var colores = standard.slice(0);
+var colores_barras = [standard[3],standard[2]];
 "use strict";
 function _(id) {
         _.zoom = 1;
@@ -70,47 +71,29 @@ _.prototype = {
         _.layer.add(item);
         _.layer.draw();
     },
-    drawLabel : function(posx, posy, width, height, fill, textColor, text){
+    drawLabel : function(posx, posy, width, height, fill, textColor, text,layer){
         
-        var group = new Kinetic.Group({draggable:true, id: "group_label"});
+        var group = new Kinetic.Group({draggable:true, id: "group_label",name:"label"});
         var text = new Kinetic.Text({
             x: posx,
-            y: posy-10,
-            fontSize: 20,
+            y: posy+2,
+            fontSize: 12,
             fontFamily: "Open Sans",
             text: text,
             fill: textColor,
-            padding: 15,
+            padding: 1,
         });
         var box = new Kinetic.Rect({
             x: posx,
             y: posy,
-            width: width,
+            width: width+10,
             height: height,
             fill: fill,
         });
-        var circle = new Kinetic.Circle({
-            x: posx + 135,
-            y: posy+10,
-            radius: 5,
-            fill: fill,
-            stroke: "white",
-            strokeWidth: 1
-        });
-        circle.on('click', function(){
-            group.destroy(this);
-            _.layer.draw();
-        })
-        group.on('mouseover', function(){
-            document.body.style.cursor = 'pointer';
-        });
-        group.on('mouseout', function() {
-            document.body.style.cursor = "default";
-        });
+
         group.add(box);
         group.add(text);
-        group.add(circle);
-        this.draw(group);
+        layer.add(group);
         return this;
     },
     canvas: function(canvas,callback){
@@ -141,16 +124,18 @@ _.prototype = {
           }, false);       
         this.stage.add(_.layer);
         if(modules.length == 0)
-           this.drawLabel(rectX,rectY,150,25,"rgba(0,0,0,0.7)","#fff","No hay Módulos");
+           this.drawLabel(rectX,rectY,150,25,"rgba(0,0,0,0.7)","#fff","No hay Módulos",_.layer);
         _.layer.draw();
         callback.call(this);
     },
     canvasToImage: function(canvas,backgroundColor)
     {
+        var c = document.getElementsByTagName("canvas")[1];
         //cache height and width		
         var w = canvas.width;
         var h = canvas.height;
         var context = canvas.getContext("2d");
+        if(typeof c != "undefined")context.drawImage(c,0,0);
         var data;
      
         if(backgroundColor)

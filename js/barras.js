@@ -21,7 +21,7 @@ _.prototype.drawBar = function(canvas,data){
     this.data = data;
     var maximo = this.getMaxValue();
     this.createBarsVerticalAxis(maximo);
-    //this.createBarsHorizontalAxis(maximo);
+    this.createBarsHorizontalAxis(maximo);
 }
 _.prototype.getMaxValue = function (){
     var max = 0;
@@ -45,7 +45,8 @@ Array.prototype.minVal = function(){
 }
 _.prototype.getInterval = function(d){
     var tmp = [];
-    for (var k=0; k < Object.keys(d[k]).length;k++) {
+    console.log(Object.keys(d).length);
+    for (var k=0; k < Object.keys(d).length;k++) {
         var sum = 0;
         var l = Object.keys(d[0])[k];
         for (var i=0; i<d.length; i++) {
@@ -61,84 +62,84 @@ _.prototype.createBarsVerticalAxis = function(max){
     var step = this.getInterval(this.data);
 
     var ctx = this.ctx;
-    var h = ctx.canvas.height-30;
-    console.log(step+" "+max);
+    var h = ctx.canvas.height-20;
     var posy = Math.floor((h)/(max/step));
     var contador = 0;
     ctx.font = "12px 'Mic 32 New Rounded'";
-    ctx.fillStyle = "#333";
+    //ctx.fillStyle = "#333";
     var oy=0;
     var text;
-
     var yaxis = new Kinetic.Shape({
         drawFunc: function(ctx){
             for (var j = 0; j < max+step; j+=step) {
+                var x = j.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                 oy = h-(posy*contador);
-                ctx.fillText(j,0,oy-5);
+                ctx.fillText(x,0,oy-5);
                 ctx.beginPath();
                 ctx.moveTo(0,oy);
                 ctx.lineTo(ctx.canvas.width,oy);
                 ctx.closePath();
+                ctx.lineWidth = 1;
                 ctx.stroke();
                 contador++;
             };
         },
         id: "axis",
-        stroke: "#FFF",
-        strokeWidth: 1,
+
     });
     _.layer.add(yaxis);
     _.layer.draw();
-
-
-
 }
-
-_.prototype.drawColumn = function(ancho,h,wBar,color,value,label){
-    var ctx = this.ctx;
-    ctx.font = "12px 'Mic 32 New Rounded'";
-
-    _layer2.add(new Kinetic.Shape({
-            drawFunc: function(ctx){
-                ctx.beginPath();
-                ctx.rect(ancho+50,h+200,wBar,-value);
-                ctx.closePath();
-            },
-            fill:color,
-            stroke: "#FFF",
-            strokeWidth: 1,
-        }));
-    this.layer2.draw();
-    this.stage.add(this.layer2);
-
+_.prototype.drawBarra = function(maximo,i,j,h,height,layer,wBar,m){
+    var value = (this.data[j][Object.keys(this.data[0])[i]]*h)/maximo;
+    var barra = new Kinetic.Shape({
+        drawFunc: function(ctx){
+            ctx.beginPath();
+            ctx.rect(40+((wBar+m)*j),height,wBar,-value);
+            ctx.closePath();
+            ctx.fillStrokeShape(this);
+        },
+        stroke: "#FFF",
+        strokeWidth: 1,
+        fill: colores_barras[i].hex,
+    });
+    layer.add(barra);
 }
-_.prototype.calcBarHeight = function(i,j,h,max){
-    return (this.data[i][Object.keys(this.data[i])[j]]*(h)/(max));
-}
-
 _.prototype.createBarsHorizontalAxis = function(max){
     var w = this.ctx.canvas.width-30;
     var h = this.ctx.canvas.height-30;
     var N = this.data.length;
     var m = 10;
+    if(N<4)m = m*((1/((N*100)/6)))*100;
     var wBar = (w - N*m)/N;
     var maximo = this.getMaxValue();
+    var layer2 = new Kinetic.Layer();
+    var height_accumulated = 0;
+    var labels = [];
     for (var j=0; j<this.data.length; j++){
         for (var i=0; i< Object.keys(this.data[0]).length; i++){
-            var value = (this.data[j][Object.keys(this.data[0])[i]]*h)/maximo;
-            var barra = new Kinetic.Shape({
-                drawFunc: function(ctx){
-                    ctx.beginPath();
-                    ctx.rect(50*j,ctx.canvas.height-30,wBar,-value);
-                    ctx.closePath();
-                    ctx.fillStrokeShape(this);
-                },
-                fill:'#00D2FF',
-                stroke: 'black',
-                strokeWidth:1,
-            });
-            _.layer.add(barra);
+            this.drawBarra(maximo,
+                           i, j, h,
+                           this.ctx.canvas.height-20-height_accumulated,
+                           layer2,wBar,m);
+            height_accumulated+=(this.data[j][Object.keys(this.data[0])[i]]*h)/maximo;
+            if(labels.indexOf(i)==-1){
+                labels.push(i);
+
+                var texto = Object.keys(this.data[0])[i];
+                console.log(this.data[0]);
+                var lwidth =  this.ctx.measureText(texto).width;
+                this.drawLabel(50,height_accumulated,lwidth,20,"#333","white",texto,layer2);
+            }
         }
+
+        height_accumulated=0;
     }
-    _.layer.draw();
+    var labels = layer2.find('.label');
+    labels.forEach(function(i){
+        i.setZIndex(50);
+    });
+    this.stage.add(layer2);
+    layer2.draw();
+
 }
