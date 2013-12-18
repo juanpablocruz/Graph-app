@@ -56,3 +56,6 @@
 .icon-spinner2:before {
 	content: "\e60a";
 }
+.icon-file:before {
+	content: "\e60b";
+}

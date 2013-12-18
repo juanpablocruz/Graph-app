@@ -4,6 +4,7 @@ var standard =[new Color("#d21f17"),new Color("#d3cec6"),
                new Color("#cea072"),new Color("#82afc1"),
                new Color("#867c73"),new Color("#e2ddd8"),
               ];
+               var historic = "";
 var colores = standard.slice(0);
 "use strict";
 function _(id) {
@@ -30,9 +31,8 @@ _.prototype = {
         if(typeof(tartas) != "undefined"){
             var d = document.createDocumentFragment();
             var li=document.createElement("LI");
-            li.className="active";
             li.setAttribute("tipo","Pie");
-            li.innerHTML = "<div class='icon-pie icono'></div> Tartas";
+            li.innerHTML = "Tartas<div class='icon-pie icono'></div> ";
             
             d.appendChild(li);
             modules.push(d);
@@ -41,7 +41,7 @@ _.prototype = {
             var d = document.createDocumentFragment();
             var li=document.createElement("LI");
             li.setAttribute("tipo","Bar");
-            li.innerHTML = "<div class='icon-bars2 icono'></div> Barras";
+            li.innerHTML = "Barras<div class='icon-bars2 icono'></div> ";
             d.appendChild(li);
             modules.push(d);
         }
@@ -49,7 +49,7 @@ _.prototype = {
             var d = document.createDocumentFragment();
             var li=document.createElement("LI");
             li.setAttribute("tipo","Historic");
-            li.innerHTML = "<div class='icon-stats icono'></div> Historicos";
+            li.innerHTML = "Historicos<div class='icon-stats icono'></div> ";
             d.appendChild(li);
             modules.push(d);
         }

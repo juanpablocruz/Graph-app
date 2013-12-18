@@ -48,8 +48,8 @@
             var output = "";
             output = to_json(wb).Hoja1;
             data = JSON.stringify(output, 2, 2);
-            localStorage.clear();
             localStorage.data=data;
+            tipo = localStorage.chartType;
             cargar(output,tipo);
         }
         
@@ -99,12 +99,31 @@
         function cargar(data,tipo){
             switch (tipo){
                         case "Pie":
-                            _("#graph").pie({data:data});
+                            if(typeof data[0] != "undefined" && Object.keys(data[0]).indexOf("label")>-1){
+                                _("#graph").pie({data:data});
+                                changeStep($(".current_step"),"next");
+                            }
+                            else{
+                                localStorage.removeItem(data);
+                                alert("error de archivo");
+                            }
                             break;
                         case "Bar":
                             _("#graph").bars({data:data});
+                            changeStep($(".current_step"),"next");
                             break;
                     }
+        }
+        function changeStep(obj,dir){
+            console.log(obj);
+            switch(dir){
+                case "prev":
+                    $(obj).removeClass("current_step").prev().first().addClass("current_step");
+                    break;
+                case "next":
+                    $(obj).removeClass("current_step").next().first().addClass("current_step");
+                    break;
+            }
         }
         $(function(){
             var tarea = document.getElementById('b64data');
@@ -114,6 +133,14 @@
                 drop.addEventListener('dragover', handleDragover, false);
                 drop.addEventListener('drop', handleDrop, false);
             }
+            if(localStorage.chartType){
+                if(localStorage.data){
+                    changeStep($(".current_step"),"next");
+                }
+                else{
+                   changeStep($(".current_step"),"next");
+                }
+            }
             _("nav ul").menu();
             if(localStorage.data){
                 if(localStorage.chartType) {
@@ -122,6 +149,13 @@
                     cargar(data,tipo);
                 }
             }
+            $(document).on("click","#nuevo-graph",function(){
+                $(".current_step").removeClass("current_step");
+                $("#tipoGrafico").addClass("current_step");
+            });
+            $(document).on("click",".back",function(){
+                changeStep($(this).parent().parent(),"prev")
+            });
             $(document).on("click","nav ul li",function(){
                 switch($(this).text()){
                     case "Tartas":
@@ -131,24 +165,21 @@
             });
             $(document).on("click","nav ul li", function(){
                 var tx = $(this).attr("tipo");
-                localStorage.chartType = tx;
                 $("nav .active").removeClass("active");
                 $(this).addClass("active");
-                if(localStorage.data){
-                    cargar(data,tx);
-                }
+                localStorage.clear();
+                localStorage.chartType = tx;
+                changeStep($(this).parent().parent().parent(),"next");
             });
             $(document).on("click","#pie_simple",function(){
                 $(".complex_pie").addClass("simple_pie");
-                $("menu .active").removeClass("active");
-                $(this).addClass("active");
                 pie_mode = "simple";
                 localStorage.pie_mode = pie_mode;
+
+
             });
             $(document).on("click","#pie_complex",function(){
                 $(".complex_pie").removeClass("simple_pie");
-                $("menu .active").removeClass("active");
-                $(this).addClass("active");
                 pie_mode = "complex";
                 localStorage.pie_mode = pie_mode;
             });
@@ -177,26 +208,40 @@
     </script>
     </head>
 <body>
-<aside>
+    <h1>GraphApp</h1>
+    <div id="content">
+<div id="tipoGrafico" class="step current_step">
     <nav>
-        <ul>
-        </ul>
-    </nav>
+            <ul>
+            </ul>
+        </nav>
+</div>
+<div id="loadData" class="step">
     <section id="tools">
-        <div id="buttons">
-        <button id="restaurar_colores" onclick="restaurarColores()"><div class='icon-droplet icono'></div>  Restaurar Colores</button>
-        <div id="save"><div class='icon-download icono'></div> Guardar</div>
-        </div>
         <div id="drop"><div class="icon-box-add icono"></div>Arrastra un archivo XLS</div>
+        <div class="back">Volver</div>
     </section>
-    <menu>
-    </menu>
-</aside>
-<main>
-    <section id="graph">
-    </section>
-    <section id="graph-data">
-    </section>
-</main>
+</div>
+<div id="designer" class="step">
+    <aside>
+        <section id="tools">
+            <div id="buttons">
+            <div id="nuevo-graph"><div class='icon-file icono'></div>Nuevo</div>
+            <button id="restaurar_colores" onclick="restaurarColores()"><div class='icon-droplet icono'></div>  Restaurar Colores</button>
+            <div id="save"><div class='icon-download icono'></div> Guardar</div>
+            </div>
+
+        </section>
+        <menu>
+        </menu>
+    </aside>
+    <main>
+        <section id="graph">
+        </section>
+        <section id="graph-data">
+        </section>
+    </main>
+    </div>
+        </div>
 </body>
 </html>
