@@ -59,3 +59,15 @@
 .icon-file:before {
 	content: "\e60b";
 }
+.icon-stackoverflow:before {
+	content: "\e60c";
+}
+.icon-menu:before {
+	content: "\e60d";
+}
+.icon-sort-by-attributes-alt:before {
+	content: "\e60e";
+}
+.icon-rearrange:before {
+	content: "\e60f";
+}

@@ -12,33 +12,61 @@ _.prototype.bars= function (obj) {
 }
 
 _.prototype.addBarTools = function(data){
+    //  Left Menu
     var menu = document.querySelectorAll("menu")[0];
-    menu.innerHTML = "";
+        menu.innerHTML = "";
+
+    //  Under Graph data
     var data_content = document.querySelectorAll("#graph-data")[0];
+        data_content.innerHTML = "";
     var f = document.createDocumentFragment();
     var ul = document.createElement("UL");
+    $(ul).droppable({
+        addClasses : false,
+        accept: ".data-list-li",
+        drop: function (e, ui) {
+            $(this).append(ui.draggable);
+        }
+    });
     ul.setAttribute("id","groups-ul");
-    var tmp ;
-    console.log(data);
 
-    for(var j=1; j < Object.keys(data[0]).length; j++) {
+    for (var j=0; j < Object.keys(data[0]).length; j++) {
         var li1 = document.createElement("li");
-        li1.innerHTML = "<div>"+Object.keys(data[0])[j]+"</div>";
+        var div = document.createElement("DIV");
+            if (j > 0) div.className = "data-list-element-holder";
+            div.innerHTML = "<div contenteditable='true'>"+Object.keys(data[0])[j]+"</div>";
+        if (j > 0) {
+            var colorinpt = document.createElement("input");
+                colorinpt.setAttribute("type","color");
+                colorinpt.value = colores_barras[j-1].hex;
+
+            div.appendChild(colorinpt);
+        }
+        li1.appendChild(div);
+        if (j > 0) li1.className = "data-list-li-holder";
+
         var set = document.createElement("ul");
-        for(var i=0;i< data.length;i++){
+        for (var i=0;i< data.length;i++) {
             var li = document.createElement("LI");
-            li.className = "data-list-li";
             var cont = document.createElement("DIV");
-            cont.className = "data-list-element";
-            cont.setAttribute("contenteditable","true");
-            cont.innerHTML =data[i][Object.keys(data[i])[j]];
+                cont.setAttribute("contenteditable","true");
+                cont.innerHTML =data[i][Object.keys(data[i])[j]];
             li.appendChild(cont);
             set.appendChild(li);
         }
         li1.appendChild(set);
         ul.appendChild(li1);
     }
+    var inpt_sub = document.createElement("BUTTON");
+        inpt_sub.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
+        inpt_sub.className = "draw_button";
+    var inpt_activar = document.createElement("BUTTON");
+        inpt_activar.innerHTML = "Reordenar<div class='icon-rearrange icono'></div> ";
+        inpt_activar.className = "rearrange-button";
+
     f.appendChild(ul);
+    f.appendChild(inpt_sub);
+    f.appendChild(inpt_activar);
     data_content.appendChild(f);
 }
 

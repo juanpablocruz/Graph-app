@@ -16,9 +16,12 @@ body{font-family: 'Open Sans', sans-serif;
 a,a:hover,a:active{text-decoration:none;color:inherit;}
 #content{
     height:80%;flex:20;
-    display:flex; flex-flow:row;justify-content:center;align-content:center;align-items:center;
+    display:block;
 }
-header{flex:1;}
+#tipoGrafico,#loadData{
+    display:flex; flex-flow:row;justify-content:center;align-content:center;align-items:center;height:100%;
+}
+header{display:block;}
 body > header> h1{
     color:#58524f;
     margin-left:1%;
@@ -26,9 +29,10 @@ body > header> h1{
     font-size:3em;
     text-shadow:1px 1px 1px #9f9f9f;
     min-height:1em;
+    margin-bottom:0.3em;
 }
 /* Menu */
-aside{flex:1;display:flex;flex-flow:column;min-width:14em;background:white;box-shadow:0px 0px 13px #999;}
+aside{flex:1;display:inline-block;min-width:14em;background:white;box-shadow:0px 0px 13px #999;}
 nav{ flex:1;flex-basis:1;flex-shrink:1; min-height:10em; }
 nav ul{
     width:50%;
@@ -77,8 +81,8 @@ nav li:hover{
 }
 
 .active{font-weight:600 !important;}
-#tools { flex: 1; flex-basis:1;flex-shrink:1; overflow:hidden !important;min-height:9em;}
-menu{flex:2;flex-basis:1;flex-shrink:1;}
+#tools { display:block; overflow:hidden !important;min-height:9em;}
+menu{display:block;}
 
 
 /* Main View */
@@ -86,7 +90,7 @@ main{
     flex:10;
     height:100%;
     margin:auto;
-    display:flex;
+    display:inline-block;
     flex-flow:column;
     background: #ffffff;
     box-shadow:0px 0px 13px #999;
@@ -100,13 +104,13 @@ main section:first-child{
 #graph{
     border-bottom:2px solid #5893e3;
     box-shadow:1px 1px 3px #aaa;
-    display:flex;
+    display:block;
     min-width:400px;
     min-height:400px;
-    flex-flow:row;
-    align-content:space-around;
-    align-items:center;
-    justify-content:space-around;
+}
+#graph >div{
+    margin:auto;
+    display:block !important;
 }
 .back{
     background: #eee;
@@ -128,26 +132,15 @@ main section:first-child{
     color:#777;
 }
 #graph-data>div{
-    flex:1;
-    display:flex;
-    flex-flow:column;
-    flex-direction:column;
+    display:block;
 }
 #graph-data>div:first-child{
-    flex:1;
-    display:flex;
-    flex-flow:row;
-    order:2;
+    display:block;
 }
-#graph-data{
-    flex:2;
-    order:1;
-    display:flex;
-    }
 canvas{
     border:1px solid black !important;
 }
-.draw_button,#create-group{
+.draw_button,#create-group,.rearrange-button{
     width: 10em;
     height: 2.5em;
     border:none;
@@ -161,12 +154,15 @@ canvas{
     font-size: 1em;
     font-weight:inherit;
     cursor:pointer;
+    vertical-align:top;
+    margin-right:1em;
 }
 .draw_button:hover,
 #buttons >div:hover,
 #buttons >button:hover,
 .menu-button:hover,
-#create-group:hover{
+#create-group:hover,
+.rearrange-button:hover{
     background:#4578bf;
     cursor:pointer;
 }
@@ -241,7 +237,7 @@ input:focus{
 color: #333;margin-top:2%;margin-bottom:4%;}
 .icon-pie{margin-right: 1em;}
 .icon-download{margin-right: 1em;margin-left: 1em;}
-.icon-pencil{
+.icon-pencil,.icon-rearrange{
  float:right;
     margin-right:1em;
     font-size:1.1em;
@@ -274,11 +270,11 @@ li ul{
     padding-left:1em;
 }
 .step{
-    display:none;
+    display:none !important;
     width:100%;
 }
 .current_step{
-    display:flex;
+    display:flex !important;
     flex-flow:row;
 }
 #designer{
@@ -320,4 +316,15 @@ li ul{
 #groups-ul > li{
     display:inline-block;
     text-align:center;
+    margin-right:1em;
+}
+#groups-ul > li > div >div{
+    display:inline-block;
+    vertical-align:bottom;
+    margin-right:1em;
+    margin-left:1em;
+}
+#groups-ul > li > ul li{
+    margin-bottom:0.5em;
+    margin-top:0.5em;
 }

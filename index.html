@@ -196,6 +196,14 @@
                 }
                 });
             });
+            $(document).on("click",".rearrange-button",function(){
+                $(".data-list-li-holder").toggleClass("data-list-li");
+                $(".data-list-element-holder").toggleClass("data-list-element");
+                $(".data-list-li").draggable({
+                    addClasses : false,
+                    revert: true,
+                });
+            });
             dragevents();
             function restaurarColores(){
                 colores = standard.slice(0);
