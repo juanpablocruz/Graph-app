@@ -328,3 +328,29 @@ li ul{
     margin-bottom:0.5em;
     margin-top:0.5em;
 }
+#data-container{
+    display:flex !important;
+    flex-flow:row;
+}
+.data-options{
+    flex:3;
+    vertical-align:top;
+}
+#options-bars{
+    flex:1;
+}
+
+input[type="checkbox"]{
+    display:none;
+}
+#label-dibujar-check{
+    cursor:pointer;
+}
+.icon-check:before,
+.icon-check-empty:before{
+    margin-right:1em;
+}
+.icon-check:before{
+    color:#4b884b;
+    font-weight:bold;
+}

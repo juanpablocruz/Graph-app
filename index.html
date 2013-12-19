@@ -95,7 +95,8 @@
         function cargar(data,tipo){
             switch (tipo){
                         case "Tartas":
-                            if(typeof data[0] != "undefined" && Object.keys(data[0]).indexOf("label")>-1){
+                            if(typeof data[0] != "undefined" &&
+                               Object.keys(data[0]).indexOf("label")>-1){
                                 _("#graph").pie({data:data});
                                 changeStep($(".current_step"),"next");
                             }
@@ -203,6 +204,11 @@
                     addClasses : false,
                     revert: true,
                 });
+            });
+
+            $(document).on("click","#label-dibujar-check",function(){
+                $(this).toggleClass("icon-check-empty");
+                $(this).toggleClass("icon-check");
             });
             dragevents();
             function restaurarColores(){

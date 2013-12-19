@@ -68,6 +68,12 @@
 .icon-sort-by-attributes-alt:before {
 	content: "\e60e";
 }
+.icon-check:before {
+	content: "\e610";
+}
+.icon-check-empty:before {
+	content: "\e611";
+}
 .icon-rearrange:before {
 	content: "\e60f";
 }

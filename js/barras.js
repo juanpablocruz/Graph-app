@@ -7,6 +7,7 @@ _.prototype.bars= function (obj) {
         this.data_content = document.querySelectorAll("#graph-data")[0];
         this.canvas = document.querySelectorAll(id+" canvas")[0];
         this.addBarTools(obj.data);
+        this.printLabels = true;
         this.drawBar(this.canvas,obj.data);
     });
 }
@@ -20,6 +21,23 @@ _.prototype.addBarTools = function(data){
     var data_content = document.querySelectorAll("#graph-data")[0];
         data_content.innerHTML = "";
     var f = document.createDocumentFragment();
+    var div_container = document.createElement("DIV");
+        div_container.setAttribute("id","data-container");
+    var div_data = document.createElement("DIV");
+        div_data.className = "data-options";
+    var div_options = document.createElement("DIV");
+        div_options.className = "data-options";
+        div_options.setAttribute("id","options-bars");
+    var checkbox_labels = document.createElement("input");
+        checkbox_labels.type = "checkbox";
+        checkbox_labels.setAttribute("id","dibujar-check");
+    var checkbox_title = document.createElement("label");
+        checkbox_title.setAttribute("for","dibujar-check");
+        checkbox_title.setAttribute("id","label-dibujar-check");
+        checkbox_title.innerHTML = "Dibujar Etiquetas";
+        checkbox_title.className = "icon-check-empty";
+        div_options.appendChild(checkbox_labels);
+        div_options.appendChild(checkbox_title);
     var ul = document.createElement("UL");
     $(ul).droppable({
         addClasses : false,
@@ -63,8 +81,11 @@ _.prototype.addBarTools = function(data){
     var inpt_activar = document.createElement("BUTTON");
         inpt_activar.innerHTML = "Reordenar<div class='icon-rearrange icono'></div> ";
         inpt_activar.className = "rearrange-button";
+    div_data.appendChild(ul);
 
-    f.appendChild(ul);
+    div_container.appendChild(div_data);
+    div_container.appendChild(div_options);
+    f.appendChild(div_container);
     f.appendChild(inpt_sub);
     f.appendChild(inpt_activar);
     data_content.appendChild(f);
@@ -169,7 +190,7 @@ _.prototype.createBarsHorizontalAxis = function(max){
                            this.ctx.canvas.height-20-height_accumulated,
                            layer2,wBar,m);
 
-            if(labels.indexOf(i)==-1){
+            if(labels.indexOf(i)==-1 && this.printLabels){
                 labels.push(i);
 
                 var texto = Object.keys(this.data[0])[i];
