@@ -6,14 +6,40 @@ _.prototype.bars= function (obj) {
     _().canvas(this.e[0],function() {
         this.data_content = document.querySelectorAll("#graph-data")[0];
         this.canvas = document.querySelectorAll(id+" canvas")[0];
-        this.addBarTools();
+        this.addBarTools(obj.data);
         this.drawBar(this.canvas,obj.data);
     });
 }
 
-_.prototype.addBarTools = function(){
-   var menu = document.querySelectorAll("menu")[0];
-   menu.innerHTML = "";
+_.prototype.addBarTools = function(data){
+    var menu = document.querySelectorAll("menu")[0];
+    menu.innerHTML = "";
+    var data_content = document.querySelectorAll("#graph-data")[0];
+    var f = document.createDocumentFragment();
+    var ul = document.createElement("UL");
+    ul.setAttribute("id","groups-ul");
+    var tmp ;
+    console.log(data);
+
+    for(var j=1; j < Object.keys(data[0]).length; j++) {
+        var li1 = document.createElement("li");
+        li1.innerHTML = "<div>"+Object.keys(data[0])[j]+"</div>";
+        var set = document.createElement("ul");
+        for(var i=0;i< data.length;i++){
+            var li = document.createElement("LI");
+            li.className = "data-list-li";
+            var cont = document.createElement("DIV");
+            cont.className = "data-list-element";
+            cont.setAttribute("contenteditable","true");
+            cont.innerHTML =data[i][Object.keys(data[i])[j]];
+            li.appendChild(cont);
+            set.appendChild(li);
+        }
+        li1.appendChild(set);
+        ul.appendChild(li1);
+    }
+    f.appendChild(ul);
+    data_content.appendChild(f);
 }
 
 _.prototype.drawBar = function(canvas,data){
