@@ -235,16 +235,13 @@ input:focus{
 }
 .icon-box-add{font-size: 3em;margin:auto;display:block;
 color: #333;margin-top:2%;margin-bottom:4%;}
-.icon-pie{margin-right: 1em;}
-.icon-download{margin-right: 1em;margin-left: 1em;}
+.icon-download{margin-left: 1em;}
 .icon-pencil,.icon-rearrange{
  float:right;
-    margin-right:1em;
     font-size:1.1em;
 }
 .icon-droplet,.icon-file{
     margin-left:1em;
-    margin-right:1em;
 }
 .icon-spinner,.icon-spinner2{
     margin-left:1em;
@@ -353,4 +350,22 @@ input[type="checkbox"]{
 .icon-check:before{
     color:#4b884b;
     font-weight:bold;
+}
+.menu-text{
+        display:inline-block;
+    }
+header,.step{min-width:480px;}
+@media all and (max-width:800px){
+    aside{min-width:4em;}
+    .icono{
+     font-size:1.5em; margin-right:0.2em;display:inline-block;
+    }
+.icon-droplet, .icon-file, .icon-download{margin-left:0.8em;}
+    .icon-pencil,.icon-rearrange{
+        margin-right:1em;
+    }
+    .menu-text{
+        display:none;
+    }
+    #data-container{flex-flow:column;}
 }

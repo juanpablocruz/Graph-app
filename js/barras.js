@@ -6,8 +6,11 @@ _.prototype.bars= function (obj) {
     _().canvas(this.e[0],function() {
         this.data_content = document.querySelectorAll("#graph-data")[0];
         this.canvas = document.querySelectorAll(id+" canvas")[0];
-        this.addBarTools(obj.data);
         this.printLabels = true;
+        if(localStorage.drawLabels){
+            this.printLabels = localStorage.drawLabels;
+        }
+        this.addBarTools(obj.data);
         this.drawBar(this.canvas,obj.data);
     });
 }
@@ -35,7 +38,18 @@ _.prototype.addBarTools = function(data){
         checkbox_title.setAttribute("for","dibujar-check");
         checkbox_title.setAttribute("id","label-dibujar-check");
         checkbox_title.innerHTML = "Dibujar Etiquetas";
+    if(this.printLabels === "false"){
         checkbox_title.className = "icon-check-empty";
+        checkbox_labels.checked = false;
+    }
+    else {
+        checkbox_title.className = "icon-check";
+        checkbox_labels.checked = true;
+    }
+        checkbox_labels.addEventListener("click",function(){
+            _("#graph").bars({data:data});
+        });
+
         div_options.appendChild(checkbox_labels);
         div_options.appendChild(checkbox_title);
     var ul = document.createElement("UL");
@@ -189,18 +203,29 @@ _.prototype.createBarsHorizontalAxis = function(max){
                            i, j, h,
                            this.ctx.canvas.height-20-height_accumulated,
                            layer2,wBar,m);
-
-            if(labels.indexOf(i)==-1 && this.printLabels){
+            if(labels.indexOf(i)==-1 && this.printLabels === "true"){
+                console.log(this.printLabels);
                 labels.push(i);
 
                 var texto = Object.keys(this.data[0])[i];
                 console.log(this.data[0]);
                 var lwidth =  this.ctx.measureText(texto).width;
-                this.drawLabel(50,this.ctx.canvas.height-40-height_accumulated,lwidth,20,"#333","white",texto,layer2);
+                this.drawLabel(50,this.ctx.canvas.height-40-height_accumulated,lwidth,20,
+                               "#333","white",texto,layer2);
             }
             height_accumulated+=(this.data[j][Object.keys(this.data[0])[i]]*h)/maximo;
         }
-
+        var year = new Kinetic.Text({
+            x: 55+j*(wBar+m),
+            y: this.ctx.canvas.height-20,
+            fontSize: 12,
+            fontFamily: 'Mic 32 New Rounded',
+            text: this.data[j][Object.keys(this.data[0])[0]],
+            fill: "black",
+            padding: 1,
+        });
+        console.log(m);
+        layer2.add(year);
         height_accumulated=0;
     }
     var labels = layer2.find('.label');

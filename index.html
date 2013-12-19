@@ -209,6 +209,10 @@
             $(document).on("click","#label-dibujar-check",function(){
                 $(this).toggleClass("icon-check-empty");
                 $(this).toggleClass("icon-check");
+                if($(this).hasClass("icon-check")){
+                    localStorage.drawLabels = true;
+                }
+                else localStorage.drawLabels = false;
             });
             dragevents();
             function restaurarColores(){
@@ -242,9 +246,9 @@
     <aside>
         <section id="tools">
             <div id="buttons">
-            <div id="nuevo-graph"><div class='icon-file icono'></div>Nuevo</div>
-            <button id="restaurar_colores" onclick="restaurarColores()"><div class='icon-droplet icono'></div>  Restaurar Colores</button>
-            <div id="save"><div class='icon-download icono'></div> Guardar</div>
+            <div id="nuevo-graph"><div class='icon-file icono' title="Nuevo"></div><span class="menu-text">Nuevo</span></div>
+            <button id="restaurar_colores" onclick="restaurarColores()"><div class='icon-droplet icono' title="Restaurar Colores"></div><span class="menu-text">Restaurar Colores</span></button>
+            <div id="save"><div class='icon-download icono' title="Guardar"></div><span class="menu-text">Guardar</span></div>
             </div>
 
         </section>
