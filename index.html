@@ -207,12 +207,14 @@
             });
 
             $(document).on("click","#label-dibujar-check",function(){
-                $(this).toggleClass("icon-check-empty");
-                $(this).toggleClass("icon-check");
-                if($(this).hasClass("icon-check")){
+                //alert($('#dibujar-check').is(":checked"));
+                if(!$('#dibujar-check').is(":checked")){
                     localStorage.drawLabels = true;
                 }
-                else localStorage.drawLabels = false;
+                else {
+                    localStorage.drawLabels = false;
+                }
+
             });
             dragevents();
             function restaurarColores(){

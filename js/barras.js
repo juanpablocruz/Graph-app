@@ -38,17 +38,10 @@ _.prototype.addBarTools = function(data){
         checkbox_title.setAttribute("for","dibujar-check");
         checkbox_title.setAttribute("id","label-dibujar-check");
         checkbox_title.innerHTML = "Dibujar Etiquetas";
-    if(this.printLabels === "false"){
-        checkbox_title.className = "icon-check-empty";
         checkbox_labels.checked = false;
-    }
-    else {
-        checkbox_title.className = "icon-check";
+    if(this.printLabels === "true") {
         checkbox_labels.checked = true;
     }
-        checkbox_labels.addEventListener("click",function(){
-            _("#graph").bars({data:data});
-        });
 
         div_options.appendChild(checkbox_labels);
         div_options.appendChild(checkbox_title);
@@ -89,18 +82,35 @@ _.prototype.addBarTools = function(data){
         li1.appendChild(set);
         ul.appendChild(li1);
     }
-    var inpt_sub = document.createElement("BUTTON");
-        inpt_sub.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
-        inpt_sub.className = "draw_button";
+    var inpt_dib = document.createElement("BUTTON");
+        inpt_dib.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
+        inpt_dib.className = "draw_button";
+        inpt_dib.addEventListener("click",function(){
+             _("#graph").bars({data:data});
+            var valores = [];
+
+            var datos = document.querySelectorAll(".data-list-li-holder");
+            for (var i = 0; i < datos[0].children[1].children.length; i++)valores.push(new Object);
+            _().each(datos,function(i){
+                //console.log(datos[i]);
+                var title = datos[i].children[0].children[0].innerHTML;
+                _().each( datos[i].children[1].children,function(j,a){
+                    var value = a[j].children[0].innerHTML;
+                    valores[j][title] = value;
+                })
+
+            });
+        });
+
     var inpt_activar = document.createElement("BUTTON");
         inpt_activar.innerHTML = "Reordenar<div class='icon-rearrange icono'></div> ";
         inpt_activar.className = "rearrange-button";
-    div_data.appendChild(ul);
 
+    div_data.appendChild(ul);
     div_container.appendChild(div_data);
     div_container.appendChild(div_options);
     f.appendChild(div_container);
-    f.appendChild(inpt_sub);
+    f.appendChild(inpt_dib);
     f.appendChild(inpt_activar);
     data_content.appendChild(f);
 }
@@ -171,6 +181,7 @@ _.prototype.createBarsVerticalAxis = function(max){
     _.layer.add(yaxis);
     _.layer.draw();
 }
+
 _.prototype.drawBarra = function(maximo,i,j,h,height,layer,wBar,m){
     var value = (this.data[j][Object.keys(this.data[0])[i]]*h)/maximo;
     var barra = new Kinetic.Shape({
@@ -186,6 +197,7 @@ _.prototype.drawBarra = function(maximo,i,j,h,height,layer,wBar,m){
     });
     layer.add(barra);
 }
+
 _.prototype.createBarsHorizontalAxis = function(max){
     var w = this.ctx.canvas.width-30;
     var h = this.ctx.canvas.height-30;
@@ -224,7 +236,6 @@ _.prototype.createBarsHorizontalAxis = function(max){
             fill: "black",
             padding: 1,
         });
-        console.log(m);
         layer2.add(year);
         height_accumulated=0;
     }

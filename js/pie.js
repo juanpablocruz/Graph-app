@@ -197,14 +197,14 @@ _.prototype.addPieTools = function (obj) {
     var f = document.createDocumentFragment();
     var complex = document.createElement("DIV");
 
-    complex.innerHTML = "<div class='icon-spinner2 icono'></div>  Gráfico compuesto";
+    complex.innerHTML = "<div class='icon-spinner2 icono' title='Gráfico compuesto'></div><span class='menu-text'>Gráfico compuesto</span>";
     if(pie_mode == "complex")complex.className = "active menu-button";
     else complex.className = "menu-button";
     complex.setAttribute("id","pie_complex");
     var simple = document.createElement("DIV");
     if(pie_mode == "simple")simple.className = "active menu-button";
     else simple.className = "menu-button";
-    simple.innerHTML = "<div class='icon-spinner icono'></div>  Gráfico simple";
+    simple.innerHTML = "<div class='icon-spinner icono' title='Gráfico simple'></div><span class='menu-text'>Gráfico simple</span>";
     simple.setAttribute("id","pie_simple");
     f.appendChild(simple);
     f.appendChild(complex);

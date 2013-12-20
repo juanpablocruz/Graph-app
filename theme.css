@@ -169,17 +169,19 @@ canvas{
 
 input[type=color]{vertical-align:middle;margin-top:2em;}
 input[type=text],input[type=number]{
-padding: 0.5em;
-border: 0;
-border-bottom: 3px solid #999;
-height: 2em;
-vertical-align: top;
+    padding: 0.5em;
+    border: 0;
+    border-bottom: 3px solid #999;
+    height: 2em;
+    vertical-align: top;
     margin:1em;
 }
+
 input:focus{
     outline:none;
    border-bottom: 3px solid #5893e3; 
 }
+
 #drop{
     min-width:10em;
     min-height:10em;
@@ -191,10 +193,12 @@ input:focus{
     padding:0.5em;
     border: 5px dashed #999;
 }
+
 #drop:hover{
     border: 5px dashed #bbb;
     cursor:pointer;
 }
+
 .add-icon{
     width:1.3em;
     margin:auto;
@@ -204,6 +208,7 @@ input:focus{
     color: #666;
     text-shadow:1px 1px 1px #ddd;
 }
+
 #buttons >div,#buttons >button,.menu-button {
     width: 100%;
     padding-top: 1em;
@@ -223,26 +228,42 @@ input:focus{
 #attr-grupos{
     flex:1;
 }
+
 #pie-segments{
     flex:1;
 }
+
 .complex_pie{display:block;}
 .simple_pie{
     display:none;
 }
+
 .icono{
  font-size:1.5em; margin-right:1em;display:inline-block;
 }
-.icon-box-add{font-size: 3em;margin:auto;display:block;
-color: #333;margin-top:2%;margin-bottom:4%;}
-.icon-download{margin-left: 1em;}
+
+.icon-box-add{
+    font-size: 3em;
+    margin:auto;
+    display:block;
+    color: #333;
+    margin-top:2%;
+    margin-bottom:4%;
+}
+
+.icon-download{
+    margin-left: 1em;
+}
+
 .icon-pencil,.icon-rearrange{
- float:right;
+    float:right;
     font-size:1.1em;
 }
+
 .icon-droplet,.icon-file{
     margin-left:1em;
 }
+
 .icon-spinner,.icon-spinner2{
     margin-left:1em;
 }
@@ -260,23 +281,29 @@ color: #333;margin-top:2%;margin-bottom:4%;}
     vertical-align: middle;
     font-weight: 600;
 }
+
 li{
     list-style:none;
 }
+
 li ul{
     padding-left:1em;
 }
+
 .step{
     display:none !important;
     width:100%;
 }
+
 .current_step{
     display:flex !important;
     flex-flow:row;
 }
+
 #designer{
     align-items:flex-start;
 }
+
 #step-info{
     background: #eee;
     background: -moz-linear-gradient(top, #f8f8f8 0%, #dddddd 100%);
@@ -292,9 +319,11 @@ li ul{
     margin:auto;
     margin-bottom:3em;
 }
+
 #step-info li div{
    display:inline-block;
 }
+
 .halfCircleRight{
      height:2em;
      width:6em;
@@ -310,62 +339,117 @@ li ul{
     border:1px solid white;
     box-shadow: inset #fff 0 1px 0, inset rgba(0,0,0,0.03) 0 -1px 0;
 }
+
 #groups-ul > li{
     display:inline-block;
     text-align:center;
     margin-right:1em;
 }
+
 #groups-ul > li > div >div{
     display:inline-block;
     vertical-align:bottom;
     margin-right:1em;
     margin-left:1em;
 }
+
 #groups-ul > li > ul li{
     margin-bottom:0.5em;
     margin-top:0.5em;
 }
+
 #data-container{
     display:flex !important;
     flex-flow:row;
 }
+
 .data-options{
     flex:3;
     vertical-align:top;
 }
+
 #options-bars{
     flex:1;
 }
 
-input[type="checkbox"]{
+#dibujar-check{
     display:none;
 }
+
 #label-dibujar-check{
     cursor:pointer;
+    position:relative;
+    padding-left:30px;
+    top:1em;
 }
+
+#label-dibujar-check:before,
+#label-dibujar-check:after{
+    font-family: 'iconos';
+}
+
+#label-dibujar-check:before{
+    position:absolute;top:0;left:0;
+    content:"\e611";
+}
+
+#label-dibujar-check:after{
+    position:absolute;top:-2px;left:1px;
+    content:"\e612";
+    max-width:0;
+    overflow:hidden;
+    opacity:0.5;
+    transition: all 0.35s;
+    color:"#00ff00";
+}
+
+#dibujar-check:checked + #label-dibujar-check:after{
+    max-width:25px;
+    opacity:1;
+    color:#249a14;
+}
+
 .icon-check:before,
 .icon-check-empty:before{
     margin-right:1em;
 }
+
 .icon-check:before{
     color:#4b884b;
     font-weight:bold;
 }
+
 .menu-text{
+    display:inline-block;
+}
+
+header,.step{
+    min-width:480px;
+}
+
+@media all and (max-width:800px){
+    aside{
+        min-width:4em;
+    }
+    .icono{
+        font-size:1.5em;
+        margin-right:0.2em;
         display:inline-block;
     }
-header,.step{min-width:480px;}
-@media all and (max-width:800px){
-    aside{min-width:4em;}
-    .icono{
-     font-size:1.5em; margin-right:0.2em;display:inline-block;
+
+    .icon-droplet, .icon-file, .icon-download{
+        margin-left:0.8em;
     }
-.icon-droplet, .icon-file, .icon-download{margin-left:0.8em;}
+
     .icon-pencil,.icon-rearrange{
         margin-right:1em;
     }
+
     .menu-text{
         display:none;
     }
-    #data-container{flex-flow:column;}
+
+    #data-container{
+        flex-flow:column;
+    }
 }
