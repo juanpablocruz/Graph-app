@@ -109,6 +109,10 @@
                             _("#graph").bars({data:data});
                             changeStep($(".current_step"),"next");
                             break;
+                        case "Historicos":
+                            _("#graph").history({data:data});
+                            changeStep($(".current_step"),"next");
+                            break;
                     }
         }
         function changeStep(obj,dir){

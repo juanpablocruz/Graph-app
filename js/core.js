@@ -182,5 +182,21 @@ _.prototype = {
      
         //return the Base64 encoded data url string
         return imageData;
+    },
+    getMinValue: function (){
+        var min = Infinity;
+        for(var i=0;i< this.data.length;i++){
+            for(var j=1; j < Object.keys(this.data[0]).length; j++) {
+                if(this.data[i][Object.keys(this.data[i])[j]] < min){
+                 min = this.data[i][Object.keys(this.data[i])[j]];
+                }
+            }
+        }
+        var len = min.toString().length;
+        var orden = Math.pow(10,len-1);
+        var next = parseInt(min/orden);
+        var min = next * orden;
+        return min;
     }
+
 };

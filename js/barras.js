@@ -139,11 +139,11 @@ _.prototype.addBarTools = function(data){
 _.prototype.drawBar = function(canvas,data){
     this.ctx = canvas.getContext("2d");
     this.data = data;
-    var maximo = this.getMaxValue();
-    this.createBarsVerticalAxis(maximo);
+    var maximo = this.getMaxColumn();
+    this.createBarsVerticalAxis(maximo,6);
     this.createBarsHorizontalAxis(maximo);
 }
-_.prototype.getMaxValue = function (){
+_.prototype.getMaxColumn = function (){
     var max = 0;
     for(var i=0;i< this.data.length;i++){
         var tmp = 0;
@@ -160,12 +160,13 @@ _.prototype.getMaxValue = function (){
     var max = next * orden;
     return max;
 }
-_.prototype.getInterval = function(max){
-    return Math.ceil(max/6);
+
+_.prototype.getInterval = function(max,bars){
+    return Math.ceil(max/bars);
 }
 
-_.prototype.createBarsVerticalAxis = function(max){
-    var step = this.getInterval(max);
+_.prototype.createBarsVerticalAxis = function(max,bars){
+    var step = this.getInterval(max,bars);
 
     var ctx = this.ctx;
     var h = ctx.canvas.height-20;
@@ -175,9 +176,12 @@ _.prototype.createBarsVerticalAxis = function(max){
     //ctx.fillStyle = "#333";
     var oy=0;
     var text;
+    var minimo = this.getMinValue(this.data);
+    var origen = 0;
+    if(minimo-step > 0)origen = minimo;
     var yaxis = new Kinetic.Shape({
         drawFunc: function(ctx){
-            for (var j = 0; j < max+step; j+=step) {
+            for (var j = origen; j < max+step*2; j+=step) {
                 var x = j.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                 oy = h-(posy*contador);
                 ctx.fillText(x,0,oy-5);
