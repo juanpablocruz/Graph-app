@@ -69,6 +69,7 @@ _.prototype.addBarTools = function(data){
         }
         li1.appendChild(div);
         if (j > 0) li1.className = "data-list-li-holder";
+        else li1.className = "data-list-li-year";
 
         var set = document.createElement("ul");
         for (var i=0;i< data.length;i++) {
@@ -86,20 +87,40 @@ _.prototype.addBarTools = function(data){
         inpt_dib.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
         inpt_dib.className = "draw_button";
         inpt_dib.addEventListener("click",function(){
-             _("#graph").bars({data:data});
             var valores = [];
-
-            var datos = document.querySelectorAll(".data-list-li-holder");
+            var datos = document.querySelectorAll(".data-list-li-year");
             for (var i = 0; i < datos[0].children[1].children.length; i++)valores.push(new Object);
+
             _().each(datos,function(i){
-                //console.log(datos[i]);
                 var title = datos[i].children[0].children[0].innerHTML;
+                _().each( datos[i].children[1].children,function(j,a){
+                    var value = a[j].children[0].innerHTML;
+                    valores[j][title] =parseInt( value);
+                })
                 _().each( datos[i].children[1].children,function(j,a){
                     var value = a[j].children[0].innerHTML;
                     valores[j][title] = value;
                 })
-
             });
+            var order = [];
+            var datos = document.querySelectorAll(".data-list-li-holder");
+
+            _().each(datos,function(i){
+                order.push(datos[i].children[0].children[0].innerHTML);
+                var title = order[i];
+                _().each( datos[i].children[1].children,function(j,a){
+                    var value = parseInt(a[j].children[0].innerHTML);
+                    valores[j][title] = value;
+                })
+                _().each( datos[i].children[1].children,function(j,a){
+                    var value = parseInt(a[j].children[0].innerHTML);
+                    valores[j][title] = value;
+                })
+            });
+
+            localStorage.data = JSON.stringify(valores);
+            localStorage.ordenacion = JSON.stringify(order);
+            _("#graph").bars({data:valores});
         });
 
     var inpt_activar = document.createElement("BUTTON");
@@ -182,8 +203,8 @@ _.prototype.createBarsVerticalAxis = function(max){
     _.layer.draw();
 }
 
-_.prototype.drawBarra = function(maximo,i,j,h,height,layer,wBar,m){
-    var value = (this.data[j][Object.keys(this.data[0])[i]]*h)/maximo;
+_.prototype.drawBarra = function(maximo,i,j,h,height,layer,wBar,m,orden,color_rest){
+    var value = (this.data[j][orden[i]]*h)/maximo;
     var barra = new Kinetic.Shape({
         drawFunc: function(ctx){
             ctx.beginPath();
@@ -193,7 +214,7 @@ _.prototype.drawBarra = function(maximo,i,j,h,height,layer,wBar,m){
         },
         stroke: "#FFF",
         strokeWidth: 1,
-        fill: colores_barras[i-1].hex,
+        fill: colores_barras[i-color_rest].hex,
     });
     layer.add(barra);
 }
@@ -209,23 +230,29 @@ _.prototype.createBarsHorizontalAxis = function(max){
     var layer2 = new Kinetic.Layer();
     var height_accumulated = 0;
     var labels = [];
+     if(!localStorage.ordenacion){
+        var orden = Object.keys(this.data[0]);
+         var start = 1;
+         var color_rest = 1;
+    } else {
+        var orden = JSON.parse(localStorage.ordenacion);
+        var start = 0;
+         var color_rest = 0;
+    }
     for (var j=0; j<this.data.length; j++){
-        for (var i=1; i< Object.keys(this.data[0]).length; i++){
+        for (var i=start; i< orden.length; i++){
             this.drawBarra(maximo,
                            i, j, h,
                            this.ctx.canvas.height-20-height_accumulated,
-                           layer2,wBar,m);
+                           layer2,wBar,m,orden,color_rest);
             if(labels.indexOf(i)==-1 && this.printLabels === "true"){
-                console.log(this.printLabels);
                 labels.push(i);
-
-                var texto = Object.keys(this.data[0])[i];
-                console.log(this.data[0]);
+                var texto = orden[i];
                 var lwidth =  this.ctx.measureText(texto).width;
                 this.drawLabel(50,this.ctx.canvas.height-40-height_accumulated,lwidth,20,
                                "#333","white",texto,layer2);
             }
-            height_accumulated+=(this.data[j][Object.keys(this.data[0])[i]]*h)/maximo;
+            height_accumulated+=(this.data[j][orden[i]]*h)/maximo;
         }
         var year = new Kinetic.Text({
             x: 55+j*(wBar+m),
