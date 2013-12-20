@@ -55,35 +55,41 @@ _.prototype.drawHistoricBars = function(){
     var x = w/this.data.length;
     var data = this.data;
     var a = -x;
+    var maximo = this.getMaxValue();
+
     var layer_hist = new Kinetic.Layer();
     var line = new Kinetic.Shape({
         drawFunc: function(ctx){
-            var prevx = 0, prevy = h;
-            //console.log(Object.keys(data[0]).length);
-            /*for(var j=1; j < Object.keys(data[0]).length; j++) {
+            var prevx = 30, prevy = h;
+            for(var j=1; j < Object.keys(data[0]).length; j++) {
                 for(var i=0;i< data.length;i++){
+                    var value = (data[i][Object.keys(data[0])[j]][i]*h)/maximo;
                     ctx.beginPath();
-                    ctx.moveTo(prevx,prevy);
-                    console.log(data[i][Object.keys(data[0])[j]]);
-                    ctx.lineTo(a+x,data[i][Object.keys(data[0])[j]][i]);
+                        ctx.moveTo(prevx,prevy);
+                        ctx.lineTo(a+x,-value);
                     ctx.closePath();
                     ctx.lineWidth = 1;
                     ctx.stroke();
                     a+=x;
                     prevx = a;
-                    prevy = data[i][Object.keys(data[0])[j]][i];
+                    prevy = value;
+                    console.log(data[i][Object.keys(data[0])[j]][i]);
                 }
-            };*/
-
-            ctx.beginPath();
+                prevx = 30; prevy = h;
+            };
+            ctx.fillStrokeShape(this);
+            /*ctx.beginPath();
             ctx.moveTo(100, 50);
             ctx.lineTo(420, 80);
             ctx.quadraticCurveTo(300, 100, 260, 170);
             ctx.closePath();
           // KineticJS specific context method
-            ctx.fillStrokeShape(this);
+            ctx.fillStrokeShape(this);*/
         },
         id: "Graphic",
+        fill: '#00D2FF',
+        stroke: 'black',
+        strokeWidth: 1
     });
     layer_hist.add(line);
     this.stage.add(layer_hist);

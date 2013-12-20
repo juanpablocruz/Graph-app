@@ -178,7 +178,7 @@ _.prototype.createBarsVerticalAxis = function(max,bars){
     var text;
     var minimo = this.getMinValue(this.data);
     var origen = 0;
-    if(minimo-step > 0)origen = minimo;
+    if(minimo-(2*step) > 0)origen = minimo;
     var yaxis = new Kinetic.Shape({
         drawFunc: function(ctx){
             for (var j = origen; j < max+step*2; j+=step) {
