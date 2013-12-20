@@ -154,24 +154,18 @@ _.prototype.getMaxValue = function (){
              max = tmp;
         }
     }
+    var len = max.toString().length;
+    var orden = Math.pow(10,len-1);
+    var next = parseInt(max/orden)+1;
+    var max = next * orden;
     return max;
 }
-_.prototype.getInterval = function(d){
-    var tmp = [];
-    for (var k=1; k < Object.keys(d).length;k++) {
-        var sum = 0;
-        var l = Object.keys(d[0])[k];
-        for (var i=0; i<d.length; i++) {
-            sum += d[i][l];
-        }
-        tmp.push(sum);
-    }
-    var min = tmp.minVal();
-    return Math.floor(min/(d.length*4));
+_.prototype.getInterval = function(max){
+    return Math.ceil(max/6);
 }
 
 _.prototype.createBarsVerticalAxis = function(max){
-    var step = this.getInterval(this.data);
+    var step = this.getInterval(max);
 
     var ctx = this.ctx;
     var h = ctx.canvas.height-20;
@@ -208,7 +202,7 @@ _.prototype.drawBarra = function(maximo,i,j,h,height,layer,wBar,m,orden,color_re
     var barra = new Kinetic.Shape({
         drawFunc: function(ctx){
             ctx.beginPath();
-            ctx.rect(40+((wBar+m)*j),height,wBar,-value);
+            ctx.rect(50+((wBar+m)*j),height,wBar,-value);
             ctx.closePath();
             ctx.fillStrokeShape(this);
         },
@@ -225,7 +219,7 @@ _.prototype.createBarsHorizontalAxis = function(max){
     var N = this.data.length;
     var m = 10;
     if(N<4)m = m*((1/((N*100)/6)))*100;
-    var wBar = (w - N*m)/N;
+    var wBar = (w - (N*m) - 20)/N;
     var maximo = this.getMaxValue();
     var layer2 = new Kinetic.Layer();
     var height_accumulated = 0;
@@ -255,7 +249,7 @@ _.prototype.createBarsHorizontalAxis = function(max){
             height_accumulated+=(this.data[j][orden[i]]*h)/maximo;
         }
         var year = new Kinetic.Text({
-            x: 55+j*(wBar+m),
+            x: 60+j*(wBar+m),
             y: this.ctx.canvas.height-20,
             fontSize: 12,
             fontFamily: 'Mic 32 New Rounded',
