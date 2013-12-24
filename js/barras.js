@@ -140,7 +140,7 @@ _.prototype.drawBar = function(canvas,data){
     this.ctx = canvas.getContext("2d");
     this.data = data;
     var maximo = this.getMaxColumn();
-    this.createBarsVerticalAxis(maximo,6);
+    this.createBarsVerticalAxis(maximo,6,"barras");
     this.createBarsHorizontalAxis(maximo);
 }
 _.prototype.getMaxColumn = function (){
@@ -161,12 +161,12 @@ _.prototype.getMaxColumn = function (){
     return max;
 }
 
-_.prototype.getInterval = function(max,bars){
-    return Math.ceil(max/bars);
+_.prototype.getInterval = function (max,bars,origen) {
+    return Math.ceil(max/(bars));
 }
 
-_.prototype.createBarsVerticalAxis = function(max,bars){
-    var step = this.getInterval(max,bars);
+_.prototype.createBarsVerticalAxis = function(max,bars,type){
+    var step = this.getInterval(max,bars,0);
 
     var ctx = this.ctx;
     var h = ctx.canvas.height-20;
@@ -178,10 +178,19 @@ _.prototype.createBarsVerticalAxis = function(max,bars){
     var text;
     var minimo = this.getMinValue(this.data);
     var origen = 0;
-    if(minimo-(2*step) > 0)origen = minimo;
+    var posicion = {bajo:false, step: step, numero: 0, origen: 0};
+    if(type == "historico" && (minimo - 2*step >= 0 || minimo < 0)){
+        posicion["bajo"] = true;
+        posicion["numero"] = parseInt(minimo/step);
+        posicion["origen"] = minimo;
+        origen=minimo;
+        step = this.getInterval(max,bars,origen);
+    }
+    console.log(origen);
     var yaxis = new Kinetic.Shape({
         drawFunc: function(ctx){
             for (var j = origen; j < max+step*2; j+=step) {
+
                 var x = j.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                 oy = h-(posy*contador);
                 ctx.fillText(x,0,oy-5);
@@ -195,10 +204,11 @@ _.prototype.createBarsVerticalAxis = function(max,bars){
             };
         },
         id: "axis",
-
     });
     _.layer.add(yaxis);
     _.layer.draw();
+
+    return posicion;
 }
 
 _.prototype.drawBarra = function(maximo,i,j,h,height,layer,wBar,m,orden,color_rest){
@@ -237,6 +247,7 @@ _.prototype.createBarsHorizontalAxis = function(max){
         var start = 0;
          var color_rest = 0;
     }
+
     for (var j=0; j<this.data.length; j++){
         for (var i=start; i< orden.length; i++){
             this.drawBarra(maximo,

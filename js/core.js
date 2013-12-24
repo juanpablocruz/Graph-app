@@ -194,7 +194,7 @@ _.prototype = {
         }
         var len = min.toString().length;
         var orden = Math.pow(10,len-1);
-        var next = parseInt(min/orden);
+        var next = parseFloat(min/orden);
         var min = next * orden;
         return min;
     }
