@@ -36,7 +36,7 @@ _.prototype.addBarTools = function(data){
         checkbox_labels.setAttribute("id","dibujar-check");
     var checkbox_title = document.createElement("label");
         checkbox_title.setAttribute("for","dibujar-check");
-        checkbox_title.setAttribute("id","label-dibujar-check");
+        checkbox_title.setAttribute("class","label-dibujar-check");
         checkbox_title.innerHTML = "Dibujar Etiquetas";
         checkbox_labels.checked = false;
     if(this.printLabels === "true") {
@@ -186,7 +186,6 @@ _.prototype.createBarsVerticalAxis = function(max,bars,type){
         origen=minimo;
         step = this.getInterval(max,bars,origen);
     }
-    console.log(origen);
     var yaxis = new Kinetic.Shape({
         drawFunc: function(ctx){
             for (var j = origen; j < max+step*2; j+=step) {
@@ -259,7 +258,7 @@ _.prototype.createBarsHorizontalAxis = function(max){
                 var texto = orden[i];
                 var lwidth =  this.ctx.measureText(texto).width;
                 this.drawLabel(50,this.ctx.canvas.height-40-height_accumulated,lwidth,20,
-                               "#333","white",texto,layer2);
+                               "#333","white",texto,1,layer2);
             }
             height_accumulated+=(this.data[j][orden[i]]*h)/maximo;
         }

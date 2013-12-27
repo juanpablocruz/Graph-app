@@ -80,7 +80,7 @@ _.prototype = {
         _.layer.add(item);
         _.layer.draw();
     },
-    drawLabel : function(posx, posy, width, height, fill, textColor, text,layer){
+    drawLabel : function(posx, posy, width, height, fill, textColor, text,padding,layer){
         
         var group = new Kinetic.Group({draggable:true, id: "group_label",name:"label"});
         var text = new Kinetic.Text({
@@ -90,7 +90,7 @@ _.prototype = {
             fontFamily: "Open Sans",
             text: text,
             fill: textColor,
-            padding: 1,
+            padding: padding,
         });
         var box = new Kinetic.Rect({
             x: posx,
