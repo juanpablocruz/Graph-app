@@ -10,6 +10,7 @@ _.prototype.history= function (obj) {
         if(localStorage.drawLabels){
             this.printLabels = localStorage.drawLabels;
         }
+        this.data = obj.data;
         this.addHistTools(obj.data);
         this.drawHist(this.canvas,obj.data);
     });
@@ -32,7 +33,18 @@ _.prototype.getMaxValue = function () {
 }
 
 _.prototype.historyPannel = function() {
+    var data = this.data;
+
+    var data_content = document.querySelectorAll("#graph-data")[0];
+        data_content.innerHTML = "";
     var f = document.createDocumentFragment();
+    var div_container = document.createElement("DIV");
+        div_container.setAttribute("id","data-container");
+    var div_data = document.createElement("DIV");
+        div_data.className = "data-options";
+    var div_options = document.createElement("DIV");
+        div_options.className = "data-options";
+        div_options.setAttribute("id","options-bars");
     var checkbox_labels = document.createElement("input");
         checkbox_labels.type = "checkbox";
         checkbox_labels.setAttribute("id","dibujar-check");
@@ -41,8 +53,67 @@ _.prototype.historyPannel = function() {
         checkbox_title.setAttribute("class","label-dibujar-check");
         checkbox_title.innerHTML = "Dibujar Etiquetas";
         checkbox_labels.checked = false;
-    f.appendChild(checkbox_labels);
-    f.appendChild(checkbox_title);
+    if(this.printLabels === "true") {
+        checkbox_labels.checked = true;
+    }
+
+        div_options.appendChild(checkbox_labels);
+        div_options.appendChild(checkbox_title);
+    var ul = document.createElement("UL");
+    $(ul).droppable({
+        addClasses : false,
+        accept: ".data-list-li",
+        drop: function (e, ui) {
+            $(this).append(ui.draggable);
+        }
+    });
+    ul.setAttribute("id","groups-ul");
+
+    for (var j=0; j < Object.keys(data[0]).length; j++) {
+        var li1 = document.createElement("li");
+        var div = document.createElement("DIV");
+            if (j > 0) div.className = "data-list-element-holder";
+            div.innerHTML = "<div contenteditable='true'>"+Object.keys(data[0])[j]+"</div>";
+        if (j > 0) {
+            var colorinpt = document.createElement("input");
+                colorinpt.setAttribute("type","color");
+                colorinpt.value = colores_barras[j-1].hex;
+
+            div.appendChild(colorinpt);
+        }
+        li1.appendChild(div);
+        if (j > 0) li1.className = "data-list-li-holder";
+        else li1.className = "data-list-li-year";
+
+        var set = document.createElement("ul");
+        for (var i=0;i< data.length;i++) {
+            var li = document.createElement("LI");
+            var cont = document.createElement("DIV");
+                cont.setAttribute("contenteditable","true");
+                cont.innerHTML =data[i][Object.keys(data[i])[j]];
+            li.appendChild(cont);
+            set.appendChild(li);
+        }
+        li1.appendChild(set);
+        ul.appendChild(li1);
+    }
+    var inpt_dib = document.createElement("BUTTON");
+        inpt_dib.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
+        inpt_dib.className = "draw_button";
+        inpt_dib.addEventListener("click",function(){
+            _("#graph").history({data:data});
+        });
+    var inpt_activar = document.createElement("BUTTON");
+        inpt_activar.innerHTML = "Reordenar<div class='icon-rearrange icono'></div> ";
+        inpt_activar.className = "rearrange-button";
+
+    div_data.appendChild(ul);
+    div_container.appendChild(div_data);
+    div_container.appendChild(div_options);
+    f.appendChild(div_container);
+    f.appendChild(div_container);
+    f.appendChild(inpt_dib);
+    f.appendChild(inpt_activar);
 
     return f;
 }
@@ -52,10 +123,26 @@ _.prototype.addHistTools = function(data) {
     var menu = document.querySelectorAll("menu")[0];
         menu.innerHTML = "";
 
+    var normalGrahp = document.createElement("DIV");
+        normalGrahp.innerHTML ="<div class='icon-stats icono' title='Gráfico historico'></div><span class='menu-text'>Gráfico histórico</span>";
+        if(pie_mode == "simple")normalGrahp.className = "active menu-button";
+        else normalGrahp.className = "menu-button";
+        normalGrahp.setAttribute("id","pie_simple");
+        menu.appendChild(normalGrahp);
+
+    var areaGrahp = document.createElement("DIV");
+        areaGrahp.innerHTML ="<div class='icon-stats icono' title='Gráfico areas'></div><span class='menu-text'>Gráfico áreas</span>";
+        if(pie_mode == "complex")areaGrahp.className = "active menu-button";
+        else areaGrahp.className = "menu-button";
+        areaGrahp.setAttribute("id","pie_complex");
+        menu.appendChild(areaGrahp);
+
+
     //  Under Graph data
     var data_content = document.querySelectorAll("#graph-data")[0];
         data_content.innerHTML =  "";
         data_content.appendChild(this.historyPannel());
+
 }
 
 _.prototype.drawHist = function (canvas, data) {
@@ -100,20 +187,24 @@ _.prototype.drawHistoricBars = function (posicion) {
         });
 
         line.move(40,h);
-        var text = Object.keys(data[0])[i+1];
-        var width = this.ctx.measureText(text).width;
-        this.drawLabel(30+puntos[i][1]["x"],
-                       h+puntos[i][1]["y"]-5,
-                       width+4,24,
-                       colores_barras[i].hex,
-                       "#FFFFFF",
-                       text,4,layer_hist);
+        if(pie_mode == "simple" ) {
+            var text = Object.keys(data[0])[i+1];
+            var width = this.ctx.measureText(text).width;
+            this.drawLabel(30+puntos[i][1]["x"],
+                           h+puntos[i][1]["y"]-5,
+                           width+4,24,
+                           colores_barras[i].hex,
+                           "#FFFFFF",
+                           text,4,layer_hist);
+        }
         layer_hist.add(line);
     }
-    var labels = layer_hist.find('.label');
-    labels.forEach(function(i){
-        i.setZIndex(50);
-    });
+    if (pie_mode == "simple" ) {
+        var labels = layer_hist.find('.label');
+        labels.forEach(function(i){
+            i.setZIndex(50);
+        });
+    }
 
     for ( var j=0;j < data.length; j++ ) {
         var year = new Kinetic.Text({

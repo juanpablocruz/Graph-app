@@ -133,6 +133,7 @@
                 drop.addEventListener('dragover', handleDragover, false);
                 drop.addEventListener('drop', handleDrop, false);
             }
+
             if(localStorage.chartType){
                 if(localStorage.data){
                     changeStep($(".current_step"),"next");
@@ -143,6 +144,7 @@
                    changeStep($(".current_step"),"next");
                 }
             }
+
             _("nav ul").menu();
             if(localStorage.data){
                 if(localStorage.chartType) {
@@ -151,13 +153,16 @@
                     cargar(data,tipo);
                 }
             }
+
             $(document).on("click","#nuevo-graph",function(){
                 $(".current_step").removeClass("current_step");
                 $("#tipoGrafico").addClass("current_step");
             });
+
             $(document).on("click",".back",function(){
                 changeStep($(this).parent().parent(),"prev")
             });
+
             $(document).on("click","nav ul li",function(){
                 switch($(this).text()){
                     case "Tartas":
@@ -165,6 +170,7 @@
                         break;
                 }
             });
+
             $(document).on("click","nav ul li", function(){
                 var tx = $(this).attr("tipo");
                 $("nav .active").removeClass("active");
@@ -175,32 +181,37 @@
                 $("#step-info ul").append("<li><div class='halfCircleRight'>"+tx+"</div></li>");
                 changeStep($(this).parent().parent().parent(),"next");
             });
+
             $(document).on("click","#pie_simple",function(){
                 $(".complex_pie").addClass("simple_pie");
+                $(".active").removeClass("active");
+                $(this).addClass("active");
                 pie_mode = "simple";
                 localStorage.pie_mode = pie_mode;
-
-
             });
+
             $(document).on("click","#pie_complex",function(){
                 $(".complex_pie").removeClass("simple_pie");
+                $(".active").removeClass("active");
+                $(this).addClass("active");
                 pie_mode = "complex";
                 localStorage.pie_mode = pie_mode;
             });
+
             $(document).on("click","#create-group",function(){
                 var x = $("<li><span contenteditable='true' class='grupo_tag complex_pie' val='0'>Grupo</span></li>");
                 var ul = $("<ul></ul>");
                 x.append(ul);
                 $("#attr-grupos>ul").append(x);
                 x.droppable({
-                addClasses : false,
-                accept: ".data-list-li", 
-                drop: function(e,ui){
-                    console.log(e);
-                    $(this).find("ul").append(ui.draggable)
-                }
+                    addClasses : false,
+                    accept: ".data-list-li",
+                    drop: function(e,ui){
+                        $(this).find("ul").append(ui.draggable)
+                    }
                 });
             });
+
             $(document).on("click",".rearrange-button",function(){
                 $(".data-list-li-holder").toggleClass("data-list-li");
                 $(".data-list-element-holder").toggleClass("data-list-element");
@@ -211,15 +222,14 @@
             });
 
             $(document).on("click",".label-dibujar-check",function(){
-                //alert($('#dibujar-check').is(":checked"));
                 if(!$('#dibujar-check').is(":checked")){
                     localStorage.drawLabels = true;
                 }
                 else {
                     localStorage.drawLabels = false;
                 }
-
             });
+
             dragevents();
             function restaurarColores(){
                 colores = standard.slice(0);

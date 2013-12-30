@@ -6,7 +6,7 @@ var standard =[new Color("#d21f17"),new Color("#d3cec6"),
               ];
                //var historic = "";
 var colores = standard.slice(0);
-var colores_barras = [standard[3],standard[2]];
+var colores_barras = [standard[3],standard[2],standard[4],standard[1],standard[0]];
 "use strict";
 function _(id) {
         _.zoom = 1;
