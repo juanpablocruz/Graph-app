@@ -453,23 +453,24 @@ _.prototype.writePieText = function (context, i, porciones, r) {
                                  );
     var width = context.measureText( this.data[i]["label"]).width;
     var t =  this.data[i]["label"];
-    var texto = "",w = 0, l1 = 100, l2 = 150,ancho=0,lineas = 1;
+    var texto = "",w = 0, l1 = 80, l2 = 110,ancho=0,lineas = 1;
     var mayor = 0;
     _().each(t.split(" "), function (k, te) {
        w=context.measureText(te[k]).width;
-        ancho += w;
-        if (ancho > l1) {
-         if (ancho > l2) {
+        if ( mayor < ancho ) mayor = ancho;
+        if ((ancho + w) > l1) {
+         if ((ancho + w) > l2) {
              texto += "\n"+te[k]+" ";
              if (k != te.length-1)
                  ancho=0;
              else {
-                ancho =l1;
+                ancho = l1;
              }
              lineas++
          }
         else {
             texto+=te[k]+" ";
+            ancho += w;
         }
        }
         else {
@@ -478,7 +479,7 @@ _.prototype.writePieText = function (context, i, porciones, r) {
         }
     });
 
-    if (lineas > 1) width = ancho;
+    if (lineas > 1) width = mayor;
     var padding = 20*lineas;
     var box = new Kinetic.Rect({
             x: centerx + (dx*radius),

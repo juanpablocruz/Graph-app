@@ -83,39 +83,43 @@ _.prototype.addBarTools = function(data){
         li1.appendChild(set);
         ul.appendChild(li1);
     }
+
     var inpt_dib = document.createElement("BUTTON");
         inpt_dib.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
         inpt_dib.className = "draw_button";
         inpt_dib.addEventListener("click",function(){
+            /* FETCH LABELS */
             var valores = [];
             var datos = document.querySelectorAll(".data-list-li-year");
-            for (var i = 0; i < datos[0].children[1].children.length; i++)valores.push(new Object);
-
+            for (var i = 0; i < datos[0].children[1].children.length; i++) valores.push(new Object);
             _().each(datos,function(i){
                 var title = datos[i].children[0].children[0].innerHTML;
+
                 _().each( datos[i].children[1].children,function(j,a){
                     var value = a[j].children[0].innerHTML;
                     valores[j][title] =parseInt( value);
-                })
+                });
+
                 _().each( datos[i].children[1].children,function(j,a){
                     var value = a[j].children[0].innerHTML;
                     valores[j][title] = value;
-                })
+                });
             });
+            /* FETCH VALUES */
             var order = [];
             var datos = document.querySelectorAll(".data-list-li-holder");
 
-            _().each(datos,function(i){
+            _().each(datos, function(i) {
                 order.push(datos[i].children[0].children[0].innerHTML);
                 var title = order[i];
-                _().each( datos[i].children[1].children,function(j,a){
+                _().each( datos[i].children[1].children,function(j, a) {
                     var value = parseInt(a[j].children[0].innerHTML);
                     valores[j][title] = value;
-                })
-                _().each( datos[i].children[1].children,function(j,a){
+                });
+                _().each( datos[i].children[1].children,function(j, a) {
                     var value = parseInt(a[j].children[0].innerHTML);
                     valores[j][title] = value;
-                })
+                });
             });
 
             localStorage.data = JSON.stringify(valores);
@@ -147,10 +151,10 @@ _.prototype.getMaxColumn = function (){
     var max = 0;
     for(var i=0;i< this.data.length;i++){
         var tmp = 0;
-        for(var j=1; j < Object.keys(this.data[0]).length; j++) {
+        for (var j = 1; j < Object.keys(this.data[0]).length; j++) {
             tmp += this.data[i][Object.keys(this.data[i])[j]];
         }
-        if(tmp > max){
+        if (tmp > max) {
              max = tmp;
         }
     }
