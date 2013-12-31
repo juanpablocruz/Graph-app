@@ -179,23 +179,22 @@ _.prototype.createBarsVerticalAxis = function(max,bars,type){
     var minimo = this.getMinValue(this.data);
     var origen = 0;
     var posicion = {bajo:false, step: step, numero: 0, origen: 0};
-    if(type == "historico" && (minimo - 2*step >= 0 || minimo < 0)){
+    if (type == "historico" && (minimo - 2 * step >= 0 || minimo < 0)) {
         posicion["bajo"] = true;
-        posicion["numero"] = parseInt(minimo/step);
+        posicion["numero"] = parseInt(minimo / step);
         posicion["origen"] = minimo;
         origen=minimo;
         step = this.getInterval(max,bars,origen);
     }
     var yaxis = new Kinetic.Shape({
-        drawFunc: function(ctx){
-            for (var j = origen; j < max+step*2; j+=step) {
-
+        drawFunc: function(ctx) {
+            for (var j = origen; j < max+step*2; j+= step) {
                 var x = j.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                oy = h-(posy*contador);
-                ctx.fillText(x,0,oy-5);
+                oy = h - (posy * contador);
+                ctx.fillText(x, 0, oy - 5);
                 ctx.beginPath();
                 ctx.moveTo(0,oy);
-                ctx.lineTo(ctx.canvas.width,oy);
+                ctx.lineTo(ctx.canvas.width, oy);
                 ctx.closePath();
                 ctx.lineWidth = 1;
                 ctx.stroke();
@@ -210,12 +209,12 @@ _.prototype.createBarsVerticalAxis = function(max,bars,type){
     return posicion;
 }
 
-_.prototype.drawBarra = function(maximo,i,j,h,height,layer,wBar,m,orden,color_rest){
-    var value = (this.data[j][orden[i]]*h)/maximo;
+_.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden, color_rest){
+    var value = (this.data[j][orden[i]] * h) / maximo;
     var barra = new Kinetic.Shape({
         drawFunc: function(ctx){
             ctx.beginPath();
-            ctx.rect(50+((wBar+m)*j),height,wBar,-value);
+            ctx.rect(50 + ((wBar + m) * j), height, wBar, -value);
             ctx.closePath();
             ctx.fillStrokeShape(this);
         },
