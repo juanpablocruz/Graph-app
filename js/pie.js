@@ -131,8 +131,6 @@ function create_data_set(dest, d) {
         grupos.appendChild(ul);
     }
 
-
-
     var inpt_sub = document.createElement("BUTTON");
         inpt_sub.type = "submit";
         inpt_sub.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
@@ -160,15 +158,12 @@ function create_data_set(dest, d) {
                     colores[i] = new Color(values[2]);
                     color = colores[i].hex
                 }
-
               data[i] = {
                     label:values[0],
                     value: parseFloat(values[1]),
                     group: grupo,
                     color: color,
                 };
-
-               
            });
             localStorage.data = JSON.stringify(data, 2, 2);
              dragevents();
@@ -324,7 +319,6 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
     var centerx = Math.floor(context.canvas.width/2);
     var centery = Math.floor(context.canvas.height/2);
     radius = r+20;
-
     var tc;
     if(porciones[i]["color"].lab.l < 65)tc = "#FFF";
     else tc = "#333";
@@ -332,8 +326,8 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
     var arcSize = porciones[i]["porcentaje"]-0.35;
     var endingAngle = (startingAngle + arcSize/2);
 
-    var dy = Math.sin(endingAngle)/2;
-    var dx = 2*Math.cos(endingAngle)/3;
+    var dy = Math.sin(endingAngle) / 2;
+    var dx = 2 * Math.cos(endingAngle) / 3;
     context.font = '16px "Mic 32 New Rounded"';
     var width = context.measureText( this.grupos[i]["label"]).width;
 
@@ -342,29 +336,20 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
     var group = new Kinetic.Group({
         draggable:true,
         dragBoundFunc: function(pos,e) {
+            var centerX = context.canvas.width/2;
+            var centerY = (context.canvas.height/2);
+                r = radius - 20;
+            if(typeof e != "undefined"){
 
-        var centerX = centerx - (dx*radius);
-        var centerY = Math.floor(context.canvas.height/2);
-        if (pos.x < 0) {
-            if(e && ((e.x) < centerX)){
+            var x = centerX - e.offsetX;
+            var y = centerY - e.offsetY;
+            if((x*x)+(y*y) > (r*r)){
                 text_data.setFill("#333");
-                _.layer.draw();
-            }
-            else{
+            }else{
                 text_data.setFill(tc);
-                _.layer.draw();
             }
-        }
-        else if (pos.x > 0) {
-            if (e && ((e.x) > (centerX+(radius*2)))) {
-                text_data.setFill("#333");
-                _.layer.draw();
             }
-            else {
-                text_data.setFill(tc);
-                _.layer.draw();
-            }
-        }
+            _.layer.draw();
             return pos;
         },
         id: "pie_text_"+i}
@@ -424,63 +409,55 @@ _.prototype.writePieText = function (context, i, porciones, r) {
     var group = new Kinetic.Group({
         draggable:true,
         dragBoundFunc: function(pos,e) {
-        
-        var centerX = centerx - (dx*radius)-30;
-        var centerY = Math.floor(context.canvas.height/2);
-        if (pos.x < 0) {
-            if (e && ((e.x) < centerX)) {
-                text_data.setFill("#333");
-                _.layer.draw();
-            }
-            else {
-                text_data.setFill(tc);
-                _.layer.draw();
-            }
+        var centerX = context.canvas.width/2;
+        var centerY = (context.canvas.height/2);
+            r = radius - 20;
+        if(typeof e != "undefined"){
+
+        var x = centerX - e.offsetX;
+        var y = centerY - e.offsetY;
+        if((x*x)+(y*y) > (r*r)){
+            text_data.setFill("#333");
+        }else{
+            text_data.setFill(tc);
         }
-        else if (pos.x > 0) {
-            if (e && ((e.x) > (centerX+(radius*2)))) {
-                text_data.setFill("#333");
-                _.layer.draw();
-            }
-            else {
-                text_data.setFill(tc);
-                _.layer.draw();
-            }
         }
+        _.layer.draw();
             return pos;
         }, 
-        id: "pie_text_"+i}
-                                 );
+        id: "pie_text_"+i});
+
+    /* Split the labels in lines and get the box size  */
+
     var width = context.measureText( this.data[i]["label"]).width;
     var t =  this.data[i]["label"];
     var texto = "",w = 0, l1 = 80, l2 = 110,ancho=0,lineas = 1;
     var mayor = 0;
-    _().each(t.split(" "), function (k, te) {
-       w=context.measureText(te[k]).width;
-        if ( mayor < ancho ) mayor = ancho;
-        if ((ancho + w) > l1) {
-         if ((ancho + w) > l2) {
-             texto += "\n"+te[k]+" ";
-             if (k != te.length-1)
-                 ancho=0;
-             else {
-                ancho = l1;
-             }
-             lineas++
+
+    _().each(t.split(" "), function (k, te) {   // Iterate through each word
+       w=context.measureText(te[k]).width;      // get each word width
+        if ( mayor < ancho ) mayor = ancho;     // check if the current line width is the longest and if so change it
+        if ((ancho + w) > l1) {                 // if the current line plus the word is longer than the first control limit
+         if ((ancho + w) > l2) {                // check if its greater than the longest limit
+             texto += "\n"+te[k]+" ";           // if so, break the line and add the word
+             if (k != te.length-1) ancho=0;     // if its not the last word reset the line width to 0
+             else ancho = l1;                   // else, set it to the first limit
+             lineas++                           // increase the number of lines written
          }
-        else {
-            texto+=te[k]+" ";
-            ancho += w;
-        }
+         else {
+            texto+=te[k]+" ";                   // if its smaller than the last limit just add it
+            ancho += w;                         // increase the line width
+         }
        }
-        else {
-           texto+=te[k]+" ";
-            ancho += w;
-        }
+       else {
+            texto += te[k] + " ";               // if its smaller than the first limit add it
+            ancho += w;                         // increase the line width
+       }
     });
 
-    if (lineas > 1) width = mayor;
+    if (lineas > 1) width = mayor;              // if there's more than one line set the width to the greatest line width
     var padding = 20*lineas;
+
     var box = new Kinetic.Rect({
             x: centerx + (dx*radius),
             y: centery+ (dy*radius),

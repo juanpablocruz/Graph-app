@@ -129,12 +129,14 @@ _.prototype = {
         var rectY = this.stage.getHeight() / 2 -25;
                
         var stage = this.stage;       
-        document.getElementById('save').addEventListener('click', function() {
+        document.getElementById('save').addEventListener('click', function(e) {
+
             var c = document.getElementsByTagName("canvas")[0];
             c.style.background="#fff";  
             var url = _().canvasToImage(c,"#fff");
-            window.open(url);
-          }, false);       
+            this.href = (url);
+          }, false);
+
         this.stage.add(_.layer);
         if(modules.length == 0)
            this.drawLabel(rectX,rectY,150,25,"rgba(0,0,0,0.7)","#fff","No hay Módulos",_.layer);
