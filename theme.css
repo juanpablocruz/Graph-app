@@ -135,7 +135,7 @@ main section:first-child{
     display:block;
 }
 #graph-data>div:first-child{
-    display:block;
+    display:flex;
 }
 canvas{
     border:1px solid black !important;
@@ -371,6 +371,9 @@ li ul{
 #options-bars{
     flex:1;
 }
+#options-bars div{
+    margin-bottom:1em;
+}
 
 #dibujar-check{
     display:none;
@@ -426,7 +429,10 @@ li ul{
 header,.step{
     min-width:480px;
 }
-
+#fuente_input {
+    vertical-align: bottom;
+    margin-bottom: -0.8em;
+}
 @media all and (max-width:800px){
     aside{
         min-width:4em;

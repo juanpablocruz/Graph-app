@@ -1,5 +1,11 @@
 var historic = 1;
 "use strict";
+var fuente_value = "Cores";
+if (localStorage.fuente) {
+    fuente_value = localStorage.fuente;
+}else{
+    fuente_value = "Cores";
+}
 
 _.prototype.history= function (obj) {
     var id = this.id;
@@ -44,6 +50,16 @@ _.prototype.historyPannel = function() {
     var div_options = document.createElement("DIV");
         div_options.className = "data-options";
         div_options.setAttribute("id","options-bars");
+
+    var fuente_label = document.createElement("DIV");
+        fuente_label.innerHTML = "<span>Fuente: </span>";
+    var fuente_inpt = document.createElement("INPUT");
+        fuente_inpt.type = "text";
+        fuente_inpt.setAttribute("id","fuente_input");
+        fuente_inpt.setAttribute("value",fuente_value);
+        fuente_label.appendChild(fuente_inpt);
+        div_options.appendChild(fuente_label);
+
     var checkbox_labels = document.createElement("input");
         checkbox_labels.type = "checkbox";
         checkbox_labels.setAttribute("id","dibujar-check");
@@ -55,9 +71,9 @@ _.prototype.historyPannel = function() {
     if (this.printLabels === "true") {
         checkbox_labels.checked = true;
     }
+    div_options.appendChild(checkbox_labels);
+    div_options.appendChild(checkbox_title);
 
-        div_options.appendChild(checkbox_labels);
-        div_options.appendChild(checkbox_title);
     var ul = document.createElement("UL");
     $(ul).droppable({
         addClasses : false,
@@ -100,6 +116,9 @@ _.prototype.historyPannel = function() {
         inpt_dib.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
         inpt_dib.className = "draw_button";
         inpt_dib.addEventListener("click",function(){
+            var fuent = document.querySelectorAll("#fuente_input")[0].value;
+            localStorage.fuente = fuent;
+            fuente_value = fuent;
             _("#graph").history({data:data});
         });
     var inpt_activar = document.createElement("BUTTON");
@@ -154,7 +173,7 @@ _.prototype.drawHist = function (canvas, data) {
 
 
 _.prototype.drawHistoricBars = function (posicion) {
-    var w = this.ctx.canvas.width - 20;
+    var w = this.ctx.canvas.width - 30;
     var h = this.ctx.canvas.height - 20;
     var x = w / this.data.length;
     var data = this.data;
@@ -163,16 +182,18 @@ _.prototype.drawHistoricBars = function (posicion) {
     var puntos = [];
     var offset = (posicion["step"] * posicion["numero"]) * h / maximo;
     var des_orig = (posicion["origen"] < 0) ? posicion["origen"] : 0;
-
-    for ( var j = 1; j < Object.keys(data[0]).length; j++ ) {
+    for ( var j = 0; j < Object.keys(data[0]).length; j++ ) {
+        if(Object.keys(data[0])[j]!="Leyenda"){
         linea_set = [];
         a = -x;
         for ( var i=0; i < data.length; i++ ) {
+
             var value = (((data[i][Object.keys(data[0])[j]] - des_orig) * h) - offset)/(maximo);
             linea_set.push({x:a + x, y: -( value - offset )});
             a += x;
         }
         puntos.push(linea_set);
+        }
     };
 
     var layer_hist = new Kinetic.Layer();

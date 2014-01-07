@@ -1,11 +1,16 @@
 var tartas = 1;
 var pie_mode = "simple";
 "use strict";
+var fuente_value = "Cores";
+if (localStorage.fuente) {
+    fuente_value = localStorage.fuente;
+}
 if (!localStorage.pie_mode) {
     localStorage.pie_mode = "simple";
 } else {
     pie_mode = localStorage.pie_mode;
 }
+
 function create_data_set(dest, d) {
     dest.innerHTML = "";
     var f = document.createDocumentFragment(), contenedor = document.createElement("DIV"),
@@ -20,12 +25,12 @@ function create_data_set(dest, d) {
     }
     create.innerHTML = "Añadir Grupo";
     grupos.setAttribute("id", "attr-grupos");
+    grupos.className = "data-options";
     var ul = document.createElement("UL");
     grupos.appendChild(create);
     if (localStorage.grupos) {
         var g = JSON.parse(localStorage.grupos);
-    
-        _().each(g, function (j, a) {
+        _().each(g, function (j, a) {                                   //create each group
             var li = document.createElement("LI");
             if (pie_mode === "simple")
                 li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie'>" + a[j].label + "</span>";
@@ -39,7 +44,7 @@ function create_data_set(dest, d) {
                     $(this).find("ul").append(ui.draggable);
                 }
             });
-            _().each(d, function (i) {
+            _().each(d, function (i) {                                  // Create each portion in its own group
                 if (d[i].group !== "" && d[i].group === a[j].label) {
                     if(d[i]["color"])color = d[i]["color"];
                 else if(i>=colores.length){
@@ -81,7 +86,7 @@ function create_data_set(dest, d) {
 
         });
     }
-    else{
+    else{                                               // If there's no groups create one and add everything in
         var li = document.createElement("LI");
         if(pie_mode == "simple")
            li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie' val='0'>Grupo1</span>";
@@ -130,18 +135,31 @@ function create_data_set(dest, d) {
         ul.appendChild(li);
         grupos.appendChild(ul);
     }
+    var div_options = document.createElement("DIV");
+        div_options.className = "data-options";
+        div_options.setAttribute("id","options-bars");
+    var fuente_label = document.createElement("DIV");
+        fuente_label.innerHTML = "<span>Fuente: </span>";
+    var fuente_inpt = document.createElement("INPUT");
+        fuente_inpt.type = "text";
+        fuente_inpt.setAttribute("id","fuente_input");
+        fuente_inpt.setAttribute("value",fuente_value);
+    fuente_label.appendChild(fuente_inpt);
+    div_options.appendChild(fuente_label);
 
-    var inpt_sub = document.createElement("BUTTON");
+    var inpt_sub = document.createElement("BUTTON");                            // Create draw button
         inpt_sub.type = "submit";
         inpt_sub.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
         inpt_sub.className = "draw_button";
-        inpt_sub.addEventListener('click',function(){
+        inpt_sub.addEventListener('click',function(){                           // Add click event to draw
             var grupos_list = [];
-            _().each(document.querySelectorAll(".grupo_tag"),function(i,a){
+            _().each(document.querySelectorAll(".grupo_tag"),function(i,a){     // Fetch all the data inside each item
                 grupos_list.push({label:a[i].innerHTML,value:a[i].getAttribute("val")});
             });
             localStorage.grupos = JSON.stringify(grupos_list, 2, 2);
-
+            var fuent = document.querySelectorAll("#fuente_input")[0].value;
+            localStorage.fuente = fuent;
+            fuente_value = fuent;
             var data = [];
             _().each(document.querySelectorAll("#attr-grupos ul>li div"),function(i,a){
                values = [];
@@ -171,6 +189,7 @@ function create_data_set(dest, d) {
         },false);
     grupos.appendChild(inpt_sub);
     f.appendChild(grupos);
+    f.appendChild(div_options);
     contenedor.appendChild(f);
     dest.appendChild(contenedor);
 }
@@ -279,6 +298,18 @@ _.prototype.drawPie = function (canvas, data) {
     else {
         radio = 200;
     }
+
+    var fuente = new Kinetic.Text({
+            x: canvas.width - 20,
+            y: canvas.height - 5 ,
+            text: "Fuente: "+fuente_value,
+            fontSize: 15,
+            fontFamily: "InfoTextBook",
+            fontStyle: "italic",
+            fill: "#7B796C",
+            rotationDeg: -90,
+        });
+    _.layer.add(fuente);
     this.draw(data, radio-20, true);
 
 }

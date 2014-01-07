@@ -4,16 +4,16 @@ var standard =[new Color("#d21f17"),new Color("#d3cec6"),
                new Color("#cea072"),new Color("#82afc1"),
                new Color("#867c73"),new Color("#e2ddd8"),
               ];
-               //var historic = "";
+
 var colores = standard.slice(0);
 var colores_barras = [standard[3],standard[2],standard[4],standard[1],standard[0]];
 "use strict";
+
 function _(id) {
-        _.zoom = 1;
         if (window === this) {
             return new _(id);   
         }
-        switch(typeof id){
+        switch (typeof id) {
             case "string":
                 this.id = id;
                 this.e = document.querySelectorAll(id);
@@ -24,8 +24,8 @@ function _(id) {
 
 Array.prototype.minVal = function(){
     var min = Infinity;
-    _().each(this,function(i,a){
-        if(min==Infinity || this[i]<min)min = a[i];
+    _().each(this, function(i, a) {
+        if(min == Infinity || this[i] < min) min = a[i];
     });
     return min;
 }
@@ -34,11 +34,12 @@ _.prototype = {
     get: function(selector) {
           return this;
     },
+
     each: function(array, callback){
         for(var i = 0; i<array.length;i++)callback.call(this,i,array);
     },
-    checkModules: function(){
-          
+
+    checkModules: function() {
         if (typeof(tartas) != "undefined") {
             var d = document.createDocumentFragment();
             var li=document.createElement("LI");
@@ -50,7 +51,7 @@ _.prototype = {
         }
         if (typeof(barras) != "undefined") {
             var d = document.createDocumentFragment();
-            var li=document.createElement("LI");
+            var li = document.createElement("LI");
             li.setAttribute("tipo","Barras");
             li.innerHTML = "Barras<div class='icon-bars2 icono'></div> ";
             d.appendChild(li);
@@ -58,7 +59,7 @@ _.prototype = {
         }
         if (typeof(historic) != "undefined") {
             var d = document.createDocumentFragment();
-            var li=document.createElement("LI");
+            var li = document.createElement("LI");
             li.setAttribute("tipo","Historicos");
             li.innerHTML = "Historicos<div class='icon-stats icono'></div> ";
             d.appendChild(li);
@@ -66,7 +67,8 @@ _.prototype = {
         }
         return this;
     },
-    menu: function(){
+
+    menu: function() {
         this.checkModules();
         var dest = Array.prototype.slice.call(this.e);
         modules.forEach( function(el) {
@@ -76,15 +78,13 @@ _.prototype = {
         });
         return this;
     },
-    options: function(){
-        if (typeof opciones != "undefined"){}
-        return this;  
-    },
-    draw: function(item){
+
+    draw: function(item) {
         _.layer.add(item);
         _.layer.draw();
     },
-    drawLabel : function(posx, posy, width, height, fill, textColor, text,padding,layer){
+
+    drawLabel : function(posx, posy, width, height, fill, textColor, text, padding, layer) {
         
         var group = new Kinetic.Group({
             draggable:true,
@@ -114,7 +114,8 @@ _.prototype = {
         layer.add(group);
         return this;
     },
-    canvas: function(canvas,callback){
+
+    canvas: function(canvas,callback) {
         var w = 370;
         var h = 380;
         this.stage = new Kinetic.Stage({
@@ -122,6 +123,7 @@ _.prototype = {
             width: w,
             height: h,
         });
+
         canvas.style.background="#fff";       
         _.layer = new Kinetic.Layer();
         
@@ -130,7 +132,6 @@ _.prototype = {
                
         var stage = this.stage;       
         document.getElementById('save').addEventListener('click', function(e) {
-
             var c = document.getElementsByTagName("canvas")[0];
             c.style.background="#fff";  
             var url = _().canvasToImage(c,"#fff");
@@ -143,8 +144,8 @@ _.prototype = {
         _.layer.draw();
         callback.call(this);
     },
-    canvasToImage: function(canvas,backgroundColor)
-    {
+
+    canvasToImage: function(canvas, backgroundColor) {
         var c = document.getElementsByTagName("canvas")[1];
         //cache height and width		
         var w = canvas.width;
@@ -153,8 +154,7 @@ _.prototype = {
         if (typeof c != "undefined") context.drawImage(c,0,0);
         var data;
      
-        if (backgroundColor)
-        {
+        if (backgroundColor) {
             data = context.getImageData(0, 0, w, h);
             var compositeOperation = context.globalCompositeOperation;
             context.globalCompositeOperation = "destination-over";
@@ -163,28 +163,28 @@ _.prototype = {
         }
         var imageData = canvas.toDataURL("image/jpeg");
      
-        if (backgroundColor)
-        {
+        if (backgroundColor) {
             context.clearRect (0,0,w,h);
             context.putImageData(data, 0,0);
             context.globalCompositeOperation = compositeOperation;
         }
         return imageData;
     },
-    getMinValue: function (){
+
+    getMinValue: function () {
         var min = Infinity;
-        for(var i = 0;i < this.data.length; i++){
-            for(var j = 1; j < Object.keys(this.data[0]).length; j++) {
+        for (var i = 0;i < this.data.length; i++) {
+            for (var j = 1; j < Object.keys(this.data[0]).length; j++) {
                 if (this.data[i][Object.keys(this.data[i])[j]] < min) {
-                 min = this.data[i][Object.keys(this.data[i])[j]];
+                    min = this.data[i][Object.keys(this.data[i])[j]];
                 }
             }
         }
+
         var len = min.toString().length;
-        var orden = Math.pow(10, len-1);
+        var orden = Math.pow(10, len - 1);
         var next = parseFloat( min / orden );
         var min = next * orden;
         return min;
     }
-
 };

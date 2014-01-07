@@ -1,5 +1,11 @@
 var barras = 1;
 "use strict";
+var fuente_value = "Cores";
+if (localStorage.fuente) {
+    fuente_value = localStorage.fuente;
+} else {
+    fuente_value = "Cores";
+}
 
 _.prototype.bars= function (obj) {
     var id = this.id;
@@ -42,6 +48,14 @@ _.prototype.addBarTools = function(data){
     if(this.printLabels === "true") {
         checkbox_labels.checked = true;
     }
+    var fuente_label = document.createElement("DIV");
+        fuente_label.innerHTML = "<span>Fuente: </span>";
+    var fuente_inpt = document.createElement("INPUT");
+        fuente_inpt.type = "text";
+        fuente_inpt.setAttribute("id","fuente_input");
+        fuente_inpt.setAttribute("value",fuente_value);
+    fuente_label.appendChild(fuente_inpt);
+    div_options.appendChild(fuente_label);
 
         div_options.appendChild(checkbox_labels);
         div_options.appendChild(checkbox_title);
@@ -106,6 +120,9 @@ _.prototype.addBarTools = function(data){
                 });
             });
             /* FETCH VALUES */
+            var fuent = document.querySelectorAll("#fuente_input")[0].value;
+            localStorage.fuente = fuent;
+            fuente_value = fuent;
             var order = [];
             var datos = document.querySelectorAll(".data-list-li-holder");
 
@@ -173,6 +190,19 @@ _.prototype.createBarsVerticalAxis = function(max,bars,type){
     var step = this.getInterval(max,bars,0);
 
     var ctx = this.ctx;
+
+        var fuente = new Kinetic.Text({
+            x: ctx.canvas.width - 15,
+            y: ctx.canvas.height - 20 ,
+            text: "Fuente: "+fuente_value,
+            fontSize: 15,
+            fontFamily: "InfoTextBook",
+            fontStyle: "italic",
+            fill: "#7B796C",
+            rotationDeg: -90,
+        });
+    _.layer.add(fuente);
+
     var h = ctx.canvas.height-20;
     var posy = Math.floor((h)/(max/step));
     var contador = 0;
@@ -198,7 +228,7 @@ _.prototype.createBarsVerticalAxis = function(max,bars,type){
                 ctx.fillText(x, 0, oy - 5);
                 ctx.beginPath();
                 ctx.moveTo(0,oy);
-                ctx.lineTo(ctx.canvas.width, oy);
+                ctx.lineTo(ctx.canvas.width-20, oy);
                 ctx.closePath();
                 ctx.lineWidth = 1;
                 ctx.stroke();
@@ -230,7 +260,7 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
 }
 
 _.prototype.createBarsHorizontalAxis = function(max){
-    var w = this.ctx.canvas.width-30;
+    var w = this.ctx.canvas.width-50;
     var h = this.ctx.canvas.height-30;
     var N = this.data.length;
     var m = 10;
