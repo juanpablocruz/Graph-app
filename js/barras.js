@@ -3,9 +3,8 @@ var barras = 1;
 var fuente_value = "Cores";
 if (localStorage.fuente) {
     fuente_value = localStorage.fuente;
-} else {
-    fuente_value = "Cores";
 }
+
 
 _.prototype.bars= function (obj) {
     var id = this.id;
@@ -15,6 +14,21 @@ _.prototype.bars= function (obj) {
         this.printLabels = true;
         if(localStorage.drawLabels){
             this.printLabels = localStorage.drawLabels;
+        }
+
+        this.data = obj.data;
+        this.colores_grupos = [];
+        for (var j = 1; j < Object.keys(this.data[0]).length; j++) {
+            var tmp = {
+                grupo: this.data[0][Object.keys(this.data[0])[j]],
+                color: colores_barras[j-1].hex};
+            this.colores_grupos.push(tmp);
+        }
+
+        if (!localStorage.coloresBarras) {
+            localStorage.coloresBarras = JSON.stringify(this.colores_grupos);
+        } else {
+            this.colores_grupos = JSON.parse(localStorage.coloresBarras);
         }
         this.addBarTools(obj.data);
         this.drawBar(this.canvas,obj.data);
@@ -77,7 +91,7 @@ _.prototype.addBarTools = function(data){
         if (j > 0) {
             var colorinpt = document.createElement("input");
                 colorinpt.setAttribute("type","color");
-                colorinpt.value = colores_barras[j-1].hex;
+                colorinpt.value = this.colores_grupos[j-1]["color"];
 
             div.appendChild(colorinpt);
         }
@@ -123,11 +137,18 @@ _.prototype.addBarTools = function(data){
             var fuent = document.querySelectorAll("#fuente_input")[0].value;
             localStorage.fuente = fuent;
             fuente_value = fuent;
+            var tmp_colors = [];
             var order = [];
             var datos = document.querySelectorAll(".data-list-li-holder");
 
             _().each(datos, function(i) {
                 order.push(datos[i].children[0].children[0].innerHTML);
+                console.log(datos[i].children[0].children[1].value);
+                var tmp = {
+                    grupo: datos[i].children[0].children[0].innerHTML,
+                    color: datos[i].children[0].children[1].value
+                };
+                tmp_colors.push(tmp);
                 var title = order[i];
                 _().each( datos[i].children[1].children,function(j, a) {
                     var value = parseInt(a[j].children[0].innerHTML);
@@ -138,7 +159,7 @@ _.prototype.addBarTools = function(data){
                     valores[j][title] = value;
                 });
             });
-
+            localStorage.coloresBarras = JSON.stringify(tmp_colors);
             localStorage.data = JSON.stringify(valores);
             localStorage.ordenacion = JSON.stringify(order);
             _("#graph").bars({data:valores});
@@ -188,7 +209,8 @@ _.prototype.getInterval = function (max,bars,origen) {
 
 _.prototype.createBarsVerticalAxis = function(max,bars,type){
     var step = this.getInterval(max,bars,0);
-
+    this.step = step;
+    this.ceil = ((((max+step*2)/step)-2)*step);
     var ctx = this.ctx;
 
         var fuente = new Kinetic.Text({
@@ -244,7 +266,7 @@ _.prototype.createBarsVerticalAxis = function(max,bars,type){
 }
 
 _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden, color_rest){
-    var value = (this.data[j][orden[i]] * h) / maximo;
+    var value = (((this.data[j][orden[i]] * 100) / (this.ceil))*h/100);
     var barra = new Kinetic.Shape({
         drawFunc: function(ctx){
             ctx.beginPath();
@@ -254,7 +276,7 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
         },
         stroke: "#FFF",
         strokeWidth: 1,
-        fill: colores_barras[i-color_rest].hex,
+        fill: this.colores_grupos[i-color_rest]["color"],
     });
     layer.add(barra);
 }
@@ -279,9 +301,9 @@ _.prototype.createBarsHorizontalAxis = function(max){
         var start = 0;
          var color_rest = 0;
     }
-
     for (var j=0; j<this.data.length; j++){
         for (var i=start; i< orden.length; i++){
+
             this.drawBarra(maximo,
                            i, j, h,
                            this.ctx.canvas.height-20-height_accumulated,
@@ -293,7 +315,7 @@ _.prototype.createBarsHorizontalAxis = function(max){
                 this.drawLabel(50,this.ctx.canvas.height-40-height_accumulated,lwidth,20,
                                "#333","white",texto,1,layer2);
             }
-            height_accumulated+=(this.data[j][orden[i]]*h)/maximo;
+            height_accumulated+=(((this.data[j][orden[i]] * 100) / (this.ceil))*h/100);
         }
         var year = new Kinetic.Text({
             x: 60+j*(wBar+m),
