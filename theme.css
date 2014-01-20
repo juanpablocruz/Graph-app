@@ -264,7 +264,7 @@ input:focus{
     margin-left:1em;
 }
 
-.icon-spinner,.icon-spinner2, .icon-stats{
+.icon-spinner,.icon-spinner2, .icon-stats, .icon-bars, .icon-bars2{
     margin-left:1em;
 }
 
@@ -443,7 +443,7 @@ header,.step{
         display:inline-block;
     }
 
-    .icon-droplet, .icon-file, .icon-download,.icon-stats{
+    .icon-droplet, .icon-file, .icon-download,.icon-stats, .icon-bars, .icon-bars2{
         margin-left:0.8em;
     }
 

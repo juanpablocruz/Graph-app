@@ -89,10 +89,11 @@ _.prototype.historyPannel = function() {
         var div = document.createElement("DIV");
         if (Object.keys(data[0])[j] != "Leyenda") div.className = "data-list-element-holder";
             div.innerHTML = "<div contenteditable='true'>" + Object.keys(data[0])[j] + "</div>";
+
         if (Object.keys(data[0])[j] != "Leyenda") {
             var colorinpt = document.createElement("input");
                 colorinpt.setAttribute("type","color");
-                colorinpt.value = colores_barras[j].hex;
+                colorinpt.value = colores_barras[j-1].hex;
             div.appendChild(colorinpt);
         }
 
@@ -121,6 +122,7 @@ _.prototype.historyPannel = function() {
             fuente_value = fuent;
             _("#graph").history({data:data});
         });
+
     var inpt_activar = document.createElement("BUTTON");
         inpt_activar.innerHTML = "Reordenar<div class='icon-rearrange icono'></div> ";
         inpt_activar.className = "rearrange-button";
@@ -155,7 +157,6 @@ _.prototype.addHistTools = function(data) {
         areaGrahp.setAttribute("id","pie_complex");
         menu.appendChild(areaGrahp);
 
-
     //  Under Graph data
     var data_content = document.querySelectorAll("#graph-data")[0];
         data_content.innerHTML =  "";
@@ -179,20 +180,25 @@ _.prototype.drawHistoricBars = function (posicion) {
     var data = this.data;
     var a = -x;
     var maximo = this.getMaxValue();
+    var min = this.getMinValue();
+    var amplitud = maximo - min;
+
     var puntos = [];
     var offset = (posicion["step"] * posicion["numero"]) * h / maximo;
     var des_orig = (posicion["origen"] < 0) ? posicion["origen"] : 0;
     for ( var j = 0; j < Object.keys(data[0]).length; j++ ) {
-        if(Object.keys(data[0])[j]!="Leyenda"){
-        linea_set = [];
-        a = -x;
-        for ( var i=0; i < data.length; i++ ) {
-
-            var value = (((data[i][Object.keys(data[0])[j]] - des_orig) * h) - offset)/(maximo);
-            linea_set.push({x:a + x, y: -( value - offset )});
-            a += x;
-        }
-        puntos.push(linea_set);
+        if(Object.keys(data[0])[j] != "Leyenda"){
+            linea_set = [];
+            a = -x;
+            for ( var i=0; i < data.length; i++ ) {
+                var value = ((((data[i][Object.keys(data[0])[j]]-min) * h)/amplitud));
+                //value = (value * this.step / 100)*h/100;
+                console.log(maximo);
+                //var value = (((data[i][Object.keys(data[0])[j]] - des_orig) * h) - offset)/(maximo);
+                linea_set.push({x:a + x, y: -( value)});
+                a += x;
+            }
+            puntos.push(linea_set);
         }
     };
 

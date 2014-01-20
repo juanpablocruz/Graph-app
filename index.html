@@ -198,6 +198,29 @@
                 localStorage.pie_mode = pie_mode;
             });
 
+            $(document).on("click","#bars_compuesto",function(){
+                $(".complex_pie").removeClass("simple_pie");
+                $(".active").removeClass("active");
+                $(this).addClass("active");
+                barras_mode = "compuesto";
+                if(localStorage.coloresBarras)
+                    localStorage.removeItem("coloresBarras");
+                localStorage.barras_mode = barras_mode;
+            });
+
+            $(document).on("click","#bars_cols",function(){
+                $(".complex_pie").addClass("simple_pie");
+                $(".active").removeClass("active");
+                console.log("click");
+                $(this).addClass("active");
+                barras_mode = "cols";
+                if(localStorage.coloresBarras)
+                    localStorage.removeItem("coloresBarras");
+                localStorage.barras_mode = barras_mode;
+            });
+
+
+
             $(document).on("click","#create-group",function(){
                 var x = $("<li><span contenteditable='true' class='grupo_tag complex_pie' val='0'>Grupo</span></li>");
                 var ul = $("<ul></ul>");
