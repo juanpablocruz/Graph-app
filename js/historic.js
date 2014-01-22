@@ -110,8 +110,6 @@ _.prototype.historyPannel = function() {
     }
 
 
-
-
     var ul = document.createElement("UL");
     $(ul).droppable({
         addClasses : false,
@@ -284,8 +282,12 @@ _.prototype.drawHistoricBars = function (posicion) {
     }
 
     for ( var j = 0; j < data.length; j++ ) {
+        var x_var;
+        if(pie_mode == "simple") { x_var = 35 + puntos[0][j]["x"];}
+        else {x_var = 35 + puntos[0][j+1]["x"];}
+
         var year = new Kinetic.Text({
-            x: 35 + puntos[0][j]["x"],
+            x: x_var,
             y: h,
             fontSize: 12,
             fontFamily: 'Mic 32 New Rounded',
