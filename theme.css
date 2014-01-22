@@ -375,11 +375,11 @@ li ul{
     margin-bottom:1em;
 }
 
-#dibujar-check{
+#dibujar-check, #destacar_check, #separador-check{
     display:none;
 }
 
-.label-dibujar-check{
+.label-dibujar-check,.label-dest-check, .label-separador-check{
     cursor:pointer;
     position:relative;
     padding-left:30px;
@@ -387,16 +387,19 @@ li ul{
 }
 
 .label-dibujar-check:before,
-.label-dibujar-check:after{
+.label-dest-check:before,
+.label-separador-check:before
+{
     font-family: 'iconos';
-}
-
-.label-dibujar-check:before{
     position:absolute;top:0;left:0;
     content:"\e611";
 }
 
-.label-dibujar-check:after{
+.label-dibujar-check:after,
+.label-dest-check:after,
+.label-separador-check:after
+{
+    font-family: 'iconos';
     position:absolute;top:-2px;left:1px;
     content:"\e612";
     max-width:0;
@@ -407,6 +410,18 @@ li ul{
 }
 
 #dibujar-check:checked + .label-dibujar-check:after{
+    max-width:25px;
+    opacity:1;
+    color:#249a14;
+}
+
+#destacar_check:checked + .label-dest-check:after{
+    max-width:25px;
+    opacity:1;
+    color:#249a14;
+}
+
+#separador-check:checked + .label-separador-check:after{
     max-width:25px;
     opacity:1;
     color:#249a14;

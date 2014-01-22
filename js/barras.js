@@ -8,7 +8,7 @@ var barras_mode = "compuesto";
 if (localStorage.barras_mode) {
     barras_mode = localStorage.barras_mode;
 }
-_.prototype.bars= function (obj) {
+_.prototype.bars = function (obj) {
     var id = this.id;
     _().canvas(this.e[0],function() {
         this.data_content = document.querySelectorAll("#graph-data")[0];
@@ -16,6 +16,10 @@ _.prototype.bars= function (obj) {
         this.printLabels = true;
         if(localStorage.drawLabels){
             this.printLabels = localStorage.drawLabels;
+        }
+        this.destacado = false;
+        if(localStorage.destacado_bars){
+            this.destacado = localStorage.destacado_bars;
         }
 
         this.data = obj.data;
@@ -39,7 +43,6 @@ _.prototype.bars= function (obj) {
         }
 
         if (!localStorage.coloresBarras) {
-            console.log(localStorage.coloresBarras);
             localStorage.coloresBarras = JSON.stringify(this.colores_grupos);
         } else {
             this.colores_grupos = JSON.parse(localStorage.coloresBarras);
@@ -90,6 +93,9 @@ _.prototype.addBarTools = function(data){
     if(this.printLabels === "true") {
         checkbox_labels.checked = true;
     }
+
+    var check_div = document.createElement("DIV");
+
     var fuente_label = document.createElement("DIV");
         fuente_label.innerHTML = "<span>Fuente: </span>";
     var fuente_inpt = document.createElement("INPUT");
@@ -99,8 +105,28 @@ _.prototype.addBarTools = function(data){
     fuente_label.appendChild(fuente_inpt);
     div_options.appendChild(fuente_label);
 
-        div_options.appendChild(checkbox_labels);
-        div_options.appendChild(checkbox_title);
+    if (barras_mode != "cols") {
+        var dest_div = document.createElement("DIV");
+        var destaca_labels = document.createElement("input");
+            destaca_labels.type = "checkbox";
+            destaca_labels.setAttribute("id","destacar_check");
+        var destaca_title = document.createElement("label");
+            destaca_title.setAttribute("for","destacar_check");
+            destaca_title.setAttribute("class","label-dest-check");
+            destaca_title.innerHTML = "Destacar Sección";
+            destaca_title.checked = false;
+        if(this.destacado === "true") {
+            destaca_labels.checked = true;
+        }
+        dest_div.appendChild(destaca_labels);
+        dest_div.appendChild(destaca_title);
+        div_options.appendChild(dest_div);
+    }
+
+        check_div.appendChild(checkbox_labels);
+        check_div.appendChild(checkbox_title);
+        div_options.appendChild(check_div);
+
     var ul = document.createElement("UL");
     $(ul).droppable({
         addClasses : false,
@@ -116,12 +142,11 @@ _.prototype.addBarTools = function(data){
         var div = document.createElement("DIV");
         if (barras_mode == "cols" || j > 0) div.className = "data-list-element-holder";
             div.innerHTML = "<div contenteditable='true'>"+Object.keys(data[0])[j]+"</div>";
-        if (barras_mode == "cols" && j > 0) {
+        if (barras_mode == "cols") {
             var colorinpt = document.createElement("input");
                 colorinpt.setAttribute("type","color");
-                colorinpt.value = this.colores_grupos[j-1]["color"];
-
-            div.appendChild(colorinpt);
+                colorinpt.value = this.colores_grupos[j]["color"];
+                div.appendChild(colorinpt);
         }
         li1.appendChild(div);
         if (barras_mode == "cols" || j > 0) li1.className = "data-list-li-holder";
@@ -143,6 +168,7 @@ _.prototype.addBarTools = function(data){
     var inpt_dib = document.createElement("BUTTON");
         inpt_dib.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
         inpt_dib.className = "draw_button";
+    var destc = this.destacado;
         inpt_dib.addEventListener("click",function(){
             /* FETCH LABELS */
             var valores = [];
@@ -159,7 +185,6 @@ _.prototype.addBarTools = function(data){
                     var value = a[j].children[0].innerHTML;
                     valores[j][title] =parseInt( value);
                 });
-
                 _().each( datos[i].children[1].children,function(j,a){
                     var value = a[j].children[0].innerHTML;
                     valores[j][title] = value;
@@ -171,25 +196,26 @@ _.prototype.addBarTools = function(data){
             fuente_value = fuent;
             var tmp_colors = [];
             var order = [];
+
+            var colores = (destc == "true") ? colores_alpha : colores_barras;
+
             var datos = document.querySelectorAll(".data-list-li-holder");
-            var color_array = this.colores_grupos;
             _().each(datos, function(i) {
                 order.push(datos[i].children[0].children[0].innerHTML);
-                console.log(datos[i].children[0].children);
                 if(datos[i].children[0].children.length > 1){
-                var tmp = {
-                    grupo: datos[i].children[0].children[0].innerHTML,
-                    color: datos[i].children[0].children[1].value
-                };
+                    var tmp = {
+                        grupo: datos[i].children[0].children[0].innerHTML,
+                        color: datos[i].children[0].children[1].value
+                    };
                 }
                 else{
                     var tmp = {
-                    grupo: datos[i].children[0].children[0].innerHTML,
-                };
+                        grupo: datos[i].children[0].children[0].innerHTML,
+                        color: colores[i].hex,
+                    };
                 }
                 tmp_colors.push(tmp);
                 var title = order[i];
-
                 _().each( datos[i].children[1].children,function(j, a) {
                     var value = parseInt(a[j].children[0].innerHTML);
                     valores[j][title] = value;
@@ -227,6 +253,7 @@ _.prototype.drawBar = function(canvas,data){
 }
 _.prototype.getMaxColumn = function (){
     var max = 0;
+    if(barras_mode != "cols") {
     for(var i=0;i< this.data.length;i++){
         var tmp = 0;
         for (var j = 1; j < Object.keys(this.data[0]).length; j++) {
@@ -236,10 +263,22 @@ _.prototype.getMaxColumn = function (){
              max = tmp;
         }
     }
+    } else {
+        for(var i=0;i< Object.keys(this.data[0]).length;i++){
+            var tmp = 0;
+            for (var j = 0; j < this.data.length; j++) {
+                tmp += this.data[j][Object.keys(this.data[j])[i]];
+            }
+            if (tmp > max) {
+                 max = tmp;
+            }
+        }
+    }
     var len = max.toString().length;
     var orden = Math.pow(10,len-1);
     var next = parseInt(max/orden)+1;
     var max = next * orden;
+
     return max;
 }
 
@@ -247,10 +286,20 @@ _.prototype.getInterval = function (max,bars,origen) {
     return Math.ceil(max/(bars));
 }
 
-_.prototype.createBarsVerticalAxis = function(max,bars,type){
-    var step = this.getInterval(max,bars,0);
+_.prototype.createBarsVerticalAxis = function(max_val,bars,type){
+    if(barras_mode != "cols") {
+        var max = max_val;
+        var step = this.getInterval(max,bars,0);
+        this.ceil = ((((max+step*2)/step)-2)*step);
+    }
+    else {
+        var max = 100;
+        var step = 20;
+        this.ceil = ((((max+step*2)/step)-2)*step);
+    }
+
     this.step = step;
-    this.ceil = ((((max+step*2)/step)-2)*step);
+
     var ctx = this.ctx;
 
         var fuente = new Kinetic.Text({
@@ -306,7 +355,12 @@ _.prototype.createBarsVerticalAxis = function(max,bars,type){
 }
 
 _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden, color_rest, offset){
-    var value = (((this.data[j][orden[i]] * 100) / (this.ceil))*h/100);
+    if(barras_mode != "cols") {
+        var value = (((this.data[j][orden[i]] * 100) / this.ceil)*h/100);
+    } else {
+        var value = (((this.data[j][orden[i]] * 100) / maximo)*h/100);
+    }
+
     var barra = new Kinetic.Shape({
         drawFunc: function(ctx){
             ctx.beginPath();
@@ -314,25 +368,25 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
             ctx.closePath();
             ctx.fillStrokeShape(this);
         },
-        stroke: "#FFF",
-        strokeWidth: 1,
+        stroke: "rgba(0,0,0,0)",
+        strokeWidth: 0,
         fill: this.colores_grupos[i-color_rest]["color"],
     });
     layer.add(barra);
 }
 
 _.prototype.createBarsHorizontalAxis = function(max){
-    var w = this.ctx.canvas.width-50;
-    var h = this.ctx.canvas.height-30;
+    var w = this.ctx.canvas.width - 50;
+    var h = this.ctx.canvas.height - 30;
     if(barras_mode == "compuesto")
         var N = this.data.length;
     else
         var N = Object.keys(this.data[0]).length;
-    console.log(Object.keys(this.data[0]).length);
     var m = 10;
-    if(N<4)m = m*((1/((N*100)/6)))*100;
-    var wBar = (w - (N*m) - 20)/N;
-    var maximo = this.getMaxValue();
+    if (N < 4) m = m * ((1 / ((N * 100) / 6))) * 100;
+    var wBar = (w - (N * m) - 20) / N;
+
+    var maximo = max;
     var layer2 = new Kinetic.Layer();
     var height_accumulated = 0;
     var labels = [];
@@ -349,11 +403,11 @@ _.prototype.createBarsHorizontalAxis = function(max){
         var start = 0;
          var color_rest = 0;
     }
-    console.log(start);
+
     for (var j=0; j<this.data.length; j++){
         var leyenda = "";
 
-        for (var i=start; i< orden.length; i++){
+        for (var i = start; i< orden.length; i++){
             switch (barras_mode) {
                 case "compuesto":
                     this.drawBarra(maximo,
@@ -414,3 +468,4 @@ _.prototype.createBarsHorizontalAxis = function(max){
     layer2.draw();
 
 }
+

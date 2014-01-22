@@ -16,6 +16,10 @@ _.prototype.history= function (obj) {
         if ( localStorage.drawLabels ) {
             this.printLabels = localStorage.drawLabels;
         }
+        this.separado = false;
+        if ( localStorage.separado ) {
+            this.separado = localStorage.separado;
+        }
         this.data = obj.data;
         this.addHistTools(obj.data);
         this.drawHist(this.canvas, obj.data);
@@ -60,6 +64,8 @@ _.prototype.historyPannel = function() {
         fuente_label.appendChild(fuente_inpt);
         div_options.appendChild(fuente_label);
 
+    var div_fila1 = document.createElement("DIV");
+    var div_fila2 = document.createElement("DIV");
     var checkbox_labels = document.createElement("input");
         checkbox_labels.type = "checkbox";
         checkbox_labels.setAttribute("id","dibujar-check");
@@ -71,8 +77,40 @@ _.prototype.historyPannel = function() {
     if (this.printLabels === "true") {
         checkbox_labels.checked = true;
     }
-    div_options.appendChild(checkbox_labels);
-    div_options.appendChild(checkbox_title);
+
+    div_fila1.appendChild(checkbox_labels);
+    div_fila1.appendChild(checkbox_title);
+
+    var separador_label = document.createElement("input");
+        separador_label.type = "checkbox";
+        separador_label.setAttribute("id","separador-check");
+    var separador_title = document.createElement("label");
+        separador_title.setAttribute("for","separador-check");
+        separador_title.setAttribute("class","label-separador-check");
+        separador_title.innerHTML = "Dibujar separador";
+        separador_label.checked = false;
+    div_fila2.appendChild(separador_label);
+    div_fila2.appendChild(separador_title);
+
+    div_options.appendChild(div_fila1);
+    div_options.appendChild(div_fila2);
+    if (this.separado === "true") {
+        var div_fila3 = document.createElement("DIV");
+        separador_label.checked = true;
+        var separador_text = document.createElement("input");
+            separador_text.type = "text";
+            separador_text.setAttribute("id","separador_text");
+            separador_text.setAttribute("placeholder","Texto");
+        var separador_num = document.createElement("input");
+            separador_num.type = "number";
+            separador_num.setAttribute("id","separador_num");
+        div_fila3.appendChild(separador_text);
+        div_fila3.appendChild(separador_num);
+        div_options.appendChild(div_fila3);
+    }
+
+
+
 
     var ul = document.createElement("UL");
     $(ul).droppable({
@@ -186,45 +224,58 @@ _.prototype.drawHistoricBars = function (posicion) {
     var puntos = [];
     var offset = (posicion["step"] * posicion["numero"]) * h / maximo;
     var des_orig = (posicion["origen"] < 0) ? posicion["origen"] : 0;
+
     for ( var j = 0; j < Object.keys(data[0]).length; j++ ) {
         if(Object.keys(data[0])[j] != "Leyenda"){
             linea_set = [];
             a = -x;
+            if(pie_mode != "simple") linea_set.push({x:0,y:0});
             for ( var i=0; i < data.length; i++ ) {
                 var value = ((((data[i][Object.keys(data[0])[j]]-min) * h)/amplitud));
-                //value = (value * this.step / 100)*h/100;
-                console.log(maximo);
-                //var value = (((data[i][Object.keys(data[0])[j]] - des_orig) * h) - offset)/(maximo);
                 linea_set.push({x:a + x, y: -( value)});
                 a += x;
             }
+            if(pie_mode != "simple") linea_set.push({ x:a, y:0 });
             puntos.push(linea_set);
         }
     };
 
     var layer_hist = new Kinetic.Layer();
-    for ( var i = 0; i < puntos.length;i++ ) {
-        var line = new Kinetic.Line({
-            points: puntos[i],
-            stroke: colores_barras[i].hex,
-            strokeWidth: 3,
-            lineCap: 'round',
-            lineJoin: 'round',
-        });
 
-        line.move(40, h);
-        if (pie_mode === "simple" && this.printLabels === "true") {
-            var text = Object.keys(data[0])[i+1];
-            var width = this.ctx.measureText(text).width;
-            this.drawLabel(30 + puntos[i][1]["x"],
-                           h + puntos[i][1]["y"] - 5,
-                           width + 4, 24,
-                           colores_barras[i].hex,
-                           "#FFFFFF",
-                           text, 4, layer_hist);
+    for ( var i = 0; i < puntos.length;i++ ) {
+        if(pie_mode == "simple") {
+            var line = new Kinetic.Line({
+                points: puntos[i],
+                stroke: colores_barras[i].hex,
+                strokeWidth: 3,
+                lineCap: 'round',
+                lineJoin: 'round',
+            });
+
+            line.move(40, h);
+            if (this.printLabels === "true") {
+                var text = Object.keys(data[0])[i+1];
+                var width = this.ctx.measureText(text).width;
+                this.drawLabel(30 + puntos[i][1]["x"],
+                               h + puntos[i][1]["y"] - 5,
+                               width + 4, 24,
+                               colores_barras[i].hex,
+                               "#FFFFFF",
+                               text, 4, layer_hist);
+            }
+            layer_hist.add(line);
+        } else {
+            var area = new Kinetic.Polygon({
+                points: puntos[i],
+                fill: colores_barras[i].hex,
+                stroke: "white",
+                strokeWidth: 1,
+            });
+            area.move(40, h);
+            layer_hist.add(area);
         }
-        layer_hist.add(line);
     }
+
     if (pie_mode == "simple" && this.printLabels === "true") {
         var labels = layer_hist.find('.label');
         labels.forEach(function(i){

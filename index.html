@@ -252,6 +252,22 @@
                     localStorage.drawLabels = false;
                 }
             });
+            $(document).on("click",".label-dest-check",function(){
+                if(!$('#destacar_check').is(":checked")){
+                    localStorage.destacado_bars = true;
+                }
+                else {
+                    localStorage.destacado_bars = false;
+                }
+            });
+            $(document).on("click",".label-separador-check",function(){
+                if(!$('#separador-check').is(":checked")){
+                    localStorage.separado = true;
+                }
+                else {
+                    localStorage.separado = false;
+                }
+            });
 
             dragevents();
             function restaurarColores(){
