@@ -1,89 +1,92 @@
 var tartas = 1;
 var pie_mode = "simple";
-if(!localStorage.pie_mode)
+"use strict";
+var fuente_value = "Cores";
+if (localStorage.fuente) {
+    fuente_value = localStorage.fuente;
+}
+if (!localStorage.pie_mode) {
     localStorage.pie_mode = "simple";
-else{
+} else {
     pie_mode = localStorage.pie_mode;
 }
-function create_data_set(dest,d){
-    dest.innerHTML = "";
-    var f = document.createDocumentFragment();
-    var contenedor = document.createElement("DIV");
-    contenedor.setAttribute("id","data-list");
 
-    var f = document.createDocumentFragment();
-    
-    var create = document.createElement("BUTTON");
-    create.setAttribute("id","create-group");
-    if(pie_mode == "simple")
+function create_data_set(dest, d) {
+    dest.innerHTML = "";
+    var f = document.createDocumentFragment(), contenedor = document.createElement("DIV"),
+        create = document.createElement("BUTTON"), grupos = document.createElement("DIV");
+    contenedor.setAttribute("id", "data-list");
+
+    create.setAttribute("id", "create-group");
+    if (pie_mode === "simple") {
         create.className = "complex_pie simple_pie";
-    else
+    } else {
         create.className = "complex_pie";
+    }
     create.innerHTML = "Añadir Grupo";
-    var grupos = document.createElement("DIV");
-    grupos.setAttribute("id","attr-grupos");
+    grupos.setAttribute("id", "attr-grupos");
+    grupos.className = "data-options";
     var ul = document.createElement("UL");
     grupos.appendChild(create);
-    if(localStorage.grupos){
-    var g = JSON.parse(localStorage.grupos);
-    
-    _().each(g,function(j,a){
-        var li = document.createElement("LI");
-        if(pie_mode == "simple")
-            li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie'>"+a[j].label+"</span>";
-        else
-            li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie'>"+a[j].label+"</span>";
-        var ul2 = document.createElement("UL");
-        $(li).droppable({
+    if (localStorage.grupos) {
+        var g = JSON.parse(localStorage.grupos);
+        _().each(g, function (j, a) {                                   //create each group
+            var li = document.createElement("LI");
+            if (pie_mode === "simple")
+                li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie'>" + a[j].label + "</span>";
+            else
+                li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie'>" + a[j].label + "</span>";
+            var ul2 = document.createElement("UL");
+            $(li).droppable({
                 addClasses : false,
                 accept: ".data-list-li",
-                drop: function(e,ui){
-                    $(this).find("ul").append(ui.draggable)
+                drop: function (e, ui) {
+                    $(this).find("ul").append(ui.draggable);
                 }
             });
-        _().each(d,function(i){
-            if(d[i].group != "" && d[i].group == a[j].label){
-                if(d[i]["color"])color = d[i]["color"];
-            else if(i>=colores.length){
-                var color = colores[(i%colores.length)+2].hex;
-            }
-            else{
-                var color=colores[i].hex;
-            }
-            var li2 = document.createElement("LI");
-            li2.className = "data-list-li";
-            var cont = document.createElement("DIV");
-            cont.className = "data-list-element";
-            var inpt_val = document.createElement("INPUT");
-            inpt_val.type = "number";
-            inpt_val.value = d[i]["value"];
-            inpt_val.className = "value";
-            var inpt_labl = document.createElement("INPUT");
-            inpt_labl.type = "text";
-            inpt_labl.value = d[i]["label"];
-            inpt_labl.className = "label";
-            var inpt_color = document.createElement("INPUT");
-            inpt_color.type = "color";
-            inpt_color.value = color;
-            inpt_color.className = "color";
-            cont.appendChild(inpt_labl);
-            cont.appendChild(inpt_val);
-            cont.appendChild(inpt_color);
-            li2.appendChild(cont);
-            ul2.appendChild(li2);
-            $(li2).draggable({
-                    addClasses : false,
-                    revert: true,
-                });
-            }
-        });
-        li.appendChild(ul2);
-        ul.appendChild(li);
-        grupos.appendChild(ul);
+            _().each(d, function (i) {                                  // Create each portion in its own group
+                if (d[i].group !== "" && d[i].group === a[j].label) {
+                    if(d[i]["color"])color = d[i]["color"];
+                else if(i>=colores.length){
+                    var color = colores[(i%colores.length)+2].hex;
+                }
+                else{
+                    var color=colores[i].hex;
+                }
+                var li2 = document.createElement("LI");
+                li2.className = "data-list-li";
+                var cont = document.createElement("DIV");
+                cont.className = "data-list-element";
+                var inpt_val = document.createElement("INPUT");
+                inpt_val.type = "number";
+                inpt_val.value = d[i]["value"];
+                inpt_val.className = "value";
+                var inpt_labl = document.createElement("INPUT");
+                inpt_labl.type = "text";
+                inpt_labl.value = d[i]["label"];
+                inpt_labl.className = "label";
+                var inpt_color = document.createElement("INPUT");
+                inpt_color.type = "color";
+                inpt_color.value = color;
+                inpt_color.className = "color";
+                cont.appendChild(inpt_labl);
+                cont.appendChild(inpt_val);
+                cont.appendChild(inpt_color);
+                li2.appendChild(cont);
+                ul2.appendChild(li2);
+                $(li2).draggable({
+                        addClasses : false,
+                        revert: true,
+                    });
+                }
+            });
+            li.appendChild(ul2);
+            ul.appendChild(li);
+            grupos.appendChild(ul);
 
-    });
+        });
     }
-    else{
+    else{                                               // If there's no groups create one and add everything in
         var li = document.createElement("LI");
         if(pie_mode == "simple")
            li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie' val='0'>Grupo1</span>";
@@ -91,16 +94,14 @@ function create_data_set(dest,d){
             li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie' val='0'>Grupo1</span>";
         var ul2 = document.createElement("UL");
 
-        _().each(d,function(i,a){
-            console.log(d[i]["color"]);
-            if(d[i]["color"]){
+        _().each( d,function (i, a) {
+            if (d[i]["color"]) {
                 color = d[i]["color"];
-                console.log(color);
             }
-            else if(i>=colores.length){
+            else if (i>=colores.length) {
                 var color = colores[(i%colores.length)+2].hex;
             }
-            else{
+            else {
                 var color=colores[i].hex;
             }
             var li2 = document.createElement("LI");
@@ -134,20 +135,31 @@ function create_data_set(dest,d){
         ul.appendChild(li);
         grupos.appendChild(ul);
     }
+    var div_options = document.createElement("DIV");
+        div_options.className = "data-options";
+        div_options.setAttribute("id","options-bars");
+    var fuente_label = document.createElement("DIV");
+        fuente_label.innerHTML = "<span>Fuente: </span>";
+    var fuente_inpt = document.createElement("INPUT");
+        fuente_inpt.type = "text";
+        fuente_inpt.setAttribute("id","fuente_input");
+        fuente_inpt.setAttribute("value",fuente_value);
+    fuente_label.appendChild(fuente_inpt);
+    div_options.appendChild(fuente_label);
 
-
-
-    var inpt_sub = document.createElement("BUTTON");
+    var inpt_sub = document.createElement("BUTTON");                            // Create draw button
         inpt_sub.type = "submit";
         inpt_sub.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
         inpt_sub.className = "draw_button";
-        inpt_sub.addEventListener('click',function(){
+        inpt_sub.addEventListener('click',function(){                           // Add click event to draw
             var grupos_list = [];
-            _().each(document.querySelectorAll(".grupo_tag"),function(i,a){
+            _().each(document.querySelectorAll(".grupo_tag"),function(i,a){     // Fetch all the data inside each item
                 grupos_list.push({label:a[i].innerHTML,value:a[i].getAttribute("val")});
             });
             localStorage.grupos = JSON.stringify(grupos_list, 2, 2);
-
+            var fuent = document.querySelectorAll("#fuente_input")[0].value;
+            localStorage.fuente = fuent;
+            fuente_value = fuent;
             var data = [];
             _().each(document.querySelectorAll("#attr-grupos ul>li div"),function(i,a){
                values = [];
@@ -164,15 +176,12 @@ function create_data_set(dest,d){
                     colores[i] = new Color(values[2]);
                     color = colores[i].hex
                 }
-
               data[i] = {
                     label:values[0],
                     value: parseFloat(values[1]),
                     group: grupo,
                     color: color,
                 };
-
-               
            });
             localStorage.data = JSON.stringify(data, 2, 2);
              dragevents();
@@ -180,44 +189,41 @@ function create_data_set(dest,d){
         },false);
     grupos.appendChild(inpt_sub);
     f.appendChild(grupos);
+    f.appendChild(div_options);
     contenedor.appendChild(f);
     dest.appendChild(contenedor);
 }
-_.prototype.pie= function(obj){
+_.prototype.pie= function (obj) {
     var id = this.id;
     
-    _().canvas(this.e[0],function(){
+    _().canvas(this.e[0],function() {
         this.data_content = document.querySelectorAll("#graph-data")[0];
         this.canvas = document.querySelectorAll(id+" canvas")[0];
-        this.addTools();
+        this.addPieTools();
         this.drawPie(this.canvas,obj.data); 
     });
     
     
 }
-_.prototype.addTools = function(obj){
+_.prototype.addPieTools = function (obj) {
     var menu = document.querySelectorAll("menu")[0];
     menu.innerHTML = "";
     var f = document.createDocumentFragment();
     var complex = document.createElement("DIV");
 
-    complex.innerHTML = "<div class='icon-spinner2 icono'></div>  Gráfico compuesto";
+    complex.innerHTML = "<div class='icon-spinner2 icono' title='Gráfico compuesto'></div><span class='menu-text'>Gráfico compuesto</span>";
     if(pie_mode == "complex")complex.className = "active menu-button";
     else complex.className = "menu-button";
     complex.setAttribute("id","pie_complex");
     var simple = document.createElement("DIV");
     if(pie_mode == "simple")simple.className = "active menu-button";
     else simple.className = "menu-button";
-    simple.innerHTML = "<div class='icon-spinner icono'></div>  Gráfico simple";
+    simple.innerHTML = "<div class='icon-spinner icono' title='Gráfico simple'></div><span class='menu-text'>Gráfico simple</span>";
     simple.setAttribute("id","pie_simple");
     f.appendChild(simple);
     f.appendChild(complex);
     menu.appendChild(f);
-    menu.innerHTML += '<ul>\
-          <li><a href="https://github.com/juanpablocruz/Graph-app/zipball/master">Download <strong>ZIP File</strong></a></li>\
-          <li><a href="https://github.com/juanpablocruz/Graph-app/tarball/master">Download <strong>TAR Ball</strong></a></li>\
-          <li><a href="https://github.com/juanpablocruz/Graph-app">View On <strong>GitHub</strong></a></li>\
-        </ul>';
+
     var data_content = document.querySelectorAll("#graph-data")[0];
     var f = document.createDocumentFragment();
     var complex = document.createElement("DIV");
@@ -226,7 +232,7 @@ _.prototype.addTools = function(obj){
     data_content.appendChild(f);
 }
 
-_.prototype.draw = function(data,radio,text){
+_.prototype.draw = function (data, radio, text) {
     var suma = 0;
     var porciones = Array();
     
@@ -235,10 +241,10 @@ _.prototype.draw = function(data,radio,text){
     });
     
     
-    _().each(data,function(i){
-        if(localStorage.data && JSON.parse(localStorage.data)[i]["color"])
+    _().each(data,function (i) {
+        if (localStorage.data && JSON.parse(localStorage.data)[i]["color"])
             var color = new Color(JSON.parse(localStorage.data)[i]["color"]);
-        else{
+        else {
             if(i>=colores.length){
                 var color = colores[(i%colores.length)+2];
             }
@@ -248,29 +254,28 @@ _.prototype.draw = function(data,radio,text){
         porciones.push({
             porcentaje : p,
             color: color});
-    })
-    
-    for (var i = 0; i < data.length; i++) {
+    });
+    for ( var i = 0; i < data.length; i++) {
         this.drawPieSegment(this.ctx, i,porciones,radio);
     }
-    if(text){
-        for (var i = 0; i < data.length; i++) {
+    if (text) {
+        for ( var i = 0; i < data.length; i++) {
             this.writePieText(this.ctx, i,porciones,radio);
         }
     }
-    else{
-        for (var i = 0; i < data.length; i++) {
+    else {
+        for ( var i = 0; i < data.length; i++) {
             this.drawPieGroupText(this.ctx, i,porciones,radio+130);
         }
     }
 }
 
-_.prototype.drawPie = function(canvas,data){
+_.prototype.drawPie = function (canvas, data) {
     this.data = data;
     create_data_set(this.data_content,data);
     this.ctx = canvas.getContext("2d");
     var radio = 0;
-    if(pie_mode=="complex"){
+    if (pie_mode=="complex" && localStorage.grupos) {
         this.grupos = JSON.parse(localStorage.grupos);
         var grupos = this.grupos;
         var fragmentos = [];
@@ -282,21 +287,33 @@ _.prototype.drawPie = function(canvas,data){
                 }
             });
             g[i].value = total;
-            fragmentos.push({value: total, label: grupos[i].label});
+            if(total > 0)
+                fragmentos.push({value: total, label: grupos[i].label});
             total = 0;
         });
         this.draw(fragmentos,180,false);
         radio = 180;
         localStorage.grupos = JSON.stringify(fragmentos);
     }
-    else{
+    else {
         radio = 200;
     }
-    this.draw(data,radio-20,true);
 
+    var fuente = new Kinetic.Text({
+            x: canvas.width - 20,
+            y: canvas.height - 5 ,
+            text: "Fuente: "+fuente_value,
+            fontSize: 15,
+            fontFamily: "InfoTextBook",
+            fontStyle: "italic",
+            fill: "#7B796C",
+            rotationDeg: -90,
+        });
+    _.layer.add(fuente);
+    this.draw(data, radio-20, true);
 
 }
-_.prototype.sumTo = function(a,i) {
+_.prototype.sumTo = function (a, i) {
     var sum = 0;
     for (var j = 0; j < i; j++) {
         sum += a[j]["porcentaje"];    	
@@ -304,9 +321,8 @@ _.prototype.sumTo = function(a,i) {
     return sum;
 }
 
-_.prototype.drawPieSegment = function(context, i,porciones,r){
-
-    var startingAngle = (this.sumTo(porciones,i));
+_.prototype.drawPieSegment = function (context, i, porciones, r) {
+    var startingAngle = (this.sumTo(porciones, i));
     var arcSize = porciones[i]["porcentaje"];
     var endingAngle = startingAngle + arcSize;
     
@@ -328,14 +344,12 @@ _.prototype.drawPieSegment = function(context, i,porciones,r){
     });
     _.layer.add(arc);
     _.layer.draw();
-
 }
 
-_.prototype.drawPieGroupText = function(context,i,porciones,r){
+_.prototype.drawPieGroupText = function (context, i, porciones, r) {
     var centerx = Math.floor(context.canvas.width/2);
     var centery = Math.floor(context.canvas.height/2);
     radius = r+20;
-
     var tc;
     if(porciones[i]["color"].lab.l < 65)tc = "#FFF";
     else tc = "#333";
@@ -343,8 +357,8 @@ _.prototype.drawPieGroupText = function(context,i,porciones,r){
     var arcSize = porciones[i]["porcentaje"]-0.35;
     var endingAngle = (startingAngle + arcSize/2);
 
-    var dy = Math.sin(endingAngle)/2;
-    var dx = 2*Math.cos(endingAngle)/3;
+    var dy = Math.sin(endingAngle) / 2;
+    var dx = 2 * Math.cos(endingAngle) / 3;
     context.font = '16px "Mic 32 New Rounded"';
     var width = context.measureText( this.grupos[i]["label"]).width;
 
@@ -353,29 +367,20 @@ _.prototype.drawPieGroupText = function(context,i,porciones,r){
     var group = new Kinetic.Group({
         draggable:true,
         dragBoundFunc: function(pos,e) {
+            var centerX = context.canvas.width/2;
+            var centerY = (context.canvas.height/2);
+                r = radius - 20;
+            if(typeof e != "undefined"){
 
-        var centerX = centerx - (dx*radius);
-        var centerY = Math.floor(context.canvas.height/2);
-        if(pos.x < 0){
-            if(e && ((e.x) < centerX)){
+            var x = centerX - e.offsetX;
+            var y = centerY - e.offsetY;
+            if((x*x)+(y*y) > (r*r)){
                 text_data.setFill("#333");
-                _.layer.draw();
-            }
-            else{
+            }else{
                 text_data.setFill(tc);
-                _.layer.draw();
             }
-        }
-        else if(pos.x > 0){
-            if(e && ((e.x) > (centerX+(radius*2)))){
-                text_data.setFill("#333");
-                _.layer.draw();
             }
-            else{
-                text_data.setFill(tc);
-                _.layer.draw();
-            }
-        }
+            _.layer.draw();
             return pos;
         },
         id: "pie_text_"+i}
@@ -398,7 +403,6 @@ _.prototype.drawPieGroupText = function(context,i,porciones,r){
             paddingLeft: -5,
         });
 
-    console.log(this.grupos[i]);
     var text_data = new Kinetic.Text({
             x: centerx + (dx*radius),
             y: centery+ (dy*radius) + 24,
@@ -414,13 +418,13 @@ _.prototype.drawPieGroupText = function(context,i,porciones,r){
     _.layer.add(group);
     _.layer.draw();
 }
-_.prototype.writePieText = function(context,i,porciones,r){
+_.prototype.writePieText = function (context, i, porciones, r) {
     var centerx = Math.floor(context.canvas.width/2);
     var centery = Math.floor(context.canvas.height/2);
     radius = r+20;
 
     var tc;
-    if(porciones[i]["color"].lab.l < 65)tc = "#FFF";
+    if (porciones[i]["color"].lab.l < 65) tc = "#FFF";
     else tc = "#333";
     var startingAngle = (this.sumTo(porciones,i));
     var arcSize = porciones[i]["porcentaje"]-0.35;
@@ -436,62 +440,55 @@ _.prototype.writePieText = function(context,i,porciones,r){
     var group = new Kinetic.Group({
         draggable:true,
         dragBoundFunc: function(pos,e) {
-        
-        var centerX = centerx - (dx*radius)-30;
-        var centerY = Math.floor(context.canvas.height/2);
-        if(pos.x < 0){
-            if(e && ((e.x) < centerX)){
-                text_data.setFill("#333");
-                _.layer.draw();
-            }
-            else{
-                text_data.setFill(tc);
-                _.layer.draw();
-            }
+        var centerX = context.canvas.width/2;
+        var centerY = (context.canvas.height/2);
+            r = radius - 20;
+        if(typeof e != "undefined"){
+
+        var x = centerX - e.offsetX;
+        var y = centerY - e.offsetY;
+        if((x*x)+(y*y) > (r*r)){
+            text_data.setFill("#333");
+        }else{
+            text_data.setFill(tc);
         }
-        else if(pos.x > 0){
-            if(e && ((e.x) > (centerX+(radius*2)))){
-                text_data.setFill("#333");
-                _.layer.draw();
-            }
-            else{
-                text_data.setFill(tc);
-                _.layer.draw();
-            }
         }
+        _.layer.draw();
             return pos;
         }, 
-        id: "pie_text_"+i}
-                                 );
+        id: "pie_text_"+i});
+
+    /* Split the labels in lines and get the box size  */
+
     var width = context.measureText( this.data[i]["label"]).width;
     var t =  this.data[i]["label"];
-    var texto = "",w = 0, l1 = 100, l2 = 150,ancho=0,lineas = 1;
+    var texto = "",w = 0, l1 = 80, l2 = 110,ancho=0,lineas = 1;
     var mayor = 0;
-    _().each(t.split(" "), function(k,te){
-       w=context.measureText(te[k]).width;
-        ancho += w;
-        if( ancho > l1){
-         if(ancho > l2){
-             texto += "\n"+te[k]+" ";
-             if(k != te.length-1)
-                 ancho=0;
-             else{
-                ancho =l1;
-             }
-             //console.log(te[k]+" "+ancho+" "+k+" "+te.length );
-             lineas++}
-        else {
-            texto+=te[k]+" ";
-        }
+
+    _().each(t.split(" "), function (k, te) {   // Iterate through each word
+       w=context.measureText(te[k]).width;      // get each word width
+        if ( mayor < ancho ) mayor = ancho;     // check if the current line width is the longest and if so change it
+        if ((ancho + w) > l1) {                 // if the current line plus the word is longer than the first control limit
+         if ((ancho + w) > l2) {                // check if its greater than the longest limit
+             texto += "\n"+te[k]+" ";           // if so, break the line and add the word
+             if (k != te.length-1) ancho=0;     // if its not the last word reset the line width to 0
+             else ancho = l1;                   // else, set it to the first limit
+             lineas++                           // increase the number of lines written
+         }
+         else {
+            texto+=te[k]+" ";                   // if its smaller than the last limit just add it
+            ancho += w;                         // increase the line width
+         }
        }
-        else{
-           texto+=te[k]+" ";
-            ancho += w;
-        }
+       else {
+            texto += te[k] + " ";               // if its smaller than the first limit add it
+            ancho += w;                         // increase the line width
+       }
     });
 
-    if(lineas>1)width = ancho;
+    if (lineas > 1) width = mayor;              // if there's more than one line set the width to the greatest line width
     var padding = 20*lineas;
+
     var box = new Kinetic.Rect({
             x: centerx + (dx*radius),
             y: centery+ (dy*radius),

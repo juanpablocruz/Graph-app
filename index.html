@@ -8,13 +8,10 @@
     <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.7.4.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" ></script>
      <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-    <script src="js/color.js"></script>
-    <script src="js/core.js"></script>
-    <script src="js/xls.js"></script>
-    <script src="js/pie.js"></script>
+
 
     <script>
-        var data;
+        var data, tipo;
         function xlsworker(data, cb) {
             var worker = new Worker('js/xlsworker.js');
             worker.onmessage = function(e) {
@@ -47,10 +44,9 @@
             var output = "";
             output = to_json(wb).Hoja1;
             data = JSON.stringify(output, 2, 2);
-            localStorage.clear();
             localStorage.data=data;
-
-            _("#graph").pie({data:output});
+            tipo = localStorage.chartType;
+            cargar(output,tipo);
         }
 
         function handleDrop(e) {
@@ -96,6 +92,39 @@
             e.preventDefault();
             e.dataTransfer.dropEffect = 'copy';
         }
+        function cargar(data,tipo){
+            switch (tipo) {
+                        case "Tartas":
+                            if(typeof data[0] != "undefined" &&
+                               Object.keys(data[0]).indexOf("label")>-1){
+                                _("#graph").pie({data:data});
+                                changeStep($(".current_step"),"next");
+                            }
+                            else{
+                                localStorage.removeItem(data);
+                                alert("error de archivo");
+                            }
+                            break;
+                        case "Barras":
+                            _("#graph").bars({data:data});
+                            changeStep($(".current_step"),"next");
+                            break;
+                        case "Historicos":
+                            _("#graph").history({data:data});
+                            changeStep($(".current_step"),"next");
+                            break;
+                    }
+        }
+        function changeStep(obj,dir){
+            switch(dir){
+                case "prev":
+                    $(obj).removeClass("current_step").prev().first().addClass("current_step");
+                    break;
+                case "next":
+                    $(obj).removeClass("current_step").next().first().addClass("current_step");
+                    break;
+            }
+        }
         $(function(){
             var tarea = document.getElementById('b64data');
             var drop = document.getElementById('drop');
@@ -104,11 +133,36 @@
                 drop.addEventListener('dragover', handleDragover, false);
                 drop.addEventListener('drop', handleDrop, false);
             }
+
+            if(localStorage.chartType){
+                if(localStorage.data){
+                    changeStep($(".current_step"),"next");
+                }
+                else{
+                    $("#step-info ul").html("");
+                    $("#step-info ul").append("<li><div class='halfCircleRight'>"+localStorage.chartType+"</div></li>");
+                   changeStep($(".current_step"),"next");
+                }
+            }
+
             _("nav ul").menu();
             if(localStorage.data){
-                data = JSON.parse(localStorage.data);
-                _("#graph").pie({data:data});
+                if(localStorage.chartType) {
+                    data = JSON.parse(localStorage.data);
+                    tipo = localStorage.chartType;
+                    cargar(data,tipo);
+                }
             }
+
+            $(document).on("click","#nuevo-graph",function(){
+                $(".current_step").removeClass("current_step");
+                $("#tipoGrafico").addClass("current_step");
+            });
+
+            $(document).on("click",".back",function(){
+                changeStep($(this).parent().parent(),"prev")
+            });
+
             $(document).on("click","nav ul li",function(){
                 switch($(this).text()){
                     case "Tartas":
@@ -116,38 +170,109 @@
                         break;
                 }
             });
+
+            $(document).on("click","nav ul li", function(){
+                var tx = $(this).attr("tipo");
+                $("nav .active").removeClass("active");
+                $(this).addClass("active");
+                localStorage.clear();
+                localStorage.chartType = tx;
+                $("#step-info ul").html("");
+                $("#step-info ul").append("<li><div class='halfCircleRight'>"+tx+"</div></li>");
+                changeStep($(this).parent().parent().parent(),"next");
+            });
+
             $(document).on("click","#pie_simple",function(){
                 $(".complex_pie").addClass("simple_pie");
-                $("menu .active").removeClass("active");
+                $(".active").removeClass("active");
                 $(this).addClass("active");
                 pie_mode = "simple";
                 localStorage.pie_mode = pie_mode;
             });
+
             $(document).on("click","#pie_complex",function(){
                 $(".complex_pie").removeClass("simple_pie");
-                $("menu .active").removeClass("active");
+                $(".active").removeClass("active");
                 $(this).addClass("active");
                 pie_mode = "complex";
                 localStorage.pie_mode = pie_mode;
             });
+
+            $(document).on("click","#bars_compuesto",function(){
+                $(".complex_pie").removeClass("simple_pie");
+                $(".active").removeClass("active");
+                $(this).addClass("active");
+                barras_mode = "compuesto";
+                if(localStorage.coloresBarras)
+                    localStorage.removeItem("coloresBarras");
+                localStorage.barras_mode = barras_mode;
+            });
+
+            $(document).on("click","#bars_cols",function(){
+                $(".complex_pie").addClass("simple_pie");
+                $(".active").removeClass("active");
+                console.log("click");
+                $(this).addClass("active");
+                barras_mode = "cols";
+                if(localStorage.coloresBarras)
+                    localStorage.removeItem("coloresBarras");
+                localStorage.barras_mode = barras_mode;
+            });
+
+
+
             $(document).on("click","#create-group",function(){
                 var x = $("<li><span contenteditable='true' class='grupo_tag complex_pie' val='0'>Grupo</span></li>");
                 var ul = $("<ul></ul>");
                 x.append(ul);
                 $("#attr-grupos>ul").append(x);
                 x.droppable({
-                addClasses : false,
-                accept: ".data-list-li",
-                drop: function(e,ui){
-                    console.log(e);
-                    $(this).find("ul").append(ui.draggable)
-                }
+                    addClasses : false,
+                    accept: ".data-list-li",
+                    drop: function(e,ui){
+                        $(this).find("ul").append(ui.draggable)
+                    }
                 });
             });
+
+            $(document).on("click",".rearrange-button",function(){
+                $(".data-list-li-holder").toggleClass("data-list-li");
+                $(".data-list-element-holder").toggleClass("data-list-element");
+                $(".data-list-li").draggable({
+                    addClasses : false,
+                    revert: true,
+                });
+            });
+
+            $(document).on("click",".label-dibujar-check",function(){
+                if(!$('#dibujar-check').is(":checked")){
+                    localStorage.drawLabels = true;
+                }
+                else {
+                    localStorage.drawLabels = false;
+                }
+            });
+            $(document).on("click",".label-dest-check",function(){
+                if(!$('#destacar_check').is(":checked")){
+                    localStorage.destacado_bars = true;
+                }
+                else {
+                    localStorage.destacado_bars = false;
+                }
+            });
+            $(document).on("click",".label-separador-check",function(){
+                if(!$('#separador-check').is(":checked")){
+                    localStorage.separado = true;
+                }
+                else {
+                    localStorage.separado = false;
+                }
+            });
+
             dragevents();
             function restaurarColores(){
                 colores = standard.slice(0);
-                _("#graph").pie({data:data});
+                cargar(data,tipo);
             }
         });
 
@@ -155,31 +280,49 @@
     </script>
     </head>
 <body>
-<aside>
+    <header><h1>GraphApp</h1></header>
+
+    <div id="content">
+<div id="tipoGrafico" class="step current_step">
     <nav>
-        <ul>
-        </ul>
-    </nav>
+            <ul>
+            </ul>
+        </nav>
+</div>
+<div id="loadData" class="step">
+
     <section id="tools">
-        <div id="buttons">
-        <button id="restaurar_colores" onclick="restaurarColores()"><div class='icon-droplet icono'></div>  Restaurar Colores</button>
-        <div id="save"><div class='icon-download icono'></div> Guardar</div>
-        </div>
+        <div id="step-info"><ul></ul></div>
         <div id="drop"><div class="icon-box-add icono"></div>Arrastra un archivo XLS</div>
+        <div class="back">Volver</div>
     </section>
-    <menu>
-        <ul>
-          <li><a href="https://github.com/juanpablocruz/Graph-app/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/juanpablocruz/Graph-app/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/juanpablocruz/Graph-app">View On <strong>GitHub</strong></a></li>
-        </ul>
-    </menu>
-</aside>
-<main>
-    <section id="graph">
-    </section>
-    <section id="graph-data">
-    </section>
-</main>
+</div>
+<div id="designer" class="step">
+    <aside>
+        <section id="tools">
+            <div id="buttons">
+            <div id="nuevo-graph"><div class='icon-file icono' title="Nuevo"></div><span class="menu-text">Nuevo</span></div>
+            <button id="restaurar_colores" onclick="restaurarColores()"><div class='icon-droplet icono' title="Restaurar Colores"></div><span class="menu-text">Restaurar Colores</span></button>
+            <div id="save-button"><a id="save" href="" download="grafico" ><div class='icon-download icono' title="Guardar"></div><span class="menu-text">Guardar</span></a></div>
+            </div>
+
+        </section>
+        <menu>
+        </menu>
+    </aside>
+    <main>
+        <section id="graph">
+        </section>
+        <section id="graph-data">
+        </section>
+    </main>
+    </div>
+        </div>
+     <script src="js/color.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/xls-min.js"></script>
+    <script src="js/pie.js"></script>
+    <script src="js/barras.js"></script>
+    <script src="js/historic.js"></script>
 </body>
 </html>

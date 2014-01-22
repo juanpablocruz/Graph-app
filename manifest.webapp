@@ -1,0 +1,11 @@
+{
+  "version": "0.1",
+  "name": "GraphApp",
+  "description": "Aplicación de gráficos de CORES",
+  "launch_path": "/index.html",
+  "developer": {
+    "name": "Estrada Design",
+    "url": "http://estradadesign.eu"
+  },
+  "default_locale": "en"
+}

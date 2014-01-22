@@ -6,6 +6,7 @@ var Color = function(color,type){
         this.lab = this.XYZtoLAB(this.XYZ);
         this.cmyk = this.rgbToCMYK(this.rgb);
         this.hsv = this.rgbToHSV(this.rgb);
+        this.hsl = this.rgbToHsl(this.rgb);
     }
     else{
         switch(type){
@@ -15,7 +16,8 @@ var Color = function(color,type){
             this.XYZ = this.RGBtoXYZ(this.rgb);
             this.lab = this.XYZtoLAB(this.XYZ);
             this.cmyk = this.rgbToCMYK(this.rgb);
-            this.hsv = this.rgbToHSV(this.rgb);  
+            this.hsv = this.rgbToHSV(this.rgb);
+            this.hsl = this.rgbToHsl(this.rgb);
             break;
         case "cmyk":
             this.cmyk = this.cmykToCMYK(color);
@@ -23,7 +25,8 @@ var Color = function(color,type){
             this.hex = this.rgbToHex(this.rgb);
             this.XYZ = this.RGBtoXYZ(this.rgb);
             this.lab = this.XYZtoLAB(this.XYZ);
-            this.hsv = this.rgbToHSV(this.rgb);    
+            this.hsv = this.rgbToHSV(this.rgb);
+            this.hsl = this.rgbToHsl(this.rgb);
             break;
         case "lab":
             this.lab = this.labToLAB(color);
@@ -32,10 +35,21 @@ var Color = function(color,type){
             this.hex = this.rgbToHex(this.rgb);
             this.cmyk = this.rgbToCMYK(this.rgb);
             this.hsv = this.rgbToHSV(this.rgb);
+            this.hsl = this.rgbToHsl(this.rgb);
             break;
-        case "hsl":
+        case "hsv":
             this.hsv = this.hsvToHSV(color);
             this.rgb = this.hsvToRGB(this.hsv);
+            this.hex = this.rgbToHex(this.rgb);
+            this.XYZ = this.RGBtoXYZ(this.rgb);
+            this.lab = this.XYZtoLAB(this.XYZ);
+            this.cmyk = this.rgbToCMYK(this.rgb);
+            this.hsl = this.rgbToHsl(this.rgb);
+            break;
+        case "hsl":
+            this.hsl = this.hslToHSL(color);
+            this.rgb = this.hslToRGB(this.hsl);
+            this.hsv = this.rgbToHSV(this.rgb);
             this.hex = this.rgbToHex(this.rgb);
             this.XYZ = this.RGBtoXYZ(this.rgb);
             this.lab = this.XYZtoLAB(this.XYZ);
@@ -75,7 +89,24 @@ Color.prototype.hsvToHSV = function(str){
     var v = parseFloat(digits[2]);
     return {h: h, s: s, v: v};
 }
+Color.prototype.hslToHSL = function(str){
+    var c = str.replace("(","");
+    c = c.replace(")","");
+    var digits = c.split(",");
 
+    var h = parseFloat(digits[0]);
+    var s = parseFloat(digits[1]);
+    var l = parseFloat(digits[2]);
+    if( h<0 ) h=365+h;
+    if( s<0 ) s=0;
+    if( l<0 ) l=0;
+    if( h>=360 ) h=359;
+    if( s>100 ) s=100;
+    if( l>100 ) l=100;
+	s/=100;
+	l/=100;
+    return {h: h, s: s, l: l};
+}
 Color.prototype.labToLAB = function(str){
     var c = str.replace("(","");
     c = c.replace(")","");
@@ -87,8 +118,13 @@ Color.prototype.labToLAB = function(str){
     return {l: l, a: a, b: b};
 }
 Color.prototype.rgbToHex = function(color) {
-    var rgb = color.b | (color.g << 8) | (color.r << 16);
-    return  '#' + rgb.toString(16);
+    var hex = color.r*65536+color.g*256+color.b;
+				hex = hex.toString(16,6);
+				len = hex.length;
+				if( len<6 )
+					for(i=0; i<6-len; i++)
+						hex = '0'+hex;
+    return  '#' + hex;
 }
 Color.prototype.hexToRgb = function(hex) {
         var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -225,9 +261,9 @@ Color.prototype.rgbToHSV = function(RGB){
 }
 
 Color.prototype.hsvToRGB = function(HSV){
-    var h=HSV.h;
-    var s = HSV.s;
-    var v = HSV.v;
+    var H=HSV.h;
+    var S = HSV.s;
+    var V = HSV.v;
     
     if ( S == 0 )                       //HSV from 0 to 1
     {
@@ -239,7 +275,7 @@ Color.prototype.hsvToRGB = function(HSV){
     {
        var_h = H * 6
        if ( var_h == 6 ) var_h = 0      //H must be < 1
-       var_i = int( var_h )             //Or ... var_i = floor( var_h )
+       var_i = parseInt( var_h )             //Or ... var_i = floor( var_h )
        var_1 = V * ( 1 - S )
        var_2 = V * ( 1 - S * ( var_h - var_i ) )
        var_3 = V * ( 1 - S * ( 1 - ( var_h - var_i ) ) )
@@ -305,4 +341,88 @@ Color.prototype.labToXYZ = function(lab){
     Y = Math.round(ref_Y * var_Y)     //ref_Y = 100.000
     Z = Math.round(ref_Z * var_Z)     //ref_Z = 108.883
     return {x: X,y: Y, z:Z};
+}
+Color.prototype.rgbToHsl = function(rgb) {
+    var r = rgb.r;
+    var g = rgb.g;
+    var b = rgb.b;
+  r /= 255, g /= 255, b /= 255;
+
+  var max = Math.max(r, g, b), min = Math.min(r, g, b);
+  var h, s, l = (max + min) / 2;
+
+  if (max == min) {
+    h = s = 0; // achromatic
+  } else {
+    var d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+    }
+
+    h /= 6;
+  }
+
+  return { h:h, s:s, l:l };
+}
+function hue2rgb(p, q, t) {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1/6) return p + (q - p) * 6 * t;
+      if (t < 1/2) return q;
+      if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+      return p;
+    }
+Color.prototype.hslToRGB = function(hsl) {
+    var r, g, b;
+    var s = hsl.s, h=hsl.h,l=hsl.l;
+    C = (1-Math.abs(2*l-1))*s;
+    hh = h/60;
+    X = C*(1-Math.abs(hh%2-1));
+    r = g = b = 0;
+    if( hh>=0 && hh<1 )
+    {
+        r = C;
+        g = X;
+    }
+    else if( hh>=1 && hh<2 )
+    {
+        r = X;
+        g = C;
+    }
+    else if( hh>=2 && hh<3 )
+    {
+        g = C;
+        b = X;
+    }
+    else if( hh>=3 && hh<4 )
+    {
+        g = X;
+        b = C;
+    }
+    else if( hh>=4 && hh<5 )
+    {
+        r = X;
+        b = C;
+    }
+    else
+    {
+        r = C;
+        b = X;
+    }
+    m = l-C/2;
+    r += m;
+    g += m;
+    b += m;
+    r *= 255;
+    g *= 255;
+    b *= 255;
+    r = Math.floor(r);
+    g = Math.floor(g);
+    b = Math.floor(b);
+
+  return {r:r, g:g, b:b};
 }

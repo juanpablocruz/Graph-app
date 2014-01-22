@@ -56,3 +56,30 @@
 .icon-spinner2:before {
 	content: "\e60a";
 }
+.icon-file:before {
+	content: "\e60b";
+}
+.icon-stackoverflow:before {
+	content: "\e60c";
+}
+.icon-menu:before {
+	content: "\e60d";
+}
+.icon-sort-by-attributes-alt:before {
+	content: "\e60e";
+}
+.icon-check:before {
+	content: "\e610";
+}
+.icon-check-empty:before {
+	content: "\e611";
+}
+.icon-ok:before {
+	content: "\e612";
+}
+.icon-remove:before {
+	content: "\e613";
+}
+.icon-rearrange:before {
+	content: "\e60f";
+}
