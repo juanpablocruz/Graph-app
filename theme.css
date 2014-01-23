@@ -345,15 +345,24 @@ li ul{
     text-align:center;
     margin-right:1em;
 }
-
+#separador_ul,#separador_text {
+    margin-right: 2em;
+}
+#separador_text {
+    margin-top: 2em;
+}
 #groups-ul > li > div >div{
     display:inline-block;
     vertical-align:bottom;
     margin-right:1em;
     margin-left:1em;
 }
-
-#groups-ul > li > ul li{
+.data-list-separador {
+    margin-right:1em;
+    margin-left:1em;
+    text-align:center;
+}
+#groups-ul > li > ul li, #separador_ul>li{
     margin-bottom:0.5em;
     margin-top:0.5em;
 }

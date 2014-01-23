@@ -19,6 +19,11 @@ _.prototype.history= function (obj) {
         this.separado = false;
         if ( localStorage.separado ) {
             this.separado = localStorage.separado;
+            if (localStorage.separacionList){
+                this.listaSeparador = JSON.parse(localStorage.separacionList);
+            } else {
+                this.listaSeparador = [100,100,100,100,100,400,400,400,400,400,400,400];
+            }
         }
         this.data = obj.data;
         this.addHistTools(obj.data);
@@ -95,18 +100,25 @@ _.prototype.historyPannel = function() {
     div_options.appendChild(div_fila1);
     div_options.appendChild(div_fila2);
     if (this.separado === "true") {
-        var div_fila3 = document.createElement("DIV");
+        var div_separador = document.createElement("div");
+        var ul_separador = document.createElement("ul");
+        ul_separador.setAttribute("id","separador_ul");
         separador_label.checked = true;
-        var separador_text = document.createElement("input");
-            separador_text.type = "text";
+        var separador_text = document.createElement("div");
+            separador_text.innerHTML = "Separador";
             separador_text.setAttribute("id","separador_text");
-            separador_text.setAttribute("placeholder","Texto");
-        var separador_num = document.createElement("input");
-            separador_num.type = "number";
-            separador_num.setAttribute("id","separador_num");
-        div_fila3.appendChild(separador_text);
-        div_fila3.appendChild(separador_num);
-        div_options.appendChild(div_fila3);
+        for (var i = 0; i < data.length; i++) {
+            var separador_num = document.createElement("li");
+            separador_num.className = "data-list-separador";
+            separador_num.setAttribute("contenteditable","true");
+            if(!localStorage.separacionList)
+                separador_num.innerHTML = 0;
+            else
+                separador_num.innerHTML = this.listaSeparador[i];
+            ul_separador.appendChild(separador_num);
+        }
+        div_separador.appendChild(separador_text);
+        div_separador.appendChild(ul_separador);
     }
 
 
@@ -149,6 +161,8 @@ _.prototype.historyPannel = function() {
         li1.appendChild(set);
         ul.appendChild(li1);
     }
+    var separado = this.separado;
+    if(this.separado == "true") var lista = this.listaSeparador;
     var inpt_dib = document.createElement("BUTTON");
         inpt_dib.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
         inpt_dib.className = "draw_button";
@@ -156,6 +170,13 @@ _.prototype.historyPannel = function() {
             var fuent = document.querySelectorAll("#fuente_input")[0].value;
             localStorage.fuente = fuent;
             fuente_value = fuent;
+            if(separado== "true"){
+                var sepDiv = document.querySelectorAll(".data-list-separador");
+                _().each(sepDiv,function(i,a) {
+                    lista[i] = a[i].innerHTML;
+                });
+                localStorage.separacionList = JSON.stringify(lista);
+            }
             _("#graph").history({data:data});
         });
 
@@ -164,8 +185,12 @@ _.prototype.historyPannel = function() {
         inpt_activar.className = "rearrange-button";
 
     div_data.appendChild(ul);
+
     div_container.appendChild(div_data);
+    div_container.appendChild(div_separador);
     div_container.appendChild(div_options);
+
+
     f.appendChild(div_container);
     f.appendChild(div_container);
     f.appendChild(inpt_dib);
@@ -250,37 +275,56 @@ _.prototype.drawHistoricBars = function (posicion) {
                 lineJoin: 'round',
             });
 
-            line.move(40, h);
-            if (this.printLabels === "true") {
-                var text = Object.keys(data[0])[i+1];
-                var width = this.ctx.measureText(text).width;
-                this.drawLabel(30 + puntos[i][1]["x"],
-                               h + puntos[i][1]["y"] - 5,
-                               width + 4, 24,
-                               colores_barras[i].hex,
-                               "#FFFFFF",
-                               text, 4, layer_hist);
-            }
-            layer_hist.add(line);
+
         } else {
-            var area = new Kinetic.Polygon({
+            var line = new Kinetic.Polygon({
                 points: puntos[i],
                 fill: colores_barras[i].hex,
                 stroke: "white",
                 strokeWidth: 1,
             });
-            area.move(40, h);
-            layer_hist.add(area);
+
         }
+        line.move(40, h);
+        if (this.printLabels === "true") {
+            var text = Object.keys(data[0])[i+1];
+            var width = this.ctx.measureText(text).width;
+            this.drawLabel(30 + puntos[i][1]["x"],
+                           h + puntos[i][1]["y"] - 5,
+                           width + 4, 24,
+                           colores_barras[i].hex,
+                           "#FFFFFF",
+                           text, 4, layer_hist);
+        }
+        layer_hist.add(line);
     }
 
-    if (pie_mode == "simple" && this.printLabels === "true") {
+    if (this.printLabels === "true") {
         var labels = layer_hist.find('.label');
         labels.forEach(function(i){
             i.setZIndex(50);
         });
     }
 
+    if(this.separado == "true") {
+
+        var separador_puntos = [];
+        a = -x;
+        for(var i = 0; i < this.listaSeparador.length; i++) {
+            var value = ((((this.listaSeparador[i]-min) * h)/amplitud));
+            separador_puntos.push({x:a + x, y: -( value)});
+            a += x;
+        }
+        //[{x:40,y:h-60},{x:((w+10)/2)-20,y:h-60},{x:((w+10)/2)+20,y:h-90},{x:w+10,y:h-90}]
+        var separador = new Kinetic.Line({
+            points: separador_puntos,
+            stroke: 'white',
+            strokeWidth: 2,
+        });
+        separador.move(40,h);
+        layer_hist.add(separador);
+    }
+    console.log(separador_puntos);
     for ( var j = 0; j < data.length; j++ ) {
         var x_var;
         if(pie_mode == "simple") { x_var = 35 + puntos[0][j]["x"];}
