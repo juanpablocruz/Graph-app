@@ -119,6 +119,7 @@ _.prototype.historyPannel = function() {
         }
         div_separador.appendChild(separador_text);
         div_separador.appendChild(ul_separador);
+        div_container.appendChild(div_separador);
     }
 
 
@@ -187,7 +188,7 @@ _.prototype.historyPannel = function() {
     div_data.appendChild(ul);
 
     div_container.appendChild(div_data);
-    div_container.appendChild(div_separador);
+
     div_container.appendChild(div_options);
 
 
