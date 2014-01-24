@@ -348,8 +348,8 @@ _.prototype.drawHistoricBars = function (posicion) {
                 var text = this.separador_title;
             console.log(text);
                 var width = this.ctx.measureText(text).width;
-                this.drawLabel(30 ,
-                           h - this.listaSeparador[0] ,
+                this.drawLabel(60 ,
+                           h-((((this.listaSeparador[0]-min) * h)/amplitud)) - 10 ,
                            width + 4, 24,
                            "black",
                            "#FFFFFF",
