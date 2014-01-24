@@ -19,6 +19,11 @@ _.prototype.history= function (obj) {
         this.separado = false;
         if ( localStorage.separado ) {
             this.separado = localStorage.separado;
+            if (localStorage.separador_title){
+                this.separador_title = localStorage.separador_title;
+            } else {
+                this.separador_title = "Separador";
+            }
             if (localStorage.separacionList){
                 this.listaSeparador = JSON.parse(localStorage.separacionList);
             } else {
@@ -105,8 +110,9 @@ _.prototype.historyPannel = function() {
         ul_separador.setAttribute("id","separador_ul");
         separador_label.checked = true;
         var separador_text = document.createElement("div");
-            separador_text.innerHTML = "Separador";
+            separador_text.innerHTML = this.separador_title;
             separador_text.setAttribute("id","separador_text");
+            separador_text.setAttribute("contenteditable","true");
         for (var i = 0; i < data.length; i++) {
             var separador_num = document.createElement("li");
             separador_num.className = "data-list-separador";
@@ -136,8 +142,9 @@ _.prototype.historyPannel = function() {
     for (var j = 0; j < Object.keys(data[0]).length; j++) {
         var li1 = document.createElement("li");
         var div = document.createElement("DIV");
-        if (Object.keys(data[0])[j] != "Leyenda") div.className = "data-list-element-holder";
-            div.innerHTML = "<div contenteditable='true'>" + Object.keys(data[0])[j] + "</div>";
+        if (Object.keys(data[0])[j] != "Leyenda")
+            div.className = "data-list-element-holder";
+        div.innerHTML = "<div contenteditable='true'>" + Object.keys(data[0])[j] + "</div>";
 
         if (Object.keys(data[0])[j] != "Leyenda") {
             var colorinpt = document.createElement("input");
@@ -177,6 +184,8 @@ _.prototype.historyPannel = function() {
                     lista[i] = a[i].innerHTML;
                 });
                 localStorage.separacionList = JSON.stringify(lista);
+                var titulo_separador= document.querySelector("#separador_text").innerHTML;
+                localStorage.separador_title = titulo_separador;
             }
             _("#graph").history({data:data});
         });
@@ -300,13 +309,6 @@ _.prototype.drawHistoricBars = function (posicion) {
         layer_hist.add(line);
     }
 
-    if (this.printLabels === "true") {
-        var labels = layer_hist.find('.label');
-        labels.forEach(function(i){
-            i.setZIndex(50);
-        });
-    }
-
     if(this.separado == "true") {
 
         var separador_puntos = [];
@@ -325,7 +327,6 @@ _.prototype.drawHistoricBars = function (posicion) {
         separador.move(40,h);
         layer_hist.add(separador);
     }
-    console.log(separador_puntos);
     for ( var j = 0; j < data.length; j++ ) {
         var x_var;
         if(pie_mode == "simple") { x_var = 35 + puntos[0][j]["x"];}
@@ -341,6 +342,23 @@ _.prototype.drawHistoricBars = function (posicion) {
             padding: 1,
         });
         layer_hist.add(year);
+    }
+    if (this.printLabels === "true") {
+        if(this.separado == "true") {
+                var text = this.separador_title;
+            console.log(text);
+                var width = this.ctx.measureText(text).width;
+                this.drawLabel(30 ,
+                           h - this.listaSeparador[0] ,
+                           width + 4, 24,
+                           "black",
+                           "#FFFFFF",
+                           text, 4, layer_hist);
+            }
+        var labels = layer_hist.find('.label');
+        labels.forEach(function(i){
+            i.setZIndex(50);
+        });
     }
 
     this.stage.add(layer_hist);
