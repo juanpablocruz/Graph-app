@@ -200,5 +200,84 @@ _.prototype = {
         var next = parseFloat( min / orden );
         var min = next * orden;
         return min;
+    },
+
+    createBarsVerticalAxis: function(max_val,bars,type){
+        if(barras_mode != "cols") {
+            var max = max_val;
+            var step = this.getInterval(max,bars,0);
+            this.ceil = ((((max+step*2)/step)-2)*step);
+        }
+        else {
+            var max = 100;
+            var step = 20;
+            this.ceil = ((((max+step*2)/step)-2)*step);
+        }
+
+        this.step = step;
+
+        var ctx = this.ctx;
+
+            var fuente = new Kinetic.Text({
+                x: ctx.canvas.width - 15,
+                y: ctx.canvas.height - 20 ,
+                text: "Fuente: "+fuente_value,
+                fontSize: 13,
+                fontFamily: "infotext",
+                fontStyle: "italic",
+                fill: "#7B796C",
+                rotationDeg: -90,
+            });
+        _.layer.add(fuente);
+        var unidades = new Kinetic.Text({
+            x: ctx.canvas.width - (ctx.measureText("Unidad: "+unidad_value).width*1.5),
+            y: 1 ,
+            text: "Unidad: "+unidad_value,
+            fontSize: 13,
+            fontFamily: "infotext",
+            fontStyle: "italic",
+            fill: "#7B796C",
+
+        });
+        _.layer.add(unidades);
+
+        var h = ctx.canvas.height-20;
+        var posy = Math.floor((h)/(max/step));
+        var contador = 0;
+        ctx.font = "12px 'Mic 32 New Rounded'";
+        //ctx.fillStyle = "#333";
+        var oy=0;
+        var text;
+        var minimo = this.getMinValue(this.data);
+        var origen = 0;
+        var posicion = {bajo:false, step: step, numero: 0, origen: 0};
+        if (type == "historico" && (minimo - 2 * step >= 0 || minimo < 0)) {
+            posicion["bajo"] = true;
+            posicion["numero"] = parseInt(minimo / step);
+            posicion["origen"] = minimo;
+            origen=minimo;
+            step = this.getInterval(max,bars,origen);
+        }
+        var yaxis = new Kinetic.Shape({
+            drawFunc: function(ctx) {
+                for (var j = origen; j < max-(step/2); j+= step) {
+                    var x = j.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    oy = h - (posy * contador);
+                    ctx.fillText(x, 0, oy - 5);
+                    ctx.beginPath();
+                    ctx.moveTo(0,oy);
+                    ctx.lineTo(ctx.canvas.width-20, oy);
+                    ctx.closePath();
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                    contador++;
+                };
+            },
+            id: "axis",
+        });
+        _.layer.add(yaxis);
+        _.layer.draw();
+
+        return posicion;
     }
 };

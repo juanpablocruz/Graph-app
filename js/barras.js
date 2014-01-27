@@ -4,6 +4,10 @@ var fuente_value = "Cores";
 if (localStorage.fuente) {
     fuente_value = localStorage.fuente;
 }
+var unidad_value = "Miles de t";
+if (localStorage.unidad) {
+    unidad_value = localStorage.unidad;
+}
 var barras_mode = "compuesto";
 if (localStorage.barras_mode) {
     barras_mode = localStorage.barras_mode;
@@ -81,40 +85,32 @@ _.prototype.addBarTools = function(data){
     //  Left Menu
     var menu = document.querySelectorAll("menu")[0];
         menu.innerHTML = "";
-    /*
-    var compuestoGrahp = document.createElement("DIV");
-        compuestoGrahp.innerHTML ="<div class='icon-bars2 icono' title='Gráfico Compuesto'></div><span class='menu-text'>Gráfico Compuesto</span>";
-        if(barras_mode == "compuesto")compuestoGrahp.className = "active menu-button";
-        else compuestoGrahp.className = "menu-button";
-        compuestoGrahp.setAttribute("id","bars_compuesto");
-        menu.appendChild(compuestoGrahp);
-
-    var colsGrahp = document.createElement("DIV");
-        colsGrahp.innerHTML ="<div class='icon-bars icono' title='Gráfico Columnas'></div><span class='menu-text'>Gráfico Columnas</span>";
-        if(barras_mode == "cols")colsGrahp.className = "active menu-button";
-        else colsGrahp.className = "menu-button";
-        colsGrahp.setAttribute("id","bars_cols");
-        menu.appendChild(colsGrahp);*/
 
     //  Under Graph data
     var data_content = document.querySelectorAll("#graph-data")[0];
         data_content.innerHTML = "";
+
     var f = document.createDocumentFragment();
     var div_container = document.createElement("DIV");
         div_container.setAttribute("id","data-container");
+
     var div_data = document.createElement("DIV");
         div_data.className = "data-options";
+
     var div_options = document.createElement("DIV");
         div_options.className = "data-options";
         div_options.setAttribute("id","options-bars");
+
     var checkbox_labels = document.createElement("input");
         checkbox_labels.type = "checkbox";
         checkbox_labels.setAttribute("id","dibujar-check");
+
     var checkbox_title = document.createElement("label");
         checkbox_title.setAttribute("for","dibujar-check");
         checkbox_title.setAttribute("class","label-dibujar-check");
         checkbox_title.innerHTML = "Dibujar Etiquetas";
         checkbox_labels.checked = false;
+
     if(this.printLabels === "true") {
         checkbox_labels.checked = true;
     }
@@ -123,12 +119,24 @@ _.prototype.addBarTools = function(data){
 
     var fuente_label = document.createElement("DIV");
         fuente_label.innerHTML = "<span>Fuente: </span>";
+
     var fuente_inpt = document.createElement("INPUT");
         fuente_inpt.type = "text";
         fuente_inpt.setAttribute("id","fuente_input");
         fuente_inpt.setAttribute("value",fuente_value);
+
+    var unidades_label = document.createElement("DIV");
+        unidades_label.innerHTML = "<span>Unidad: </span>";
+
+    var unidades_inpt = document.createElement("INPUT");
+        unidades_inpt.type = "text";
+        unidades_inpt.setAttribute("id","unidades_input");
+        unidades_inpt.setAttribute("value",unidad_value);
+
     fuente_label.appendChild(fuente_inpt);
+    unidades_label.appendChild(unidades_inpt);
     div_options.appendChild(fuente_label);
+    div_options.appendChild(unidades_label);
 
     if (barras_mode != "cols") {
         var dest_div = document.createElement("DIV");
@@ -220,6 +228,9 @@ _.prototype.addBarTools = function(data){
             var fuent = document.querySelectorAll("#fuente_input")[0].value;
             localStorage.fuente = fuent;
             fuente_value = fuent;
+            var unit = document.querySelectorAll("#unidades_input")[0].value;
+            localStorage.unidad = unit;
+            unidad_value = unit;
             var tmp_colors = [];
             var order = [];
 
@@ -310,87 +321,6 @@ _.prototype.getMaxColumn = function (){
 
 _.prototype.getInterval = function (max,bars,origen) {
     return Math.ceil(max/(bars));
-}
-
-_.prototype.createBarsVerticalAxis = function(max_val,bars,type){
-    if(barras_mode != "cols") {
-        var max = max_val;
-        var step = this.getInterval(max,bars,0);
-        this.ceil = ((((max+step*2)/step)-2)*step);
-    }
-    else {
-        var max = 100;
-        var step = 20;
-        this.ceil = ((((max+step*2)/step)-2)*step);
-    }
-
-    this.step = step;
-
-    var ctx = this.ctx;
-
-        var fuente = new Kinetic.Text({
-            x: ctx.canvas.width - 15,
-            y: ctx.canvas.height - 20 ,
-            text: "Fuente: "+fuente_value,
-            fontSize: 13,
-            fontFamily: "infotext",
-            fontStyle: "italic",
-            fill: "#7B796C",
-            rotationDeg: -90,
-        });
-    _.layer.add(fuente);
-
-    var unidades_text = "Miles de t";
-    var unidades = new Kinetic.Text({
-        x: ctx.canvas.width - (ctx.measureText("Unidad: "+unidades_text).width*1.5),
-        y: 1 ,
-        text: "Unidad: "+unidades_text,
-        fontSize: 13,
-        fontFamily: "infotext",
-        fontStyle: "italic",
-        fill: "#7B796C",
-
-    });
-    _.layer.add(unidades);
-
-    var h = ctx.canvas.height-20;
-    var posy = Math.floor((h)/(max/step));
-    var contador = 0;
-    ctx.font = "12px 'Mic 32 New Rounded'";
-    //ctx.fillStyle = "#333";
-    var oy=0;
-    var text;
-    var minimo = this.getMinValue(this.data);
-    var origen = 0;
-    var posicion = {bajo:false, step: step, numero: 0, origen: 0};
-    if (type == "historico" && (minimo - 2 * step >= 0 || minimo < 0)) {
-        posicion["bajo"] = true;
-        posicion["numero"] = parseInt(minimo / step);
-        posicion["origen"] = minimo;
-        origen=minimo;
-        step = this.getInterval(max,bars,origen);
-    }
-    var yaxis = new Kinetic.Shape({
-        drawFunc: function(ctx) {
-            for (var j = origen; j < max; j+= step) {
-                var x = j.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                oy = h - (posy * contador);
-                ctx.fillText(x, 0, oy - 5);
-                ctx.beginPath();
-                ctx.moveTo(0,oy);
-                ctx.lineTo(ctx.canvas.width-20, oy);
-                ctx.closePath();
-                ctx.lineWidth = 1;
-                ctx.stroke();
-                contador++;
-            };
-        },
-        id: "axis",
-    });
-    _.layer.add(yaxis);
-    _.layer.draw();
-
-    return posicion;
 }
 
 _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden, color_rest, offset){

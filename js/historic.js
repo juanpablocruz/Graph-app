@@ -6,7 +6,10 @@ if (localStorage.fuente) {
 }else{
     fuente_value = "Cores";
 }
-
+var unidad_value = "Miles de t";
+if (localStorage.unidad) {
+    unidad_value = localStorage.unidad;
+}
 _.prototype.history= function (obj) {
     var id = this.id;
     _().canvas( this.e[0], function() {
@@ -67,12 +70,24 @@ _.prototype.historyPannel = function() {
 
     var fuente_label = document.createElement("DIV");
         fuente_label.innerHTML = "<span>Fuente: </span>";
+
     var fuente_inpt = document.createElement("INPUT");
         fuente_inpt.type = "text";
         fuente_inpt.setAttribute("id","fuente_input");
         fuente_inpt.setAttribute("value",fuente_value);
-        fuente_label.appendChild(fuente_inpt);
-        div_options.appendChild(fuente_label);
+
+    var unidades_label = document.createElement("DIV");
+        unidades_label.innerHTML = "<span>Unidad: </span>";
+
+    var unidades_inpt = document.createElement("INPUT");
+        unidades_inpt.type = "text";
+        unidades_inpt.setAttribute("id","unidades_input");
+        unidades_inpt.setAttribute("value",unidad_value);
+
+    fuente_label.appendChild(fuente_inpt);
+    unidades_label.appendChild(unidades_inpt);
+    div_options.appendChild(fuente_label);
+    div_options.appendChild(unidades_label);
 
     var div_fila1 = document.createElement("DIV");
     var div_fila2 = document.createElement("DIV");
@@ -178,6 +193,10 @@ _.prototype.historyPannel = function() {
             var fuent = document.querySelectorAll("#fuente_input")[0].value;
             localStorage.fuente = fuent;
             fuente_value = fuent;
+
+            var unit = document.querySelectorAll("#unidades_input")[0].value;
+            localStorage.unidad = unit;
+            unidad_value = unit;
             if(separado== "true"){
                 var sepDiv = document.querySelectorAll(".data-list-separador");
                 _().each(sepDiv,function(i,a) {
@@ -211,7 +230,6 @@ _.prototype.historyPannel = function() {
 
 _.prototype.history_type_menu = function() {
     var dest = Array.prototype.slice.call(this.e);
-    console.log(this);
 
     var normalGrahp = document.createElement("LI");
         normalGrahp.innerHTML ="Gráfico histórico<div class='icon-stats icono' title='Gráfico historico'></div>";
