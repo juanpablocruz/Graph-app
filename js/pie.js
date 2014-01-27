@@ -329,7 +329,7 @@ _.prototype.drawPie = function (canvas, data) {
             y: canvas.height - 5 ,
             text: "Fuente: "+fuente_value,
             fontSize: 15,
-            fontFamily: "InfoTextBook",
+            fontFamily: "infotext",
             fontStyle: "italic",
             fill: "#7B796C",
             rotationDeg: -90,

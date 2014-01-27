@@ -4,6 +4,11 @@
 	src: url('fonts/mic32newrd-rg-webfont.woff') format('woff')
 }
 
+@font-face{
+	font-family:'infotext';
+	src: url('fonts/InfoTextBook-Italic.woff') format('woff')
+}
+
 *{
     margin:0;
     padding:0;
@@ -84,7 +89,9 @@ nav li:hover{
 #tools { display:block; overflow:hidden !important;min-height:9em;}
 menu{display:block;}
 
-
+#barstype nav ul {
+    margin-bottom:2em;
+}
 /* Main View */
 main{
     flex:10;
@@ -319,8 +326,11 @@ li ul{
     margin:auto;
     margin-bottom:3em;
 }
+.step-info ul li{
+    position:relative;
+}
 
-#step-info li div{
+.step-info li{
    display:inline-block;
 }
 

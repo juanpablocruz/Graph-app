@@ -332,13 +332,26 @@ _.prototype.createBarsVerticalAxis = function(max_val,bars,type){
             x: ctx.canvas.width - 15,
             y: ctx.canvas.height - 20 ,
             text: "Fuente: "+fuente_value,
-            fontSize: 15,
-            fontFamily: "InfoTextBook",
+            fontSize: 13,
+            fontFamily: "infotext",
             fontStyle: "italic",
             fill: "#7B796C",
             rotationDeg: -90,
         });
     _.layer.add(fuente);
+
+    var unidades_text = "Miles de t";
+    var unidades = new Kinetic.Text({
+        x: ctx.canvas.width - (ctx.measureText("Unidad: "+unidades_text).width*1.5),
+        y: 1 ,
+        text: "Unidad: "+unidades_text,
+        fontSize: 13,
+        fontFamily: "infotext",
+        fontStyle: "italic",
+        fill: "#7B796C",
+
+    });
+    _.layer.add(unidades);
 
     var h = ctx.canvas.height-20;
     var posy = Math.floor((h)/(max/step));
@@ -359,7 +372,7 @@ _.prototype.createBarsVerticalAxis = function(max_val,bars,type){
     }
     var yaxis = new Kinetic.Shape({
         drawFunc: function(ctx) {
-            for (var j = origen; j < max+step*2; j+= step) {
+            for (var j = origen; j < max; j+= step) {
                 var x = j.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                 oy = h - (posy * contador);
                 ctx.fillText(x, 0, oy - 5);
