@@ -209,6 +209,27 @@ _.prototype.historyPannel = function() {
     return f;
 }
 
+_.prototype.history_type_menu = function() {
+    var dest = Array.prototype.slice.call(this.e);
+    console.log(this);
+
+    var normalGrahp = document.createElement("LI");
+        normalGrahp.innerHTML ="Gráfico histórico<div class='icon-stats icono' title='Gráfico historico'></div>";
+        normalGrahp.setAttribute("id","pie_simple");
+        normalGrahp.setAttribute("tipo","Histórico");
+
+    var areaGrahp = document.createElement("LI");
+        areaGrahp.innerHTML ="Gráfico áreas<div class='icon-areas icono' title='Gráfico areas'></div>";
+        areaGrahp.setAttribute("id","pie_complex");
+        areaGrahp.setAttribute("tipo","Área");
+
+    (dest).forEach( function(t){
+        t.innerHTML = "";
+        t.appendChild(normalGrahp);
+        t.appendChild(areaGrahp);
+    });
+    return this;
+}
 _.prototype.addHistTools = function(data) {
     //  Left Menu
     var menu = document.querySelectorAll("menu")[0];
@@ -222,7 +243,7 @@ _.prototype.addHistTools = function(data) {
         menu.appendChild(normalGrahp);
 
     var areaGrahp = document.createElement("DIV");
-        areaGrahp.innerHTML ="<div class='icon-stats icono' title='Gráfico areas'></div><span class='menu-text'>Gráfico áreas</span>";
+        areaGrahp.innerHTML ="<div class='icon-areas icono' title='Gráfico areas'></div><span class='menu-text'>Gráfico áreas</span>";
         if(pie_mode == "complex")areaGrahp.className = "active menu-button";
         else areaGrahp.className = "menu-button";
         areaGrahp.setAttribute("id","pie_complex");
@@ -318,7 +339,6 @@ _.prototype.drawHistoricBars = function (posicion) {
             separador_puntos.push({x:a + x, y: -( value)});
             a += x;
         }
-        //[{x:40,y:h-60},{x:((w+10)/2)-20,y:h-60},{x:((w+10)/2)+20,y:h-90},{x:w+10,y:h-90}]
         var separador = new Kinetic.Line({
             points: separador_puntos,
             stroke: 'white',

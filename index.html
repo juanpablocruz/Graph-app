@@ -138,6 +138,7 @@
             if(localStorage.chartType){
                 if(localStorage.data){
                     changeStep($(".current_step"),"next");
+                     changeStep($(".current_step"),"next");
                 }
                 else{
                     $("#step-info ul").html("");
@@ -146,7 +147,7 @@
                 }
             }
 
-            _("nav ul").menu();
+            _("#tipoGrafico nav ul").menu();
             if(localStorage.data){
                 if(localStorage.chartType) {
                     data = JSON.parse(localStorage.data);
@@ -161,26 +162,34 @@
             });
 
             $(document).on("click",".back",function(){
-                changeStep($(this).parent().parent(),"prev")
+                changeStep($(".current_step"),"prev")
             });
-
+            /*
             $(document).on("click","nav ul li",function(){
                 switch($(this).text()){
                     case "Tartas":
                         _("#graph").pie({data:data});
                         break;
                 }
-            });
+            });*/
 
-            $(document).on("click","nav ul li", function(){
+            $(document).on("click","#tipoGrafico nav ul li", function(){
                 var tx = $(this).attr("tipo");
                 $("nav .active").removeClass("active");
                 $(this).addClass("active");
                 localStorage.clear();
                 localStorage.chartType = tx;
-                $("#step-info ul").html("");
-                $("#step-info ul").append("<li><div class='halfCircleRight'>"+tx+"</div></li>");
+                $(".step-info ul").html("");
+                $(".step-info ul").append("<li><div class='halfCircleRight'>"+tx+"</div></li>");
+                _("#barstype nav ul").type_menu();
                 changeStep($(this).parent().parent().parent(),"next");
+            });
+
+            $(document).on("click","#barstype nav ul li", function(){
+                var tx = $(this).attr("tipo");
+                $(".step-info ul").html("");
+                $(".step-info ul").append("<li><div class='halfCircleRight'>"+tx+"</div></li>");
+                changeStep($(this).parent().parent().parent().parent(),"next");
             });
 
             $(document).on("click","#pie_simple",function(){
@@ -285,14 +294,24 @@
 
     <div id="content">
 <div id="tipoGrafico" class="step current_step">
-    <nav>
+        <nav>
             <ul>
             </ul>
         </nav>
 </div>
+<div id="barstype" class="step">
+    <section>
+        <div class="step-info"><ul></ul></div>
+        <nav>
+            <ul>
+            </ul>
+            <div class="back">Volver</div>
+        </nav>
+        </section>
+</div>
 <div id="loadData" class="step">
     <section id="tools">
-        <div id="step-info"><ul></ul></div>
+        <div class="step-info"><ul></ul></div>
         <div id="drop"><div class="icon-box-add icono"></div>Arrastra un archivo XLS</div>
         <div class="back">Volver</div>
     </section>

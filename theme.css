@@ -18,7 +18,7 @@ a,a:hover,a:active{text-decoration:none;color:inherit;}
     height:80%;flex:20;
     display:block;
 }
-#tipoGrafico,#loadData{
+#tipoGrafico,#loadData, #barstype{
     display:flex; flex-flow:row;justify-content:center;align-content:center;align-items:center;height:100%;
 }
 header{display:block;}
@@ -264,7 +264,7 @@ input:focus{
     margin-left:1em;
 }
 
-.icon-spinner,.icon-spinner2, .icon-stats, .icon-bars, .icon-bars2{
+.icon-spinner,.icon-spinner2, .icon-stats, .icon-bars, .icon-bars2, .icon-areas{
     margin-left:1em;
 }
 
@@ -304,7 +304,7 @@ li ul{
     align-items:flex-start;
 }
 
-#step-info{
+.step-info{
     background: #eee;
     background: -moz-linear-gradient(top, #f8f8f8 0%, #dddddd 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f8f8f8), color-stop(100%,#dddddd));

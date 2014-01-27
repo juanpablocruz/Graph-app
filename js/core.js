@@ -79,7 +79,20 @@ _.prototype = {
         });
         return this;
     },
-
+    type_menu: function() {
+        switch(localStorage.chartType) {
+            case "Tartas":
+                this.pie_type_menu();
+                break;
+            case "Barras":
+                this.bars_type_menu();
+                break;
+            case "Historicos":
+                this.history_type_menu();
+                break;
+        }
+      return this;
+    },
     draw: function(item) {
         _.layer.add(item);
         _.layer.draw();

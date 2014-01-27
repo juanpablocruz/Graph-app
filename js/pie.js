@@ -193,6 +193,7 @@ function create_data_set(dest, d) {
     contenedor.appendChild(f);
     dest.appendChild(contenedor);
 }
+
 _.prototype.pie= function (obj) {
     var id = this.id;
     
@@ -205,6 +206,30 @@ _.prototype.pie= function (obj) {
     
     
 }
+
+_.prototype.pie_type_menu = function() {
+    var dest = Array.prototype.slice.call(this.e);
+    console.log("noo");
+    var compuestoGrahp = document.createElement("LI");
+        compuestoGrahp.innerHTML = "Compuesto<div class='icon-spinner2 icono' title='Gráfico compuesto'></div>";
+        compuestoGrahp.setAttribute("id","pie_complex");
+        compuestoGrahp.setAttribute("tipo","Compuesto");
+
+    var simple = document.createElement("LI");
+        simple.innerHTML = "Gráfico simple<div class='icon-spinner icono' title='Gráfico simple'></div>";
+        simple.setAttribute("id","pie_simple");
+        simple.setAttribute("tipo","Simple");
+
+
+    (dest).forEach( function(t){
+        t.innerHTML = "";
+        t.appendChild(compuestoGrahp);
+        t.appendChild(simple);
+    });
+    return this;
+
+}
+
 _.prototype.addPieTools = function (obj) {
     var menu = document.querySelectorAll("menu")[0];
     menu.innerHTML = "";

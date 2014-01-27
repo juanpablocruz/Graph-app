@@ -17,6 +17,7 @@ _.prototype.bars = function (obj) {
         if(localStorage.drawLabels){
             this.printLabels = localStorage.drawLabels;
         }
+
         this.destacado = false;
         if(localStorage.destacado_bars){
             this.destacado = localStorage.destacado_bars;
@@ -39,8 +40,9 @@ _.prototype.bars = function (obj) {
                 grupo: grupo,
                 color: colores_barras[color_point+j].hex};
             this.colores_grupos.push(tmp);
-
         }
+
+
 
         if (!localStorage.coloresBarras) {
             localStorage.coloresBarras = JSON.stringify(this.colores_grupos);
@@ -52,11 +54,34 @@ _.prototype.bars = function (obj) {
     });
 }
 
+_.prototype.bars_type_menu = function() {
+    var dest = Array.prototype.slice.call(this.e);
+    console.log(this);
+    var compuestoGrahp = document.createElement("LI");
+        compuestoGrahp.innerHTML ="Gráfico Compuesto<div class='icon-bars2 icono' >";
+        compuestoGrahp.setAttribute("id","bars_compuesto");
+        compuestoGrahp.setAttribute("tipo","Compuesto");
+
+
+    var colsGrahp = document.createElement("LI");
+        colsGrahp.innerHTML ="Gráfico Columnas<div class='icon-bars icono'></div>";
+        colsGrahp.setAttribute("id","bars_cols");
+        colsGrahp.setAttribute("tipo","Columnas");
+
+    (dest).forEach( function(t){
+        t.innerHTML = "";
+        t.appendChild(compuestoGrahp);
+        t.appendChild(colsGrahp);
+    });
+    return this;
+
+}
+
 _.prototype.addBarTools = function(data){
     //  Left Menu
     var menu = document.querySelectorAll("menu")[0];
         menu.innerHTML = "";
-
+    /*
     var compuestoGrahp = document.createElement("DIV");
         compuestoGrahp.innerHTML ="<div class='icon-bars2 icono' title='Gráfico Compuesto'></div><span class='menu-text'>Gráfico Compuesto</span>";
         if(barras_mode == "compuesto")compuestoGrahp.className = "active menu-button";
@@ -69,7 +94,7 @@ _.prototype.addBarTools = function(data){
         if(barras_mode == "cols")colsGrahp.className = "active menu-button";
         else colsGrahp.className = "menu-button";
         colsGrahp.setAttribute("id","bars_cols");
-        menu.appendChild(colsGrahp);
+        menu.appendChild(colsGrahp);*/
 
     //  Under Graph data
     var data_content = document.querySelectorAll("#graph-data")[0];
@@ -145,6 +170,7 @@ _.prototype.addBarTools = function(data){
         if (barras_mode == "cols") {
             var colorinpt = document.createElement("input");
                 colorinpt.setAttribute("type","color");
+                console.log(this.colores_grupos,j);
                 colorinpt.value = this.colores_grupos[j]["color"];
                 div.appendChild(colorinpt);
         }
@@ -414,12 +440,14 @@ _.prototype.createBarsHorizontalAxis = function(max){
                            i, j, h,
                            this.ctx.canvas.height-20-height_accumulated,
                            layer2,wBar,m,orden,color_rest,0);
-                    if(labels.indexOf(i)==-1 && this.printLabels === "true"){
+                    if(labels.indexOf(i)==-1 && this.printLabels === "true" ){
+                        if((this.destacado == "true" && i > 0) || this.destacado != "true") {
                         labels.push(i);
                         var texto = orden[i];
                         var lwidth =  this.ctx.measureText(texto).width;
                         this.drawLabel(50,this.ctx.canvas.height-40-height_accumulated,lwidth,20,
                                        "#333","white",texto,1,layer2);
+                        }
                     }
                     height_accumulated+=(((this.data[j][orden[i]] * 100) / (this.ceil))*h/100);
                     break;
