@@ -471,6 +471,7 @@ header,.step{
 }
 @media all and (max-width:800px){
     nav ul{width:100%;}
+    .step-info{width:100%;}
     aside{
         min-width:4em;
     }
