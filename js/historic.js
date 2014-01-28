@@ -182,7 +182,7 @@ _.prototype.historyPannel = function() {
         if (Object.keys(data[0])[j] != "Leyenda") {
             var colorinpt = document.createElement("input");
                 colorinpt.setAttribute("type","color");
-                colorinpt.value = colores_barras[j-1].hex;
+                colorinpt.value = this.colores_grupos[j-1]["color"];
             div.appendChild(colorinpt);
         }
 
