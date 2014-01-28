@@ -303,6 +303,7 @@ li ul{
 }
 
 .current_step{
+    display:-webkit-flex !important;
     display:flex !important;
     flex-flow:row;
 }
