@@ -19,7 +19,7 @@
             worker.onmessage = function(e) {
                 switch(e.data.t) {
                     case 'ready': break;
-                    case 'e': console.error(e.data.d);
+                    case 'e': console.error(e.data.d);localStorage.removeItem("data");alert("Error en el archivo");
                     case 'xls': cb(e.data.d); break;
                 }
             };
@@ -115,7 +115,7 @@
                             _("#graph").bars({data:data});
                             changeStep($(".current_step"),"next");
                             break;
-                        case "Historicos":
+                        case "Históricos":
                             _("#graph").history({data:data});
                             changeStep($(".current_step"),"next");
                             break;
