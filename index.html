@@ -172,14 +172,6 @@
             $(document).on("click",".back",function(){
                 changeStep($(".current_step"),"prev")
             });
-            /*
-            $(document).on("click","nav ul li",function(){
-                switch($(this).text()){
-                    case "Tartas":
-                        _("#graph").pie({data:data});
-                        break;
-                }
-            });*/
 
             $(document).on("click","#tipoGrafico nav ul li", function(){
                 var tx = $(this).attr("tipo");

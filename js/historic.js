@@ -15,6 +15,8 @@ _.prototype.history= function (obj) {
     _().canvas( this.e[0], function() {
         this.data_content = document.querySelectorAll("#graph-data")[0];
         this.canvas = document.querySelectorAll(id+" canvas")[0];
+        this.data = obj.data;
+
         this.printLabels = true;
         if ( localStorage.drawLabels ) {
             this.printLabels = localStorage.drawLabels;
@@ -33,7 +35,23 @@ _.prototype.history= function (obj) {
                 this.listaSeparador = [100,100,100,100,100,400,400,400,400,400,400,400];
             }
         }
-        this.data = obj.data;
+        this.colores_grupos = [];
+        for (var j = 1; j < Object.keys(this.data[0]).length; j++) {
+            var grupo = Object.keys(this.data[0])[j];
+            var tmp = {
+                grupo: grupo,
+                color: colores_barras[j-1].hex};
+            this.colores_grupos.push(tmp);
+        }
+
+
+        if (!localStorage.coloresBarras) {
+            localStorage.coloresBarras = JSON.stringify(this.colores_grupos);
+        } else {
+            this.colores_grupos = JSON.parse(localStorage.coloresBarras);
+        }
+
+
         this.addHistTools(obj.data);
         this.drawHist(this.canvas, obj.data);
     });
@@ -229,10 +247,26 @@ _.prototype.historyPannel = function() {
                 });
             });
 
+            var tmp_colors = [];
             var order = [];
+
+            var colores = colores_barras;
             var datos = document.querySelectorAll(".data-list-li-holder");
             _().each(datos, function(i) {
                 order.push(datos[i].children[0].children[0].innerHTML);
+                if(datos[i].children[0].children.length > 1){
+                    var tmp = {
+                        grupo: datos[i].children[0].children[0].innerHTML,
+                        color: datos[i].children[0].children[1].value
+                    };
+                }
+                else{
+                    var tmp = {
+                        grupo: datos[i].children[0].children[0].innerHTML,
+                        color: colores[i].hex,
+                    };
+                }
+                tmp_colors.push(tmp);
 
                 var title = order[i];
                 _().each( datos[i].children[1].children,function(j, a) {
@@ -244,6 +278,7 @@ _.prototype.historyPannel = function() {
                     valores[j][title] = value;
                 });
             });
+            localStorage.coloresBarras = JSON.stringify(tmp_colors);
             localStorage.data = JSON.stringify(valores);
             _("#graph").history({data:valores});
         });
@@ -354,12 +389,13 @@ _.prototype.drawHistoricBars = function (posicion) {
     };
 
     var layer_hist = new Kinetic.Layer();
-
+    var colores = this.colores_grupos;
+    console.log(colores);
     for ( var i = 0; i < puntos.length;i++ ) {
         if(pie_mode == "simple") {
             var line = new Kinetic.Line({
                 points: puntos[i],
-                stroke: colores_barras[i].hex,
+                stroke: colores[i]["color"],
                 strokeWidth: 3,
                 lineCap: 'round',
                 lineJoin: 'round',
@@ -369,7 +405,7 @@ _.prototype.drawHistoricBars = function (posicion) {
         } else {
             var line = new Kinetic.Polygon({
                 points: puntos[i],
-                fill: colores_barras[i].hex,
+                fill: colores[i]["color"],
                 stroke: "white",
                 strokeWidth: 1,
             });
