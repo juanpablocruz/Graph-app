@@ -408,7 +408,9 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
             _.layer.draw();
             return pos;
         },
-        id: "pie_text_"+i}
+        id: "pie_text_"+i,
+        name: "label",
+    }
                                  );
     var box = new Kinetic.Rect({
             x: centerx + (dx*radius),
@@ -481,7 +483,9 @@ _.prototype.writePieText = function (context, i, porciones, r) {
         _.layer.draw();
             return pos;
         }, 
-        id: "pie_text_"+i});
+        id: "pie_text_"+i,
+        name:"label",
+    });
 
     /* Split the labels in lines and get the box size  */
 
@@ -542,9 +546,18 @@ _.prototype.writePieText = function (context, i, porciones, r) {
             fill: tc,
             padding: 1,
         });
+
+
     group.add(box);
     group.add(text_label); 
     group.add(text_data);
+
     _.layer.add(group);
+
+    var labels = _.layer.find('.label');
+    labels.forEach(function(i){
+        i.setZIndex(50);
+    });
+
     _.layer.draw();
 }

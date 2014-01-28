@@ -61,8 +61,8 @@ _.prototype = {
         if (typeof(historic) != "undefined") {
             var d = document.createDocumentFragment();
             var li = document.createElement("LI");
-            li.setAttribute("tipo","Historicos");
-            li.innerHTML = "Historicos<div class='icon-stats icono'></div> ";
+            li.setAttribute("tipo","Históricos");
+            li.innerHTML = "Históricos<div class='icon-stats icono'></div> ";
             d.appendChild(li);
             modules.push(d);
         }
@@ -87,7 +87,7 @@ _.prototype = {
             case "Barras":
                 this.bars_type_menu();
                 break;
-            case "Historicos":
+            case "Históricos":
                 this.history_type_menu();
                 break;
         }

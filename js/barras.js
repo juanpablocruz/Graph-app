@@ -25,6 +25,8 @@ _.prototype.bars = function (obj) {
         this.destacado = false;
         if(localStorage.destacado_bars){
             this.destacado = localStorage.destacado_bars;
+        } else {
+            localStorage.destacado_bars = this.destacado;
         }
 
         this.data = obj.data;
@@ -46,13 +48,12 @@ _.prototype.bars = function (obj) {
             this.colores_grupos.push(tmp);
         }
 
-
-
         if (!localStorage.coloresBarras) {
             localStorage.coloresBarras = JSON.stringify(this.colores_grupos);
         } else {
             this.colores_grupos = JSON.parse(localStorage.coloresBarras);
         }
+
         this.addBarTools(obj.data);
         this.drawBar(this.canvas,obj.data);
     });
