@@ -296,14 +296,17 @@ _.prototype.drawHistoricBars = function (posicion) {
     var puntos = [];
     var offset = (posicion["step"] * posicion["numero"]) * h / maximo;
     var des_orig = (posicion["origen"] < 0) ? posicion["origen"] : 0;
-
+    console.log(this.origen);
+    this.step = this.getStep(maximo, 5);
+    console.log(this.step);
     for ( var j = 0; j < Object.keys(data[0]).length; j++ ) {
         if(Object.keys(data[0])[j] != "Leyenda"){
             linea_set = [];
             a = -x;
             if(pie_mode != "simple") linea_set.push({x:0,y:0});
             for ( var i=0; i < data.length; i++ ) {
-                var value = ((((data[i][Object.keys(data[0])[j]]-min) * h)/amplitud));
+                //var value = ((((data[i][Object.keys(data[0])[j]]-min) * h)/amplitud));
+                var value =  ((data[i][Object.keys(data[0])[j]]-this.origen)/this.step.label)*this.step.val;
                 linea_set.push({x:a + x, y: -( value)});
                 a += x;
             }
@@ -332,8 +335,8 @@ _.prototype.drawHistoricBars = function (posicion) {
                 stroke: "white",
                 strokeWidth: 1,
             });
-
         }
+
         line.move(40, h);
         if (this.printLabels === "true") {
             var text = Object.keys(data[0])[i+1];

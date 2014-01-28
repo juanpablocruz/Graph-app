@@ -319,10 +319,6 @@ _.prototype.getMaxColumn = function (){
     return max;
 }
 
-_.prototype.getInterval = function (max,bars,origen) {
-    return Math.ceil(max/(bars));
-}
-
 _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden, color_rest, offset){
     if(barras_mode != "cols") {
         var value = (((this.data[j][orden[i]] * 100) / this.ceil)*h/100);

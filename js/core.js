@@ -184,6 +184,9 @@ _.prototype = {
         }
         return imageData;
     },
+    getInterval: function (max,bars) {
+        return Math.ceil(max/(bars));
+    },
 
     getMinValue: function () {
         var min = Infinity;
@@ -201,11 +204,19 @@ _.prototype = {
         var min = next * orden;
         return min;
     },
+    getStep : function(max,bars) {
 
+        var step = this.getInterval(max,bars);
+        var h = this.ctx.canvas.height-20;
+        var posy = Math.floor((h)/(max/step));
+        return {val: posy,
+                label: step};
+    },
     createBarsVerticalAxis: function(max_val,bars,type){
         if(barras_mode != "cols") {
             var max = max_val;
-            var step = this.getInterval(max,bars,0);
+            var step = this.getInterval(max,bars);
+            console.log("Step2:%s Max:%s Bars:%s",step,max,bars);
             this.ceil = ((((max+step*2)/step)-2)*step);
         }
         else {
@@ -215,19 +226,18 @@ _.prototype = {
         }
 
         this.step = step;
-
         var ctx = this.ctx;
 
-            var fuente = new Kinetic.Text({
-                x: ctx.canvas.width - 15,
-                y: ctx.canvas.height - 20 ,
-                text: "Fuente: "+fuente_value,
-                fontSize: 13,
-                fontFamily: "infotext",
-                fontStyle: "italic",
-                fill: "#7B796C",
-                rotationDeg: -90,
-            });
+        var fuente = new Kinetic.Text({
+            x: ctx.canvas.width - 15,
+            y: ctx.canvas.height - 20 ,
+            text: "Fuente: "+fuente_value,
+            fontSize: 13,
+            fontFamily: "infotext",
+            fontStyle: "italic",
+            fill: "#7B796C",
+            rotationDeg: -90,
+        });
         _.layer.add(fuente);
         var unidades = new Kinetic.Text({
             x: ctx.canvas.width - (ctx.measureText("Unidad: "+unidad_value).width*1.5),
@@ -251,16 +261,17 @@ _.prototype = {
         var minimo = this.getMinValue(this.data);
         var origen = 0;
         var posicion = {bajo:false, step: step, numero: 0, origen: 0};
-        if (type == "historico" && (minimo - 2 * step >= 0 || minimo < 0)) {
+        if (type == "historico" && (minimo - ( 2 * step ) >= 0 || minimo < 0)) {
             posicion["bajo"] = true;
             posicion["numero"] = parseInt(minimo / step);
             posicion["origen"] = minimo;
             origen=minimo;
-            step = this.getInterval(max,bars,origen);
+            step = this.getInterval(max,bars);
         }
+        this.origen = origen;
         var yaxis = new Kinetic.Shape({
             drawFunc: function(ctx) {
-                for (var j = origen; j < max-(step/2); j+= step) {
+                for (var j = origen; j < max-(step/2)+origen; j+= step) {
                     var x = j.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                     oy = h - (posy * contador);
                     ctx.fillText(x, 0, oy - 5);
