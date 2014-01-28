@@ -197,6 +197,7 @@ _.prototype.historyPannel = function() {
             var unit = document.querySelectorAll("#unidades_input")[0].value;
             localStorage.unidad = unit;
             unidad_value = unit;
+
             if(separado== "true"){
                 var sepDiv = document.querySelectorAll(".data-list-separador");
                 _().each(sepDiv,function(i,a) {
@@ -206,7 +207,45 @@ _.prototype.historyPannel = function() {
                 var titulo_separador= document.querySelector("#separador_text").innerHTML;
                 localStorage.separador_title = titulo_separador;
             }
-            _("#graph").history({data:data});
+
+            var valores = [];
+            var datos = document.querySelectorAll(".data-list-li-year");
+            if(typeof datos[0] != "undefined")
+                for (var i = 0; i < datos[0].children[1].children.length; i++) valores.push(new Object);
+            else {
+                var datos = document.querySelectorAll(".data-list-li-holder");
+                for (var i = 0; i < datos[0].children[1].children.length; i++) valores.push(new Object);
+            }
+
+            _().each(datos,function(i){
+                var title = datos[i].children[0].children[0].innerHTML;
+                _().each( datos[i].children[1].children,function(j,a){
+                    var value = a[j].children[0].innerHTML;
+                    valores[j][title] =parseInt( value);
+                });
+                _().each( datos[i].children[1].children,function(j,a){
+                    var value = a[j].children[0].innerHTML;
+                    valores[j][title] = value;
+                });
+            });
+
+            var order = [];
+            var datos = document.querySelectorAll(".data-list-li-holder");
+            _().each(datos, function(i) {
+                order.push(datos[i].children[0].children[0].innerHTML);
+
+                var title = order[i];
+                _().each( datos[i].children[1].children,function(j, a) {
+                    var value = parseInt(a[j].children[0].innerHTML);
+                    valores[j][title] = value;
+                });
+                _().each( datos[i].children[1].children,function(j, a) {
+                    var value = parseInt(a[j].children[0].innerHTML);
+                    valores[j][title] = value;
+                });
+            });
+            localStorage.data = JSON.stringify(valores);
+            _("#graph").history({data:valores});
         });
 
     var inpt_activar = document.createElement("BUTTON");
@@ -296,9 +335,8 @@ _.prototype.drawHistoricBars = function (posicion) {
     var puntos = [];
     var offset = (posicion["step"] * posicion["numero"]) * h / maximo;
     var des_orig = (posicion["origen"] < 0) ? posicion["origen"] : 0;
-    console.log(this.origen);
     this.step = this.getStep(maximo, 5);
-    console.log(this.step);
+
     for ( var j = 0; j < Object.keys(data[0]).length; j++ ) {
         if(Object.keys(data[0])[j] != "Leyenda"){
             linea_set = [];
