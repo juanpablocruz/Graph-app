@@ -232,7 +232,7 @@ _.prototype = {
             y: ctx.canvas.height - 20 ,
             text: "Fuente: "+fuente_value,
             fontSize: 13,
-            fontFamily: "infotext,InfoTextBook",
+            fontFamily: "infotext,InfoTextBook,Helvetica,arial",
             fontStyle: "italic",
             fill: "#7B796C",
             rotationDeg: -90,
@@ -243,7 +243,7 @@ _.prototype = {
             y: 1 ,
             text: "Unidad: "+unidad_value,
             fontSize: 13,
-            fontFamily: "infotext,InfoTextBook",
+            fontFamily: "infotext,InfoTextBook,Helvetica,arial",
             fontStyle: "italic",
             fill: "#7B796C",
 
