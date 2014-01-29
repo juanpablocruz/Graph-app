@@ -416,7 +416,6 @@ _.prototype.createBarsHorizontalAxis = function(max){
                     });
                     layer2.add(year);
                     break;
-
             }
         }
         if(barras_mode == "compuesto") {

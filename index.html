@@ -9,26 +9,30 @@
     <link rel="icon" type="image/png" href="icono.ico"/>
     <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.7.4.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" ></script>
-     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 
 
     <script>
         var data, tipo;
-        function xlsworker(data, cb) {
-            var worker = new Worker('js/xlsworker.js');
+        var rABS = typeof FileReader !== "undefined" && typeof FileReader.prototype !== "undefined" && typeof FileReader.prototype.readAsBinaryString !== "undefined";
+
+        function xlsxworker(data, cb) {
+            var worker = new Worker('js/xlsxworker.js');
+
             worker.onmessage = function(e) {
                 switch(e.data.t) {
                     case 'ready': break;
-                    case 'e': console.error(e.data.d);localStorage.removeItem("data");alert("Error en el archivo");
-                    case 'xls': cb(e.data.d); break;
+                    case 'e': console.error(e.data.d); break;
+                    case 'xlsx': cb(JSON.parse(e.data.d)); break;
                 }
             };
-            worker.postMessage(data);
+            var arr = rABS ? data : btoa(String.fromCharCode.apply(null, new Uint8Array(data)));
+            worker.postMessage({d:arr,b:rABS});
         }
         function to_json(workbook) {
             var result = {};
             workbook.SheetNames.forEach(function(sheetName) {
-                var roa = XLS.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                var roa = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
                 if(roa.length > 0){
                     result[sheetName] = roa;
                 }
@@ -36,18 +40,20 @@
             return result;
         }
 
+        var tarea = document.getElementById('b64data');
         function b64it() {
-            var cfb = XLS.CFB.read(tarea.value, {type: 'base64'});
-            var wb = XLS.parse_xlscfb(cfb);
+            var wb = XLSX.read(tarea.value, {type: 'base64'});
             process_wb(wb);
         }
 
         function process_wb(wb) {
             var output = "";
             output = to_json(wb).Hoja1;
+
             data = JSON.stringify(output, 2, 2);
             localStorage.data=data;
             tipo = localStorage.chartType;
+            console.log(wb);
             cargar(output,tipo);
         }
 
@@ -62,19 +68,24 @@
                 reader.onload = function(e) {
                     var data = e.target.result;
                     if(typeof Worker !== 'undefined') {
-                        xlsworker(data, process_wb);
+                        xlsxworker(data, process_wb);
                     } else {
-                        var cfb = XLS.CFB.read(data, {type: 'binary'});
-                        //var arr = String.fromCharCode.apply(null, new Uint8Array(data));
-                        //var cfb = XLS.CFB.read(btoa(arr), {type: 'base64'});
-                        var wb = XLS.parse_xlscfb(cfb);
+                        var wb;
+                        if(rABS) {
+                            wb = XLSX.read(data, {type: 'binary'});
+                        } else {
+                        var arr = String.fromCharCode.apply(null, new Uint8Array(data));
+                            wb = XLSX.read(btoa(arr), {type: 'base64'});
+                        }
                         process_wb(wb);
                     }
                 };
-                reader.readAsBinaryString(f);
-                //reader.readAsArrayBuffer(f);
+                if(rABS) reader.readAsBinaryString(f);
+                else reader.readAsArrayBuffer(f);
             }
         }
+
+
         function dragevents(){
             $(".data-list-li").draggable({
                 addClasses : false,
@@ -354,7 +365,8 @@
     </div>
      <script src="js/color.js"></script>
     <script src="js/core.js"></script>
-    <script src="js/xls-min.js"></script>
+    <script src="js/jszip.js"></script>
+    <script src="js/xlsx.js"></script>
     <script src="js/pie.js"></script>
     <script src="js/barras.js"></script>
     <script src="js/historic.js"></script>
