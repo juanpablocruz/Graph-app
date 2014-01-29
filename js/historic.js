@@ -457,7 +457,7 @@ _.prototype.drawHistoricBars = function (posicion) {
             x: x_var,
             y: h,
             fontSize: 12,
-            fontFamily: 'Mic 32 New Rounded',
+            fontFamily: 'Mic 32 New Rounded,mic32newrd',
             text: this.data[j]["Leyenda"],
             fill: "black",
             padding: 1,

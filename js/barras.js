@@ -425,7 +425,7 @@ _.prototype.createBarsHorizontalAxis = function(max){
             x: 60+(j+0)*(wBar+m),
             y: this.ctx.canvas.height-20,
             fontSize: 12,
-            fontFamily: "Mic 32 New Rounded",
+            fontFamily: "Mic 32 New Rounded,mic32newrd",
             text: leyenda,
             fill: "black",
             padding: 1,
