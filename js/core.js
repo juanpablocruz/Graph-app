@@ -17,6 +17,7 @@ function _(id) {
         switch (typeof id) {
             case "string":
                 this.id = id;
+                this.alreadySaved = false;
                 this.e = document.querySelectorAll(id);
                 break;
         }  
@@ -160,28 +161,39 @@ _.prototype = {
     },
 
     canvasToImage: function(canvas, backgroundColor) {
+
         var c = document.getElementsByTagName("canvas")[1];
+
+        var tmp_canvas = canvas.cloneNode(true);
+
         //cache height and width		
         var w = canvas.width;
         var h = canvas.height;
         var context = canvas.getContext("2d");
-        if (typeof c != "undefined") context.drawImage(c,0,0);
+
+        var tmp_ctx = tmp_canvas.getContext("2d");
+        tmp_ctx.drawImage(canvas,0,0);
+        tmp_ctx.drawImage(c,0,0);
+
         var data;
      
         if (backgroundColor) {
-            data = context.getImageData(0, 0, w, h);
-            var compositeOperation = context.globalCompositeOperation;
-            context.globalCompositeOperation = "destination-over";
-            context.fillStyle = backgroundColor;
-            context.fillRect(0,0,w,h);
+            data = tmp_ctx.getImageData(0, 0, w, h);
+            var compositeOperation = tmp_ctx.globalCompositeOperation;
+            tmp_ctx.globalCompositeOperation = "destination-over";
+            tmp_ctx.fillStyle = backgroundColor;
+            tmp_ctx.fillRect(0,0,w,h);
         }
-        var imageData = canvas.toDataURL("image/jpeg");
+        var imageData = tmp_canvas.toDataURL("image/jpeg");
      
         if (backgroundColor) {
-            context.clearRect (0,0,w,h);
-            context.putImageData(data, 0,0);
-            context.globalCompositeOperation = compositeOperation;
+            tmp_ctx.clearRect (0,0,w,h);
+            tmp_ctx.putImageData(data, 0,0);
+            tmp_ctx.globalCompositeOperation = compositeOperation;
         }
+
+
+        console.log(tmp_ctx,context);
         return imageData;
     },
     getInterval: function (max,bars) {
