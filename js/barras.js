@@ -61,7 +61,6 @@ _.prototype.bars = function (obj) {
 
 _.prototype.bars_type_menu = function() {
     var dest = Array.prototype.slice.call(this.e);
-    console.log(this);
     var compuestoGrahp = document.createElement("LI");
         compuestoGrahp.innerHTML ="Gráfico Compuesto<div class='icon-bars2 icono' >";
         compuestoGrahp.setAttribute("id","bars_compuesto");
@@ -116,6 +115,9 @@ _.prototype.addBarTools = function(data){
         checkbox_labels.checked = true;
     }
 
+    $(checkbox_labels).on("change",function() {
+            _("#graph").bars({data:data});
+    });
     var check_div = document.createElement("DIV");
 
     var fuente_label = document.createElement("DIV");
@@ -132,7 +134,7 @@ _.prototype.addBarTools = function(data){
     var unidades_inpt = document.createElement("INPUT");
         unidades_inpt.type = "text";
         unidades_inpt.setAttribute("id","unidades_input");
-        unidades_inpt.setAttribute("value",unidad_value);
+        unidades_inpt.setAttribute("value", unidad_value);
 
     fuente_label.appendChild(fuente_inpt);
     unidades_label.appendChild(unidades_inpt);
@@ -155,6 +157,10 @@ _.prototype.addBarTools = function(data){
         dest_div.appendChild(destaca_labels);
         dest_div.appendChild(destaca_title);
         div_options.appendChild(dest_div);
+
+        $(destaca_labels).on("change",function() {
+            _("#graph").bars({data:data});
+        });
     }
 
         check_div.appendChild(checkbox_labels);
@@ -179,7 +185,6 @@ _.prototype.addBarTools = function(data){
         if (barras_mode == "cols") {
             var colorinpt = document.createElement("input");
                 colorinpt.setAttribute("type","color");
-                console.log(this.colores_grupos,j);
                 colorinpt.value = this.colores_grupos[j]["color"];
                 div.appendChild(colorinpt);
         }
@@ -203,6 +208,7 @@ _.prototype.addBarTools = function(data){
     var inpt_dib = document.createElement("BUTTON");
         inpt_dib.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
         inpt_dib.className = "draw_button";
+
     var destc = this.destacado;
         inpt_dib.addEventListener("click",function(){
             /* FETCH LABELS */

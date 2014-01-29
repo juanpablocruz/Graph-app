@@ -216,7 +216,6 @@ _.prototype = {
         if(barras_mode != "cols") {
             var max = max_val;
             var step = this.getInterval(max,bars);
-            console.log("Step2:%s Max:%s Bars:%s",step,max,bars);
             this.ceil = ((((max+step*2)/step)-2)*step);
         }
         else {
@@ -233,7 +232,7 @@ _.prototype = {
             y: ctx.canvas.height - 20 ,
             text: "Fuente: "+fuente_value,
             fontSize: 13,
-            fontFamily: "infotext",
+            fontFamily: "infotext,InfoTextBook",
             fontStyle: "italic",
             fill: "#7B796C",
             rotationDeg: -90,
@@ -244,7 +243,7 @@ _.prototype = {
             y: 1 ,
             text: "Unidad: "+unidad_value,
             fontSize: 13,
-            fontFamily: "infotext",
+            fontFamily: "infotext,InfoTextBook",
             fontStyle: "italic",
             fill: "#7B796C",
 

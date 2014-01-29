@@ -135,6 +135,12 @@ _.prototype.historyPannel = function() {
     div_fila2.appendChild(separador_label);
     div_fila2.appendChild(separador_title);
 
+    $(checkbox_labels).on("change",function() {
+            _("#graph").history({data:data});
+    });
+    $(separador_label).on("change",function() {
+            _("#graph").history({data:data});
+    });
     div_options.appendChild(div_fila1);
     div_options.appendChild(div_fila2);
     if (this.separado === "true") {
@@ -390,7 +396,7 @@ _.prototype.drawHistoricBars = function (posicion) {
 
     var layer_hist = new Kinetic.Layer();
     var colores = this.colores_grupos;
-    console.log(colores);
+
     for ( var i = 0; i < puntos.length;i++ ) {
         if(pie_mode == "simple") {
             var line = new Kinetic.Line({
