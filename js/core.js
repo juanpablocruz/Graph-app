@@ -253,7 +253,7 @@ _.prototype = {
         var h = ctx.canvas.height-20;
         var posy = Math.floor((h)/(max/step));
         var contador = 0;
-        ctx.font = "12px 'Mic 32 New Rounded,mic32newrd'";
+        ctx.font = "12px 'Mic 32 New Rounded,mic32newrd,arial'";
         //ctx.fillStyle = "#333";
         var oy=0;
         var text;
