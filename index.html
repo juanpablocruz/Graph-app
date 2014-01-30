@@ -55,6 +55,7 @@
             tipo = localStorage.chartType;
             console.log(wb);
             cargar(output,tipo);
+            //_("#graph").display_table(wb.Sheets);
         }
 
         function handleDrop(e) {
@@ -336,6 +337,7 @@
         <div class="step-info"><ul></ul></div>
         <div id="drop"><div class="icon-box-add icono"></div>Arrastra un archivo XLS</div>
         <div class="back">Volver</div>
+        <div id="output"></div>
     </section>
 </div>
     <div id="designer" class="step">
@@ -365,6 +367,7 @@
     </div>
      <script src="js/color.js"></script>
     <script src="js/core.js"></script>
+    <script src="js/excel.js"></script>
     <script src="js/jszip.js"></script>
     <script src="js/xlsx.js"></script>
     <script src="js/pie.js"></script>
