@@ -384,7 +384,7 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
 
     var dy = Math.sin(endingAngle) / 2;
     var dx = 2 * Math.cos(endingAngle) / 3;
-    context.font = '16px "Mic 32 New Rounded,mic32newrd"';
+    context.font = '16px "Mic 32 New Rounded",mic32newrd';
     var width = context.measureText( this.grupos[i]["label"]).width;
 
     context.fillStyle = "#FFF";
@@ -424,7 +424,7 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
             y: centery+ (dy*radius) ,
             text: this.grupos[i]["label"],
             fontSize: 16,
-            fontFamily: "Mic 32 New Rounded,mic32newrd",
+            fontFamily: "'Mic 32 New Rounded',mic32newrd",
             fill: "#fff",
             padding: 2,
             paddingLeft: -5,
@@ -434,7 +434,7 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
             x: centerx + (dx*radius),
             y: centery+ (dy*radius) + 24,
             fontSize: 12,
-            fontFamily: "Mic 32 New Rounded,mic32newrd",
+            fontFamily: "'Mic 32 New Rounded',mic32newrd",
             text: this.grupos[i]["value"]+"%",
             fill: tc,
             padding: 1,
@@ -459,7 +459,7 @@ _.prototype.writePieText = function (context, i, porciones, r) {
 
     var dy = Math.sin(endingAngle)/2;
     var dx = 2*Math.cos(endingAngle)/3; 
-    context.font = '16px "Mic 32 New Rounded,mic32newrd"';
+    context.font = '16px "Mic 32 New Rounded",mic32newrd';
     var width = context.measureText( this.data[i]["label"]).width;
 
     context.fillStyle = "#FFF";	
@@ -531,7 +531,7 @@ _.prototype.writePieText = function (context, i, porciones, r) {
             y: centery+ (dy*radius) ,
             text: texto,
             fontSize: 16,
-            fontFamily: "Mic 32 New Rounded,mic32newrd",
+            fontFamily: "'Mic 32 New Rounded',mic32newrd",
             fill: "#fff",
             padding: 2,
             paddingLeft: -5,
@@ -541,7 +541,7 @@ _.prototype.writePieText = function (context, i, porciones, r) {
             x: centerx + (dx*radius),
             y: centery+ (dy*radius) + padding+4,
             fontSize: 12,
-            fontFamily: "Mic 32 New Rounded,mic32newrd",
+            fontFamily: "'Mic 32 New Rounded',mic32newrd",
             text: this.data[i]["value"]+"%",
             fill: tc,
             padding: 1,
