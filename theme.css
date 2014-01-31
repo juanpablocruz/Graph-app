@@ -470,6 +470,12 @@ header,.step{
     vertical-align: bottom;
     margin-bottom: -0.8em;
 }
+img {width:100%;}
+#abajo, #lado {
+                width:22px;
+                display:inline-block;
+                margin:0.3em;
+            }
 @media all and (max-width:800px){
     nav ul{width:100%;}
     .step-info{width:100%;}

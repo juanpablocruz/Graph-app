@@ -1,3 +1,4 @@
+var table_data = "";
 _.prototype.display_table = function(workbook){
     var mapa = {"A":1,"B":2,"C":3,"D":4,"E":5,"F":6,"G":7,"H":8,"I":9,
                "J":10,"K":11,"L":12,"M":13,"N":14,"O":15,"P":16,"Q":17,"R":18,
@@ -78,6 +79,66 @@ _.prototype.display_table = function(workbook){
     }
 
     $("#output").append(tabla);
+    $("#output").append("<div id='abajo'><img src='arriba.jpg'></div><div id='lado'><img src='lado.png'></div>");
+            $("td").on("mouseover",function(ev) {
+                $(".active").toggleClass("active")
+                if(ev.clientY > $(this).position().top){
+                    var index = $(this).index()+1;
+                    $("td:nth-child("+index+")").addClass("active");
+                }
+                else {
+                    $(this).parent().toggleClass("active");  
+                }
+            });
+            $("table").on("click",function(ev) {
+                $(".active").each(function(i,e) {
+                    console.log($(e).text()); 
+                });
+            })
+            $("#abajo").on("click",function() {
+                var a = new Array();
+                for ( var i = 0; i < ($("tr").first().find("td").length)-1; i++) {
+                    a.push({});
+                }
+                $("tr").each(function(i,e) {
+                    $(e).find("td:gt(0)").each(function(j,el) {
+                        a[j][$(e).find("td").first().text()] = $(el).text();                       
+                    });
+
+                });
+                console.log(a);
+                table_data = a;
+                tipo = localStorage.chartType;
+                
+                var data = new Array();
+                for(var i = 0; i < a.length; i++) {
+                    _().each(Object.keys(a[i]),function(j,t) {
+                        data.push({label: t[j], value: a[i][t[j]]});
+                    });
+                }
+                console.log(data);
+                changeStep($(".current_step"),"next");
+                _("#graph").pie({data:data});
+                
+            });
+            
+            $("#lado").on("click",function() {
+                var a = new Array();
+                for ( var i = 0; i < ($("tr").length)-1; i++) {
+                    a.push({});
+                }
+                $("tr:nth-child(1)").find("td").each(function(i,e) {
+                    $("tr:gt(0)").find("td:nth-child("+(i+1)+")").each(function(j,el) { 
+                        a[j][$(e).text()] = $(el).text();
+                    });
+                    
+                });
+                console.log(a);
+                table_data = a;
+                tipo = localStorage.chartType;
+                console.log(this);
+                _("#graph").pie({data:a});
+            }); 
 }
 
 

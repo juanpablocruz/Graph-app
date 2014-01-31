@@ -53,9 +53,10 @@
             data = JSON.stringify(output, 2, 2);
             localStorage.data=data;
             tipo = localStorage.chartType;
-            console.log(wb);
+    
             cargar(output,tipo);
-            //_("#graph").display_table(wb.Sheets);
+            _("#graph").display_table(wb.Sheets);
+            
         }
 
         function handleDrop(e) {
@@ -85,7 +86,6 @@
                 else reader.readAsArrayBuffer(f);
             }
         }
-
 
         function dragevents(){
             $(".data-list-li").draggable({
