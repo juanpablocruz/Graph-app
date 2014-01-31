@@ -76,7 +76,6 @@ _.prototype.display_table = function(workbook){
         }
         tabla.append(tr);
     }
-
     $("#output").append(tabla);
 }
 
