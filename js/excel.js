@@ -106,17 +106,15 @@ _.prototype.display_table = function(workbook){
                     });
 
                 });
-                console.log(a);
-                table_data = a;
                 tipo = localStorage.chartType;
                 
                 var data = new Array();
                 for(var i = 0; i < a.length; i++) {
                     _().each(Object.keys(a[i]),function(j,t) {
-                        data.push({label: t[j], value: a[i][t[j]]});
+                        data.push({label: t[j], value: Math.round(a[i][t[j]] * 100) / 100});
                     });
                 }
-                console.log(data);
+                localStorage.data = JSON.stringify(data);
                 changeStep($(".current_step"),"next");
                 _("#graph").pie({data:data});
                 
@@ -133,10 +131,16 @@ _.prototype.display_table = function(workbook){
                     });
                     
                 });
-                console.log(a);
-                table_data = a;
+
+                var data = new Array();
+                for(var i = 0; i < a.length; i++) {
+                    _().each(Object.keys(a[i]),function(j,t) {
+                        data.push({label: t[j], value: Math.round(a[i][t[j]] * 100) / 100});
+                    });
+                }
                 tipo = localStorage.chartType;
                 console.log(this);
+                changeStep($(".current_step"),"next");
                 _("#graph").pie({data:a});
             }); 
 }
