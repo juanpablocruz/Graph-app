@@ -471,6 +471,18 @@ header,.step{
     margin-bottom: -0.8em;
 }
 img {width:100%;}
+#output .active {
+    background-color: #EBC;
+    border-color: #B89;
+    font-weight:normal !important;
+    cursor:pointer;
+}
+#borrar-fila,#borrar-columna {
+    cursor:pointer;
+    margin-left:1em;
+    margin-right:1em;
+}
+
 #abajo, #lado {
                 width:22px;
                 display:inline-block;
