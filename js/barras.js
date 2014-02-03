@@ -18,6 +18,7 @@ _.prototype.bars = function (obj) {
         this.data_content = document.querySelectorAll("#graph-data")[0];
         this.canvas = document.querySelectorAll(id+" canvas")[0];
         this.printLabels = true;
+
         if(localStorage.drawLabels){
             this.printLabels = localStorage.drawLabels;
         }
@@ -33,18 +34,16 @@ _.prototype.bars = function (obj) {
         this.colores_grupos = [];
         var start_point = 0, color_point = 0;
 
-        if(barras_mode == "compuesto") {
-            start_point = 1;
-            color_point = -1;
-        }
 
-        for (var j = start_point; j < Object.keys(this.data[0]).length; j++) {
+
+        for (var j = 0; j < Object.keys(this.data[0]).length; j++) {
             var grupo = Object.keys(this.data[0])[j];
             if( barras_mode == "compuesto")
                  grupo = this.data[0][Object.keys(this.data[0])[j]];
+            console.log(colores_barras);
             var tmp = {
                 grupo: grupo,
-                color: colores_barras[color_point+j].hex};
+                color: colores_barras[j%colores_barras.length].hex};
             this.colores_grupos.push(tmp);
         }
 
@@ -182,6 +181,7 @@ _.prototype.addBarTools = function(data){
         var div = document.createElement("DIV");
         if (barras_mode == "cols" || j > 0) div.className = "data-list-element-holder";
             div.innerHTML = "<div contenteditable='true'>"+Object.keys(data[0])[j]+"</div>";
+        console.log(j,this.colores_grupos[0]);
         if (barras_mode == "cols") {
             var colorinpt = document.createElement("input");
                 colorinpt.setAttribute("type","color");
@@ -292,13 +292,14 @@ _.prototype.drawBar = function(canvas,data){
     this.ctx = canvas.getContext("2d");
     this.data = data;
     var maximo = this.getMaxColumn();
+
     this.createBarsVerticalAxis(maximo,6,"barras");
     this.createBarsHorizontalAxis(maximo);
 }
 _.prototype.getMaxColumn = function (){
     var max = 0;
     if(barras_mode != "cols") {
-    for(var i=0;i< this.data.length;i++){
+        for(var i=0;i< this.data.length;i++){
         var tmp = 0;
         for (var j = 1; j < Object.keys(this.data[0]).length; j++) {
             tmp += this.data[i][Object.keys(this.data[i])[j]];
@@ -308,6 +309,7 @@ _.prototype.getMaxColumn = function (){
         }
     }
     } else {
+
         for(var i=0;i< Object.keys(this.data[0]).length;i++){
             var tmp = 0;
             for (var j = 0; j < this.data.length; j++) {
@@ -318,7 +320,7 @@ _.prototype.getMaxColumn = function (){
             }
         }
     }
-    var len = max.toString().length;
+    var len = Math.round(max).toString().length;
     var orden = Math.pow(10,len-1);
     var next = parseInt(max/orden)+1;
     var max = next * orden;

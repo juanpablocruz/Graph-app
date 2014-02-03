@@ -94,12 +94,13 @@ _.prototype.display_table = function(workbook){
     }
 
     $("#output").append(tabla);
-            $("#output").append("<div id='abajo'><img src='arriba.jpg'></div><div id='lado'><img src='lado.png'></div>");
+    var body = $("<div id='body-output'></div>");
+            $(body).append("<div id='abajo'><img src='arriba.jpg'></div><div id='lado'><img src='lado.png'></div>");
 
-            $("#output").append("<input type='radio' name='borrar' id='borrar-fila' class='button borrar-fila' value='Borrar fila'><label for='borrar-fila' id='borrar-fila-label'>Borrar fila</label>");
-            $("#output").append("<input type='radio' name='borrar' id='borrar-columna' class='button borrar-columna' value='Borrar columna'><label for='borrar-columna' id='borrar-columna-label'>Borrar columna</label>");
-            $("#output").append("<input type='radio' name='borrar' id='borrar-neutro' style='display:none;'>");
-
+            $(body).append("<input type='radio' name='borrar' id='borrar-fila' class='button borrar-fila' value='Borrar fila'><label for='borrar-fila' id='borrar-fila-label'>Borrar fila</label>");
+            $(body).append("<input type='radio' name='borrar' id='borrar-columna' class='button borrar-columna' value='Borrar columna'><label for='borrar-columna' id='borrar-columna-label'>Borrar columna</label>");
+            $(body).append("<input type='radio' name='borrar' id='borrar-neutro' style='display:none;'>");
+    $("#output").append(body);
             $(".borrar-fila").on("click",function() {
                 if(!fila)fila = true;
                 else {fila = false;$('#borrar-neutro').prop('checked', true);}

@@ -99,7 +99,7 @@ function create_data_set(dest, d) {
                 color = d[i]["color"];
             }
             else if (i>=colores.length) {
-                var color = colores[(i%colores.length)+2].hex;
+                var color = colores[(i+2)%colores.length].hex;
             }
             else {
                 var color=colores[i].hex;
@@ -350,7 +350,8 @@ _.prototype.drawPieSegment = function (context, i, porciones, r) {
     var startingAngle = (this.sumTo(porciones, i));
     var arcSize = porciones[i]["porcentaje"];
     var endingAngle = startingAngle + arcSize;
-    
+    console.log(porciones[i]["color"] );
+    if(typeof porciones[i]["color"] === "undefined")localStorage.clear();
     var arc = new Kinetic.Shape({
         drawFunc: function(context){
             var centerX = Math.floor(context.canvas.width/2);

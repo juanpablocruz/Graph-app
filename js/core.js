@@ -197,7 +197,11 @@ _.prototype = {
         return imageData;
     },
     getInterval: function (max,bars) {
-        return Math.ceil(max/(bars));
+        var v = Math.round(max/bars)
+        var len = v.toString().length;
+        var orden = Math.pow(10, len - 1);
+        var next = parseInt( v / orden );
+        return parseInt(next * orden);
     },
 
     getMinValue: function () {
@@ -211,12 +215,11 @@ _.prototype = {
         }
         var len = min.toString().length;
         var orden = Math.pow(10, len - 1);
-        var next = parseFloat( min / orden );
+        var next = parseInt( min / orden );
         var min = next * orden;
         return parseInt(min);
     },
     getStep : function(max,bars) {
-
         var step = this.getInterval(max,bars);
         var h = this.ctx.canvas.height-20;
         var posy = Math.floor((h)/(max/step));

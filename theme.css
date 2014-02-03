@@ -475,19 +475,25 @@ img {width:100%;}
 #output {
     margin: auto;
     margin-top: 3em;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 #output table {
     margin-left:1em;
     margin-bottom:1em;
+    border-collapse:collapse;
+}
+#output table tr{
+    background:wheat;
 }
 #output table td{
     padding-left: 1em;
     padding-right:1em;
 }
 #output .active {
-    background-color: #EBC;
-    border-color: #B89;
+    background-color: #EBC !important;
+    border-color: #B89 !important;
     font-weight:normal !important;
     cursor:pointer;
 }
