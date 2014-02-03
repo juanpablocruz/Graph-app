@@ -471,6 +471,20 @@ header,.step{
     margin-bottom: -0.8em;
 }
 img {width:100%;}
+
+#output {
+    margin: auto;
+    margin-top: 3em;
+    display: block;
+}
+#output table {
+    margin-left:1em;
+    margin-bottom:1em;
+}
+#output table td{
+    padding-left: 1em;
+    padding-right:1em;
+}
 #output .active {
     background-color: #EBC;
     border-color: #B89;

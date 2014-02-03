@@ -33,7 +33,6 @@ _.prototype.display_table = function(workbook){
 
         for (var col in workbook[prop]) {
             if (typeof workbook[prop][col]["raw"] != "undefined") {
-                var div = $("<div col='"+col+"' sheet='"+prop+"'>"+workbook[prop][col]["raw"]+"</div>");
                 var pos = col.split("");
                 excel[mapa[pos[0]]-1][pos[1]] = {
                     data:workbook[prop][col]["raw"],
@@ -80,8 +79,14 @@ _.prototype.display_table = function(workbook){
 
             var c = table_data["cols"][i];
             var r = table_data["rows"][j];
+            var text = "";
+            if(!isNaN(parseFloat(excel[r][c]["data"]))) {
+                text = Math.ceil(parseFloat(excel[r][c]["data"]) * 100) / 100;
+            } else {
+                text = excel[r][c]["data"];
+            }
             var td = $("<td><div class='dato drop'>"+
-                       excel[r][c]["data"]+
+                       text+
                        "</div></td>");
             tr.append(td);
         }
@@ -93,15 +98,16 @@ _.prototype.display_table = function(workbook){
 
             $("#output").append("<input type='radio' name='borrar' id='borrar-fila' class='button borrar-fila' value='Borrar fila'><label for='borrar-fila' id='borrar-fila-label'>Borrar fila</label>");
             $("#output").append("<input type='radio' name='borrar' id='borrar-columna' class='button borrar-columna' value='Borrar columna'><label for='borrar-columna' id='borrar-columna-label'>Borrar columna</label>");
+            $("#output").append("<input type='radio' name='borrar' id='borrar-neutro' style='display:none;'>");
 
             $(".borrar-fila").on("click",function() {
                 if(!fila)fila = true;
-                else fila = false;
+                else {fila = false;$('#borrar-neutro').prop('checked', true);}
                 columna = false;
             });
             $(".borrar-columna").on("click",function() {
                 if(!columna)columna = true;
-                else columna = false;
+                else {columna = false; $('#borrar-neutro').prop('checked', true);}
                 fila = false;
             });
 
@@ -125,7 +131,7 @@ _.prototype.display_table = function(workbook){
                 }
                 $("tr").each(function(i,e) {
                     $(e).find("td:gt(0)").each(function(j,el) {
-                        a[j][$(e).find("td").first().text()] = Math.round($(el).text() * 100) / 100;
+                        a[j][$(e).find("td").first().text()] = Math.ceil($(el).text() * 100) / 100;
                     });
 
                 });
@@ -140,7 +146,7 @@ _.prototype.display_table = function(workbook){
                 }
                 $("tr:nth-child(1)").find("td").each(function(i,e) {
                     $("tr:gt(0)").find("td:nth-child("+(i+1)+")").each(function(j,el) { 
-                        a[j][$(e).text()] = Math.round($(el).text() * 100) / 100;
+                        a[j][$(e).text()] = Math.ceil($(el).text() * 100) / 100;
                     });
                     
                 });
@@ -152,14 +158,13 @@ function draw(a) {
     tipo = localStorage.chartType;
 
     var data = new Array();
-
     changeStep($(".current_step"),"next");
 
     switch(tipo) {
         case "Tartas":
             for(var i = 0; i < a.length; i++) {
                 _().each(Object.keys(a[i]),function(j,t) {
-                    data.push({label: t[j], value: Math.round(a[i][t[j]] * 100) / 100});
+                    data.push({label: t[j], value: Math.ceil(a[i][t[j]] * 100) / 100});
                 });
             }
             localStorage.data = JSON.stringify(data);
