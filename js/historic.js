@@ -10,6 +10,11 @@ var unidad_value = "Miles de t";
 if (localStorage.unidad) {
     unidad_value = localStorage.unidad;
 }
+var delim;
+if(localStorage.leyenda)
+    delim = localStorage.leyenda;
+else
+    delim = "Leyenda";
 _.prototype.history= function (obj) {
     var id = this.id;
     _().canvas( this.e[0], function() {
@@ -181,11 +186,11 @@ _.prototype.historyPannel = function() {
     for (var j = 0; j < Object.keys(data[0]).length; j++) {
         var li1 = document.createElement("li");
         var div = document.createElement("DIV");
-        if (Object.keys(data[0])[j] != "Leyenda")
+        if (Object.keys(data[0])[j] != delim)
             div.className = "data-list-element-holder";
         div.innerHTML = "<div contenteditable='true'>" + Object.keys(data[0])[j] + "</div>";
 
-        if (Object.keys(data[0])[j] != "Leyenda") {
+        if (Object.keys(data[0])[j] != delim) {
             var colorinpt = document.createElement("input");
                 colorinpt.setAttribute("type","color");
                 colorinpt.value = this.colores_grupos[j-1]["color"];
@@ -379,7 +384,7 @@ _.prototype.drawHistoricBars = function (posicion) {
     this.step = this.getStep(maximo, 5);
 
     for ( var j = 0; j < Object.keys(data[0]).length; j++ ) {
-        if(Object.keys(data[0])[j] != "Leyenda"){
+        if(Object.keys(data[0])[j] != delim){
             linea_set = [];
             a = -x;
             if(pie_mode != "simple") linea_set.push({x:0,y:0});
@@ -458,7 +463,7 @@ _.prototype.drawHistoricBars = function (posicion) {
             y: h,
             fontSize: 12,
             fontFamily: 'Mic 32 New Rounded,mic32newrd',
-            text: this.data[j]["Leyenda"],
+            text: this.data[j][delim],
             fill: "black",
             padding: 1,
         });

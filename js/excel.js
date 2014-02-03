@@ -1,17 +1,25 @@
 var table_data = "";
+var columna = false, fila = false;
 _.prototype.display_table = function(workbook){
     var mapa = {"A":1,"B":2,"C":3,"D":4,"E":5,"F":6,"G":7,"H":8,"I":9,
                "J":10,"K":11,"L":12,"M":13,"N":14,"O":15,"P":16,"Q":17,"R":18,
-               "S":19,"T":20,"U":21,"V":22,"W":23,"X":23,"Y":24,"Z":25};
+               "S":19,"T":20,"U":21,"V":22,"W":23,"X":23,"Y":24,"Z":25,
+                "AA":26,"BB":27,"CC":28,"DD":29,"EE":30,"FF":31,"GG":32,
+               "HH":33, "II":34, "JJ":35, "KK":36,"LL":37,"MM":38,"NN":39,"OO":40,
+               "PP":41,"QQ":42,"RR":43,"SS":44,"TT":45,"UU":46,"VV":47,"WW":48,"XX":49,
+               "YY":50,"ZZ":51};
     var limits;
     for (var prop in workbook) {
 
         var boundaries = workbook[prop]["!ref"].split(":")[1].split("");
-        var num = "";
+
+        var num = 0;
         for(var i = 1; i < boundaries.length; i++) {
-            num += boundaries[i];
+            num += parseInt(boundaries[i]);
         }
-        limits = {n:mapa[boundaries[0]],m:num};
+
+        limits = {n:mapa[boundaries[0]],m:num+1};
+
         var excel = new Array();
         var weights = new Array();
         for(var n=0;n < limits.n; n++) {
@@ -22,6 +30,7 @@ _.prototype.display_table = function(workbook){
                 weights[n].push(0);
             }
         }
+
         for (var col in workbook[prop]) {
             if (typeof workbook[prop][col]["raw"] != "undefined") {
                 var div = $("<div col='"+col+"' sheet='"+prop+"'>"+workbook[prop][col]["raw"]+"</div>");
@@ -34,6 +43,7 @@ _.prototype.display_table = function(workbook){
             }
         }
     }
+
     var tabla = $("<table></table>");
     $("#output").html("");
     for(var i = 0; i < limits.n; i++) {
@@ -79,21 +89,34 @@ _.prototype.display_table = function(workbook){
     }
 
     $("#output").append(tabla);
-    $("#output").append("<div id='abajo'><img src='arriba.jpg'></div><div id='lado'><img src='lado.png'></div>");
+            $("#output").append("<div id='abajo'><img src='arriba.jpg'></div><div id='lado'><img src='lado.png'></div>");
+
+            $("#output").append("<div id='borrar-fila'>Borrar fila</div>");
+            $("#output").append("<div id='borrar-columna'>Borrar columna</div>");
+
+            $("#borrar-fila").on("click",function() {
+                if(!fila)fila = true;
+                else fila = false;
+                columna = false;
+            });
+            $("#borrar-columna").on("click",function() {
+                if(!columna)columna = true;
+                else columna = false;
+                fila = false;
+            });
+
             $("td").on("mouseover",function(ev) {
                 $(".active").toggleClass("active")
-                if(ev.clientY > $(this).position().top){
+                if(columna){
                     var index = $(this).index()+1;
                     $("td:nth-child("+index+")").addClass("active");
                 }
-                else {
+                else if(fila){
                     $(this).parent().toggleClass("active");  
                 }
             });
             $("table").on("click",function(ev) {
-                $(".active").each(function(i,e) {
-                    console.log($(e).text()); 
-                });
+                $(".active").remove();
             })
             $("#abajo").on("click",function() {
                 var a = new Array();
@@ -102,21 +125,11 @@ _.prototype.display_table = function(workbook){
                 }
                 $("tr").each(function(i,e) {
                     $(e).find("td:gt(0)").each(function(j,el) {
-                        a[j][$(e).find("td").first().text()] = $(el).text();                       
+                        a[j][$(e).find("td").first().text()] = Math.round($(el).text() * 100) / 100;
                     });
 
                 });
-                tipo = localStorage.chartType;
-                
-                var data = new Array();
-                for(var i = 0; i < a.length; i++) {
-                    _().each(Object.keys(a[i]),function(j,t) {
-                        data.push({label: t[j], value: Math.round(a[i][t[j]] * 100) / 100});
-                    });
-                }
-                localStorage.data = JSON.stringify(data);
-                changeStep($(".current_step"),"next");
-                _("#graph").pie({data:data});
+                draw(a);
                 
             });
             
@@ -127,24 +140,44 @@ _.prototype.display_table = function(workbook){
                 }
                 $("tr:nth-child(1)").find("td").each(function(i,e) {
                     $("tr:gt(0)").find("td:nth-child("+(i+1)+")").each(function(j,el) { 
-                        a[j][$(e).text()] = $(el).text();
+                        a[j][$(e).text()] = Math.round($(el).text() * 100) / 100;
                     });
                     
                 });
 
-                var data = new Array();
-                for(var i = 0; i < a.length; i++) {
-                    _().each(Object.keys(a[i]),function(j,t) {
-                        data.push({label: t[j], value: Math.round(a[i][t[j]] * 100) / 100});
-                    });
-                }
-                tipo = localStorage.chartType;
-                console.log(this);
-                changeStep($(".current_step"),"next");
-                _("#graph").pie({data:a});
+                draw(a);
             }); 
 }
+function draw(a) {
+    tipo = localStorage.chartType;
 
+    var data = new Array();
+
+    changeStep($(".current_step"),"next");
+
+    switch(tipo) {
+        case "Tartas":
+            for(var i = 0; i < a.length; i++) {
+                _().each(Object.keys(a[i]),function(j,t) {
+                    data.push({label: t[j], value: Math.round(a[i][t[j]] * 100) / 100});
+                });
+            }
+            localStorage.data = JSON.stringify(data);
+            _("#graph").pie({data:data});
+            break;
+        case "Barras":
+            localStorage.data = JSON.stringify(a);
+            _("#graph").bars({data:a});
+            break;
+        case "Históricos":
+            console.log(a);
+            localStorage.data = JSON.stringify(a);
+            localStorage.leyenda = Object.keys(a[0])[0];
+            _("#graph").history({data:a});
+            break;
+    }
+
+}
 
 function findMedian(lista) {
     var total =0;

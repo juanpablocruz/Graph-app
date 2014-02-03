@@ -209,12 +209,11 @@ _.prototype = {
                 }
             }
         }
-
         var len = min.toString().length;
         var orden = Math.pow(10, len - 1);
         var next = parseFloat( min / orden );
         var min = next * orden;
-        return min;
+        return parseInt(min);
     },
     getStep : function(max,bars) {
 
@@ -276,9 +275,16 @@ _.prototype = {
             posicion["bajo"] = true;
             posicion["numero"] = parseInt(minimo / step);
             posicion["origen"] = minimo;
+
             origen=minimo;
             step = this.getInterval(max,bars);
+            if(minimo < 0) origen = -step;
+            else {
+                origen = step * parseInt(minimo/step);
+            }
+
         }
+        console.log(origen);
         this.origen = origen;
         var yaxis = new Kinetic.Shape({
             drawFunc: function(ctx) {
