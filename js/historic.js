@@ -441,7 +441,7 @@ _.prototype.drawHistoricBars = function (posicion) {
         var separador_puntos = [];
         a = -x;
         for(var i = 0; i < this.listaSeparador.length; i++) {
-            var value = ((((this.listaSeparador[i]-min) * h)/amplitud));
+            var value =  ((this.listaSeparador[i]-this.origen)/this.step.label)*this.step.val;
             separador_puntos.push({x:a + x, y: -( value)});
             a += x;
         }
