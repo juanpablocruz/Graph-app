@@ -11,37 +11,38 @@ _.prototype.display_table = function(workbook){
     var limits;
     for (var prop in workbook) {
 
-        var boundaries = workbook[prop]["!ref"].split(":")[1].split("");
+                var boundaries = workbook[prop]["!ref"].split(":")[1].split("");
+                var num = "";
+                for(var i = 1; i < boundaries.length; i++) {
+                    num += boundaries[i];
+                }
+                limits = {n:mapa[boundaries[0]],m:num};
+                var excel = new Array();
+                var weights = new Array();
+                for(var n=0;n < limits.n+1; n++) {
+                    excel.push(new Array());
+                    weights.push(new Array());
+                    for (var m=0; m< limits.m; m++) {
+                        excel[n].push({col:0,row:0,data:"",sheet:0});
+                        weights[n].push(0);
+                    }
+                }
+                for (var col in workbook[prop]) {
+                    if (typeof workbook[prop][col]["raw"] != "undefined") {
+                        var div = $("<div col='"+col+"' sheet='"+prop+"'>"+workbook[prop][col]["raw"]+"</div>");
 
-        var num = 0;
-        for(var i = 1; i < boundaries.length; i++) {
-            num += parseInt(boundaries[i]);
-        }
-
-        limits = {n:mapa[boundaries[0]],m:num+1};
-
-        var excel = new Array();
-        var weights = new Array();
-        for(var n=0;n < limits.n; n++) {
-            excel.push(new Array());
-            weights.push(new Array());
-            for (var m=0; m< limits.m; m++) {
-                excel[n].push({data:"",col:0,sheet:0});
-                weights[n].push(0);
+                        var pos = col.split("");
+                        row = "";
+                        for(var i=1; i<pos.length; i++)row+=pos[i];
+                        excel[mapa[pos[0]]-1][parseInt(row)] = {
+                            col:pos[0],
+                            row:row,
+                            data:workbook[prop][col]["raw"],
+                            sheet: prop
+                        };
+                    }
+                }
             }
-        }
-
-        for (var col in workbook[prop]) {
-            if (typeof workbook[prop][col]["raw"] != "undefined") {
-                var pos = col.split("");
-                excel[mapa[pos[0]]-1][pos[1]] = {
-                    data:workbook[prop][col]["raw"],
-                    col:col,
-                    sheet: prop
-                };
-            }
-        }
-    }
 
     var tabla = $("<table></table>");
     $("#output").html("");
@@ -81,7 +82,7 @@ _.prototype.display_table = function(workbook){
             var r = table_data["rows"][j];
             var text = "";
             if(!isNaN(parseFloat(excel[r][c]["data"]))) {
-                text = Math.ceil(parseFloat(excel[r][c]["data"]) * 100) / 100;
+                text = (parseFloat(excel[r][c]["data"]) * 100) / 100;
             } else {
                 text = excel[r][c]["data"];
             }

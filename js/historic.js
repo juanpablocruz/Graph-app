@@ -455,7 +455,7 @@ _.prototype.drawHistoricBars = function (posicion) {
     for ( var j = 0; j < data.length; j++ ) {
         var x_var;
         if(pie_mode == "simple") { x_var = 35 + puntos[0][j]["x"];}
-        else {x_var = 35 + puntos[0][j+1]["x"];}
+        else {x_var = 35 + puntos[0][j+1]["x"] - (ctx.measureText(this.data[j][delim]).width/2);}
 
         var year = new Kinetic.Text({
             x: x_var,

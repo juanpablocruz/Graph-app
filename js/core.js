@@ -310,13 +310,15 @@ _.prototype = {
     },
 
     saveStep: function() {
-        if(_.memory.length >= 5)_.memory.shift();
-        _.memory.push({local: localStorage, output: $("#output").html()});
+        if(_.memory.length >= 6)_.memory.shift();
+        _.memory.push({local: localStorage, output: $("#output").html(), current: $(".current_step")});
     },
     undoAction: function() {
         if(_.memory.length > 1) {
             localStorage = _.memory[_.memory.length - 2]["local"];
             this.loadOutput(_.memory[_.memory.length - 2]["output"]);
+            $(".current_step").removeClass("current_step");
+            $(_.memory[_.memory.length - 2]["current"]).addClass("current_step");
             _.memory.pop();
             columna = false;fila=false;
         }
@@ -375,7 +377,6 @@ _.prototype = {
                 $("tr:gt(0)").find("td:nth-child("+(i+1)+")").each(function(j,el) {
                     a[j][$(e).text()] = Math.ceil($(el).text() * 100) / 100;
                 });
-
             });
             columna = false;fila=false;
             draw(a);

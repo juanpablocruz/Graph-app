@@ -540,11 +540,11 @@ _.prototype.writePieText = function (context, i, porciones, r) {
             y: centery+ (dy*radius) + padding+4,
             fontSize: 12,
             fontFamily: "'Mic 32 New Rounded',mic32newrd",
-            text: Math.ceil((porciones[i]["porcentaje"]*180/Math.PI)*100/360)+"%",
+            text: (Math.round(10*((porciones[i]["porcentaje"]*180/Math.PI)*100/360))/10)+"%",
             fill: tc,
             padding: 1,
         });
-
+    console.log(porciones[i]["porcentaje"]);
 
     group.add(box);
     group.add(text_label); 

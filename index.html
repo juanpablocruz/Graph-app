@@ -312,7 +312,10 @@
                 cargar(data,tipo);
             }
         });
-
+function undo() {
+    _().undoAction();
+    console.log("undo");
+}
 
     </script>
     </head>
@@ -349,7 +352,7 @@
             <section id="tools">
                 <div id="buttons">
                 <div id="nuevo-graph"><div class='icon-file icono' title="Nuevo"></div><span class="menu-text">Nuevo</span></div>
-                <button id="add_graph" onclick="restaurarColores()"><div class='icon-droplet icono' title="Añadir gráfico"></div><span class="menu-text">Añadir gráfico</span></button>
+                <button id="undo" onclick="undo()"><div class='icon-droplet icono' title="Deshacer acción"></div><span class="menu-text">Deshacer acción</span></button>
                 <div id="save-button">
                     <a id="save" href="" download="grafico" >
                         <div class='icon-download icono' title="Guardar"></div>
