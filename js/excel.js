@@ -176,7 +176,6 @@ function draw(a) {
             _("#graph").bars({data:a});
             break;
         case "Históricos":
-            console.log(a);
             localStorage.data = JSON.stringify(a);
             localStorage.leyenda = Object.keys(a[0])[0];
             _("#graph").history({data:a});

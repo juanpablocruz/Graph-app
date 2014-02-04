@@ -161,19 +161,16 @@ _.prototype = {
     },
 
     canvasToImage: function(canvas, backgroundColor) {
-
-        var c = document.getElementsByTagName("canvas")[1];
-
         var tmp_canvas = canvas.cloneNode(true);
 
         //cache height and width		
         var w = canvas.width;
         var h = canvas.height;
-        var context = canvas.getContext("2d");
 
         var tmp_ctx = tmp_canvas.getContext("2d");
-        tmp_ctx.drawImage(canvas,0,0);
-        tmp_ctx.drawImage(c,0,0);
+         _().each(document.getElementsByTagName("canvas"),function(i,l) {
+            tmp_ctx.drawImage(l[i],0,0);
+        });
 
         var data;
      
@@ -191,9 +188,6 @@ _.prototype = {
             tmp_ctx.putImageData(data, 0,0);
             tmp_ctx.globalCompositeOperation = compositeOperation;
         }
-
-
-        console.log(tmp_ctx,context);
         return imageData;
     },
     getInterval: function (max,bars) {
@@ -294,7 +288,6 @@ _.prototype = {
                 for (var j = origen; j < max-(step/2)+origen; j+= step) {
                     var x = j.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                     oy = h - (posy * contador);
-                    //if(x.length > 3) x = x.substring(0,x.length-4)+"k";
                     if(x.length > 3) x = x.substring(0,x.length-4);
                     ctx.fillText(x, 0, oy - 5);
                     ctx.beginPath();
