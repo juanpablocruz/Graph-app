@@ -437,7 +437,6 @@ _.prototype.drawHistoricBars = function (posicion) {
     }
 
     if(this.separado == "true") {
-
         var separador_puntos = [];
         a = -x;
         for(var i = 0; i < this.listaSeparador.length; i++) {
@@ -474,7 +473,7 @@ _.prototype.drawHistoricBars = function (posicion) {
                 var text = this.separador_title;
                 var width = this.ctx.measureText(text).width;
                 this.drawLabel(60 ,
-                           h-((((this.listaSeparador[0]-min) * h)/amplitud)) - 10 ,
+                           h-((((this.listaSeparador[0]-min) * h)/amplitud)) - 10,
                            width + width/9, 24,
                            "black",
                            "#FFFFFF",

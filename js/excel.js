@@ -100,60 +100,11 @@ _.prototype.display_table = function(workbook){
             $(body).append("<input type='radio' name='borrar' id='borrar-fila' class='button borrar-fila' value='Borrar fila'><label for='borrar-fila' id='borrar-fila-label'>Borrar fila</label>");
             $(body).append("<input type='radio' name='borrar' id='borrar-columna' class='button borrar-columna' value='Borrar columna'><label for='borrar-columna' id='borrar-columna-label'>Borrar columna</label>");
             $(body).append("<input type='radio' name='borrar' id='borrar-neutro' style='display:none;'>");
+    var forandback = $("<div><button id='undo'>undo</button></div>");
     $("#output").append(body);
-            $(".borrar-fila").on("click",function() {
-                if(!fila)fila = true;
-                else {fila = false;$('#borrar-neutro').prop('checked', true);}
-                columna = false;
-            });
-            $(".borrar-columna").on("click",function() {
-                if(!columna)columna = true;
-                else {columna = false; $('#borrar-neutro').prop('checked', true);}
-                fila = false;
-            });
-
-            $("td").on("mouseover",function(ev) {
-                $(".active").toggleClass("active")
-                if(columna){
-                    var index = $(this).index()+1;
-                    $("td:nth-child("+index+")").addClass("active");
-                }
-                else if(fila){
-                    $(this).parent().toggleClass("active");  
-                }
-            });
-            $("table").on("click",function(ev) {
-                $(".active").remove();
-            })
-            $("#abajo").on("click",function() {
-                var a = new Array();
-                for ( var i = 0; i < ($("tr").first().find("td").length)-1; i++) {
-                    a.push({});
-                }
-                $("tr").each(function(i,e) {
-                    $(e).find("td:gt(0)").each(function(j,el) {
-                        a[j][$(e).find("td").first().text()] = Math.ceil($(el).text() * 100) / 100;
-                    });
-
-                });
-                draw(a);
-                
-            });
-            
-            $("#lado").on("click",function() {
-                var a = new Array();
-                for ( var i = 0; i < ($("tr").length)-1; i++) {
-                    a.push({});
-                }
-                $("tr:nth-child(1)").find("td").each(function(i,e) {
-                    $("tr:gt(0)").find("td:nth-child("+(i+1)+")").each(function(j,el) { 
-                        a[j][$(e).text()] = Math.ceil($(el).text() * 100) / 100;
-                    });
-                    
-                });
-
-                draw(a);
-            }); 
+    $("#output").append(forandback);
+    _().saveStep();
+    _().loadOutput($("#output").html());
 }
 function draw(a) {
     tipo = localStorage.chartType;
@@ -169,15 +120,18 @@ function draw(a) {
                 });
             }
             localStorage.data = JSON.stringify(data);
+            _().saveStep();
             _("#graph").pie({data:data});
             break;
         case "Barras":
             localStorage.data = JSON.stringify(a);
+            _().saveStep();
             _("#graph").bars({data:a});
             break;
         case "Históricos":
             localStorage.data = JSON.stringify(a);
             localStorage.leyenda = Object.keys(a[0])[0];
+            _().saveStep();
             _("#graph").history({data:a});
             break;
     }

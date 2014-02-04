@@ -40,7 +40,6 @@ _.prototype.bars = function (obj) {
             var grupo = Object.keys(this.data[0])[j];
             if( barras_mode == "compuesto")
                  grupo = this.data[0][Object.keys(this.data[0])[j]];
-            console.log(colores_barras);
             var tmp = {
                 grupo: grupo,
                 color: colores_barras[j%colores_barras.length].hex};
@@ -181,7 +180,6 @@ _.prototype.addBarTools = function(data){
         var div = document.createElement("DIV");
         if (barras_mode == "cols" || j > 0) div.className = "data-list-element-holder";
             div.innerHTML = "<div contenteditable='true'>"+Object.keys(data[0])[j]+"</div>";
-        console.log(j,this.colores_grupos[0]);
         if (barras_mode == "cols") {
             var colorinpt = document.createElement("input");
                 colorinpt.setAttribute("type","color");
