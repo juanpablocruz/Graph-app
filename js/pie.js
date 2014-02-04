@@ -209,7 +209,6 @@ _.prototype.pie= function (obj) {
 
 _.prototype.pie_type_menu = function() {
     var dest = Array.prototype.slice.call(this.e);
-    console.log("noo");
     var compuestoGrahp = document.createElement("LI");
         compuestoGrahp.innerHTML = "Compuesto<div class='icon-spinner2 icono' title='Gráfico compuesto'></div>";
         compuestoGrahp.setAttribute("id","pie_complex");
@@ -350,7 +349,6 @@ _.prototype.drawPieSegment = function (context, i, porciones, r) {
     var startingAngle = (this.sumTo(porciones, i));
     var arcSize = porciones[i]["porcentaje"];
     var endingAngle = startingAngle + arcSize;
-    console.log(porciones[i]["color"] );
     if(typeof porciones[i]["color"] === "undefined")localStorage.clear();
     var arc = new Kinetic.Shape({
         drawFunc: function(context){
@@ -537,13 +535,12 @@ _.prototype.writePieText = function (context, i, porciones, r) {
             padding: 2,
             paddingLeft: -5,
         });
-    
     var text_data = new Kinetic.Text({
             x: centerx + (dx*radius),
             y: centery+ (dy*radius) + padding+4,
             fontSize: 12,
             fontFamily: "'Mic 32 New Rounded',mic32newrd",
-            text: this.data[i]["value"]+"%",
+            text: Math.ceil((porciones[i]["porcentaje"]*180/Math.PI)*100/360)+"%",
             fill: tc,
             padding: 1,
         });

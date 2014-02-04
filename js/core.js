@@ -312,74 +312,74 @@ _.prototype = {
     saveStep: function() {
         if(_.memory.length >= 5)_.memory.shift();
         _.memory.push({local: localStorage, output: $("#output").html()});
-        console.log(_.memory);
     },
     undoAction: function() {
         if(_.memory.length > 1) {
             localStorage = _.memory[_.memory.length - 2]["local"];
             this.loadOutput(_.memory[_.memory.length - 2]["output"]);
             _.memory.pop();
+            columna = false;fila=false;
         }
     },
     loadOutput: function(data) {
         $("#output").html(data);
         $("#undo").on("click",function() {
-                _().undoAction();
-            })
-            $(".borrar-fila").on("click",function() {
-                if(!fila)fila = true;
-                else {fila = false;$('#borrar-neutro').prop('checked', true);}
-                columna = false;
-            });
-            $(".borrar-columna").on("click",function() {
-                if(!columna)columna = true;
-                else {columna = false; $('#borrar-neutro').prop('checked', true);}
-                fila = false;
-            });
+            _().undoAction();
+        })
+        $(".borrar-fila").on("click",function() {
+            if(!fila)fila = true;
+            else {fila = false;$('#borrar-neutro').prop('checked', true);}
+            columna = false;
+        });
+        $(".borrar-columna").on("click",function() {
+            if(!columna)columna = true;
+            else {columna = false; $('#borrar-neutro').prop('checked', true);}
+            fila = false;
+        });
 
-            $("td").on("mouseover",function(ev) {
-                $(".active").toggleClass("active")
-                if(columna){
-                    var index = $(this).index()+1;
-                    $("td:nth-child("+index+")").addClass("active");
-                }
-                else if(fila){
-                    $(this).parent().toggleClass("active");
-                }
-            });
-            $("table").on("click",function(ev) {
-                $(".active").remove();
-                _().saveStep();
-            })
-            $("#abajo").on("click",function() {
-                var a = new Array();
-                for ( var i = 0; i < ($("tr").first().find("td").length)-1; i++) {
-                    a.push({});
-                }
-                $("tr").each(function(i,e) {
-                    $(e).find("td:gt(0)").each(function(j,el) {
-                        a[j][$(e).find("td").first().text()] = Math.ceil($(el).text() * 100) / 100;
-                    });
-
-                });
-                draw(a);
-
-            });
-
-            $("#lado").on("click",function() {
-                var a = new Array();
-                for ( var i = 0; i < ($("tr").length)-1; i++) {
-                    a.push({});
-                }
-                $("tr:nth-child(1)").find("td").each(function(i,e) {
-                    $("tr:gt(0)").find("td:nth-child("+(i+1)+")").each(function(j,el) {
-                        a[j][$(e).text()] = Math.ceil($(el).text() * 100) / 100;
-                    });
-
+        $("td").on("mouseover",function(ev) {
+            $(".active").toggleClass("active")
+            if(columna){
+                var index = $(this).index()+1;
+                $("td:nth-child("+index+")").addClass("active");
+            }
+            else if(fila){
+                $(this).parent().toggleClass("active");
+            }
+        });
+        $("table").on("click",function(ev) {
+            $(".active").remove();
+            _().saveStep();
+        })
+        $("#abajo").on("click",function() {
+            var a = new Array();
+            for ( var i = 0; i < ($("tr").first().find("td").length)-1; i++) {
+                a.push({});
+            }
+            $("tr").each(function(i,e) {
+                $(e).find("td:gt(0)").each(function(j,el) {
+                    a[j][$(e).find("td").first().text()] = Math.ceil($(el).text() * 100) / 100;
                 });
 
-                draw(a);
             });
+            columna = false;fila=false;
+            draw(a);
+        });
+
+        $("#lado").on("click",function() {
+            var a = new Array();
+            for ( var i = 0; i < ($("tr").length)-1; i++) {
+                a.push({});
+            }
+            $("tr:nth-child(1)").find("td").each(function(i,e) {
+                $("tr:gt(0)").find("td:nth-child("+(i+1)+")").each(function(j,el) {
+                    a[j][$(e).text()] = Math.ceil($(el).text() * 100) / 100;
+                });
+
+            });
+            columna = false;fila=false;
+            draw(a);
+        });
 
     }
 };
