@@ -290,7 +290,9 @@ input:focus{
     vertical-align: middle;
     font-weight: 600;
 }
-
+.data-list-li{
+    display:table-row;
+}
 li{
     list-style:none;
 }
@@ -518,6 +520,7 @@ img {width:100%;}
     text-shadow: 0px 0px 2px #333;
 }
 #undo:active {
+    color:red;
     color:red;
 }
 #undo:hover {
