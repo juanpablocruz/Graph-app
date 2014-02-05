@@ -166,20 +166,23 @@ _.prototype.addBarTools = function(data){
         div_options.appendChild(check_div);
 
     var ul = document.createElement("UL");
-    $(ul).droppable({
+    /*$(ul).droppable({
         addClasses : false,
         accept: ".data-list-li",
         drop: function (e, ui) {
             $(this).append(ui.draggable);
         }
-    });
+    });*/
+    $(ul).sortable();
     ul.setAttribute("id","groups-ul");
-
-    for (var j=0; j < Object.keys(data[0]).length; j++) {
+    var orden = Object.keys(data[0]);
+    if(localStorage.ordenacion)
+        orden = JSON.parse(localStorage.ordenacion);
+    for (var j=0; j < orden.length; j++) {
         var li1 = document.createElement("li");
         var div = document.createElement("DIV");
         if (barras_mode == "cols" || j > 0) div.className = "data-list-element-holder";
-            div.innerHTML = "<div contenteditable='true'>"+Object.keys(data[0])[j]+"</div>";
+            div.innerHTML = "<div contenteditable='true'>"+orden[j]+"</div>";
         if (barras_mode == "cols") {
             var colorinpt = document.createElement("input");
                 colorinpt.setAttribute("type","color");
@@ -191,11 +194,12 @@ _.prototype.addBarTools = function(data){
         else li1.className = "data-list-li-year";
 
         var set = document.createElement("ul");
+
         for (var i=0;i< data.length;i++) {
             var li = document.createElement("LI");
             var cont = document.createElement("DIV");
                 cont.setAttribute("contenteditable","true");
-                cont.innerHTML =data[i][Object.keys(data[i])[j]];
+                cont.innerHTML =data[i][orden[j]];
             li.appendChild(cont);
             set.appendChild(li);
         }

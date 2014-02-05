@@ -32,6 +32,7 @@ function create_data_set(dest, d) {
         var g = JSON.parse(localStorage.grupos);
         _().each(g, function (j, a) {                                   //create each group
             var li = document.createElement("LI");
+            li.className = "sortable-group-list";
             if (pie_mode === "simple")
                 li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie'>" + a[j].label + "</span>";
             else
@@ -44,6 +45,24 @@ function create_data_set(dest, d) {
                     $(this).find("ul").append(ui.draggable);
                 }
             });
+
+            $(".sortable-group-list > ul").sortable({
+                start: function (event, ui) {
+                    item = ui.item;
+                    newList = oldList = ui.item.parent();
+                },
+                stop: function (event, ui) {
+
+                // perform action here
+
+                },
+                change: function (event, ui) {
+                    if (ui.sender) newList = ui.placeholder.parent();
+                },
+                connectWith: ".sortable-group-list > ul",
+                dropOnEmpty: true
+            }).disableSelection();
+
             _().each(d, function (i) {                                  // Create each portion in its own group
                 if (d[i].group !== "" && d[i].group === a[j].label) {
                     if(d[i]["color"])color = d[i]["color"];
@@ -74,10 +93,6 @@ function create_data_set(dest, d) {
                 cont.appendChild(inpt_color);
                 li2.appendChild(cont);
                 ul2.appendChild(li2);
-                $(li2).draggable({
-                        addClasses : false,
-                        revert: true,
-                    });
                 }
             });
             li.appendChild(ul2);
@@ -88,6 +103,7 @@ function create_data_set(dest, d) {
     }
     else{                                               // If there's no groups create one and add everything in
         var li = document.createElement("LI");
+        li.className = "sortable-group-list";
         if(pie_mode == "simple")
            li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie' val='0'>Grupo1</span>";
         else
@@ -125,10 +141,27 @@ function create_data_set(dest, d) {
             cont.appendChild(inpt_color);
             li2.appendChild(cont);
             ul2.appendChild(li2);
+            /*
             $(li2).draggable({
                     addClasses : false,
                     revert: true,
-                });
+                });*/
+            $(".sortable-group-list > ul").sortable({
+                start: function (event, ui) {
+                    item = ui.item;
+                    newList = oldList = ui.item.parent();
+                },
+                stop: function (event, ui) {
+
+                // perform action here
+
+                },
+                change: function (event, ui) {
+                    if (ui.sender) newList = ui.placeholder.parent();
+                },
+                connectWith: ".sortable-group-list > ul",
+                dropOnEmpty: true
+            }).disableSelection();
 
         });
         li.appendChild(ul2);

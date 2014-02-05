@@ -101,9 +101,9 @@ _.prototype.display_table = function(workbook){
             $(body).append("<input type='radio' name='borrar' id='borrar-fila' class='button borrar-fila' value='Borrar fila'><label for='borrar-fila' id='borrar-fila-label'>Borrar fila</label>");
             $(body).append("<input type='radio' name='borrar' id='borrar-columna' class='button borrar-columna' value='Borrar columna'><label for='borrar-columna' id='borrar-columna-label'>Borrar columna</label>");
             $(body).append("<input type='radio' name='borrar' id='borrar-neutro' style='display:none;'>");
-    var forandback = $("<div><button id='undo'>undo</button></div>");
+    $(body).append("<div id='undo-container'><button id='undo'><div class='icon icon-undo'></div></button></div>");
     $("#output").append(body);
-    $("#output").append(forandback);
+
     _().saveStep();
     _().loadOutput($("#output").html());
 }

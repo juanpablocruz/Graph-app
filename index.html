@@ -88,10 +88,10 @@
         }
 
         function dragevents(){
-            $(".data-list-li").draggable({
+            /*$(".data-list-li").draggable({
                 addClasses : false,
                 revert: true,
-            });
+            });*/
             $("#attr-grupos>ul>li").droppable({
                 addClasses : false,
                 accept: ".data-list-li",
@@ -100,6 +100,24 @@
                     $(this).find("ul").append(ui.draggable)
                 }
             });
+            var oldList,newList,item;
+            $(".sortable-group-list > ul").sortable({
+                start: function (event, ui) {
+                    item = ui.item;
+                    newList = oldList = ui.item.parent();
+                },
+                stop: function (event, ui) {
+
+                // perform action here
+                },
+                change: function (event, ui) {
+                    if (ui.sender) newList = ui.placeholder.parent();
+                },
+                connectWith: ".sortable-group-list > ul",
+                dropOnEmpty: true,
+                forceHelperSize: true,
+                forcePlaceholderSize: true
+            }).disableSelection();
         }
         function handleDragover(e) {
             e.stopPropagation();
@@ -273,12 +291,10 @@
             });
 
             $(document).on("click",".rearrange-button",function(){
+                var ul = $(".data-list-li-holder").parent();
                 $(".data-list-li-holder").toggleClass("data-list-li");
                 $(".data-list-element-holder").toggleClass("data-list-element");
-                $(".data-list-li").draggable({
-                    addClasses : false,
-                    revert: true,
-                });
+                $(ul).sortable();
             });
 
             $(document).on("click",".label-dibujar-check",function(){
