@@ -253,7 +253,7 @@ _.prototype = {
             y: 1 ,
             text: "Unidad: "+unidad_value,
             fontSize: 13,
-            fontFamily: "infotext,Helvetica,arial,InfoTextBook",
+            fontFamily: "infotext,InfoTextBook,Helvetica,arial",
             fontStyle: "italic",
             fill: "#7B796C",
 

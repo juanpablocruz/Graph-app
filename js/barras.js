@@ -215,7 +215,6 @@ _.prototype.addBarTools = function(data){
             var order = [];
             var datos = document.querySelectorAll(".data-list-li-year");
 
-            console.log(datos);
             //order.push(datos[0].children[0].innerHTML);
             if(typeof datos[0] != "undefined")
                 for (var i = 0; i < datos[0].children[1].children.length; i++) valores.push(new Object);
@@ -339,6 +338,7 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
     } else {
         var value = (((this.data[j][orden[i]] * 100) / maximo)*h/100);
     }
+
     var barra = new Kinetic.Shape({
         drawFunc: function(ctx){
             ctx.beginPath();
@@ -371,7 +371,7 @@ _.prototype.createBarsHorizontalAxis = function(max){
      if(!localStorage.ordenacion && barras_mode == "compuesto"){
         var orden = Object.keys(this.data[0]);
          var start = 1;
-         var color_rest = 1;
+         var color_rest = 0;
     } else if(!localStorage.ordenacion && barras_mode == "cols"){
         var orden = Object.keys(this.data[0]);
         var start = 1;
@@ -415,7 +415,7 @@ _.prototype.createBarsHorizontalAxis = function(max){
                         x: 40+(j+i)*(wBar+m) - (this.ctx.measureText(leyenda).width/2),
                         y: this.ctx.canvas.height-20,
                         fontSize: 12,
-                        fontFamily: "Mic 32 New Rounded",
+                        fontFamily: "Mic 32 New Rounded,mic32newrd,Helvetica,Arial",
                         text: leyenda,
                         fill: "black",
                         padding: 1,
@@ -431,7 +431,7 @@ _.prototype.createBarsHorizontalAxis = function(max){
             x: 45+(j+0)*(wBar+m) - (this.ctx.measureText(leyenda).width/2),
             y: this.ctx.canvas.height-20,
             fontSize: 12,
-            fontFamily: "Mic 32 New Rounded,mic32newrd",
+            fontFamily: "Mic 32 New Rounded,mic32newrd,Helvetica,Arial",
             text: leyenda,
             fill: "black",
             padding: 1,
