@@ -178,18 +178,23 @@ _.prototype.addBarTools = function(data){
     for (var j=0; j < orden.length; j++) {
         var li1 = document.createElement("li");
         var div = document.createElement("DIV");
-        if (barras_mode == "cols" || j > 0) div.className = "data-list-element-holder";
+        if (barras_mode == "cols" || j > 0) div.className = "data-list-element-holder icon-reorganizar";
             div.innerHTML = "<div contenteditable='true'>"+orden[j]+"</div>";
         if (barras_mode == "cols") {
             var colorinpt = document.createElement("input");
                 colorinpt.setAttribute("type","color");
                 colorinpt.value = this.colores_grupos[j]["color"];
                 div.appendChild(colorinpt);
-        }
-        li1.appendChild(div);
-        if (barras_mode == "cols" || j > 0) li1.className = "data-list-li-holder";
-        else li1.className = "data-list-li-year";
 
+        }
+
+
+        if (barras_mode == "cols" || j > 0) {
+            $(li1).append("<div class='remove-list-item'></div>");
+            li1.className = "data-list-li-holder";
+        }
+        else li1.className = "data-list-li-year";
+        li1.appendChild(div);
         var set = document.createElement("ul");
 
         for (var i=0;i< data.length;i++) {
@@ -200,6 +205,7 @@ _.prototype.addBarTools = function(data){
             li.appendChild(cont);
             set.appendChild(li);
         }
+
         li1.appendChild(set);
         ul.appendChild(li1);
     }
@@ -223,16 +229,18 @@ _.prototype.addBarTools = function(data){
                 for (var i = 0; i < datos[0].children[1].children.length; i++) valores.push(new Object);
             }
             _().each(datos,function(i){
-                var title = datos[i].children[0].children[0].innerHTML;
+                var title = datos[i].children[1].children[0].innerHTML;
+
                 order.push(title);
-                _().each( datos[i].children[1].children,function(j,a){
+                _().each( datos[i].children[2].children,function(j,a){
                     var value = a[j].children[0].innerHTML;
                     valores[j][title] =parseInt( value);
                 });
-                _().each( datos[i].children[1].children,function(j,a){
+                _().each( datos[i].children[2].children,function(j,a){
                     var value = a[j].children[0].innerHTML;
                     valores[j][title] = value;
                 });
+                console.log(order);
             });
             /* FETCH VALUES */
             var fuent = document.querySelectorAll("#fuente_input")[0].value;
@@ -248,26 +256,27 @@ _.prototype.addBarTools = function(data){
 
             var datos = document.querySelectorAll(".data-list-li-holder");
             _().each(datos, function(i) {
-                order.push(datos[i].children[0].children[0].innerHTML);
-                if(datos[i].children[0].children.length > 1){
+
+                //order.push(datos[i].children[1].children[0].innerHTML);
+                if(datos[i].children[1].children.length > 1){
                     var tmp = {
-                        grupo: datos[i].children[0].children[0].innerHTML,
-                        color: datos[i].children[0].children[1].value
+                        grupo: datos[i].children[1].children[0].innerHTML,
+                        color: datos[i].children[1].children[1].value
                     };
                 }
                 else{
                     var tmp = {
-                        grupo: datos[i].children[0].children[0].innerHTML,
+                        grupo: datos[i].children[1].children[0].innerHTML,
                         color: colores[i].hex,
                     };
                 }
                 tmp_colors.push(tmp);
-                var title = order[i+1];
-                _().each( datos[i].children[1].children,function(j, a) {
+                var title = order[i];
+                _().each( datos[i].children[2].children,function(j, a) {
                     var value = parseFloat(a[j].children[0].innerHTML);
                     valores[j][title] = value;
                 });
-                _().each( datos[i].children[1].children,function(j, a) {
+                _().each( datos[i].children[2].children,function(j, a) {
                     var value = parseFloat(a[j].children[0].innerHTML);
                     valores[j][title] = value;
                 });
@@ -348,7 +357,7 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
         },
         stroke: "rgba(0,0,0,0)",
         strokeWidth: 0,
-        fill: this.colores_grupos[i-color_rest-1]["color"],
+        fill: this.colores_grupos[i-color_rest]["color"],
     });
     layer.add(barra);
 }
@@ -370,15 +379,15 @@ _.prototype.createBarsHorizontalAxis = function(max){
     var labels = [];
      if(!localStorage.ordenacion && barras_mode == "compuesto"){
         var orden = Object.keys(this.data[0]);
-         var start = 1;
+         var start = 0;
          var color_rest = 0;
     } else if(!localStorage.ordenacion && barras_mode == "cols"){
         var orden = Object.keys(this.data[0]);
-        var start = 1;
+        var start = 0;
          var color_rest = 0;
     } else {
         var orden = JSON.parse(localStorage.ordenacion);
-        var start = 1;
+        var start = 0;
          var color_rest = 0;
     }
 
