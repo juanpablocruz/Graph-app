@@ -21,7 +21,7 @@ function draw_action() {
             localStorage.fuente = fuent;
             fuente_value = fuent;
             var data = [];
-            _().each(document.querySelectorAll("#attr-grupos ul>li div"),function(i,a){
+            _().each(document.querySelectorAll("#attr-grupos ul>li .data-list-element"),function(i,a){
                values = [];
                var grupo = $(a[i]).parent().parent().parent().find("span").text();
             _().each(a[i].childNodes,function(j,c){
@@ -95,7 +95,7 @@ function create_data_set(dest, d) {
                 var li2 = document.createElement("LI");
                 li2.className = "data-list-li";
                 var cont = document.createElement("DIV");
-                cont.className = "data-list-element";
+                cont.className = "data-list-element icon-reorganizar";
                 var inpt_val = document.createElement("INPUT");
                 inpt_val.type = "number";
                 inpt_val.value = d[i]["value"];
@@ -108,10 +108,14 @@ function create_data_set(dest, d) {
                 inpt_color.type = "color";
                 inpt_color.value = color;
                 inpt_color.className = "color";
+                var close_div = document.createElement("DIV");
+                close_div.className = "remove-list-item";
+
                 cont.appendChild(inpt_labl);
                 cont.appendChild(inpt_val);
                 cont.appendChild(inpt_color);
                 li2.appendChild(cont);
+                li2.appendChild(close_div);
                 ul2.appendChild(li2);
                 }
             });
@@ -143,7 +147,7 @@ function create_data_set(dest, d) {
             var li2 = document.createElement("LI");
             li2.className = "data-list-li";
             var cont = document.createElement("DIV");
-            cont.className = "data-list-element";
+            cont.className = "data-list-element icon-reorganizar";
             var inpt_val = document.createElement("INPUT");
             inpt_val.type = "number";
             inpt_val.value = d[i]["value"];
@@ -156,16 +160,17 @@ function create_data_set(dest, d) {
             inpt_color.type = "color";
             inpt_color.value = color;
             inpt_color.className = "color";
+            var close_div = document.createElement("DIV");
+            close_div.className = "remove-list-item";
+
             cont.appendChild(inpt_labl);
             cont.appendChild(inpt_val);
             cont.appendChild(inpt_color);
+
             li2.appendChild(cont);
+            li2.appendChild(close_div);
             ul2.appendChild(li2);
-            /*
-            $(li2).draggable({
-                    addClasses : false,
-                    revert: true,
-                });*/
+
             $(".sortable-group-list > ul").sortable({
                 start: function (event, ui) {
                     item = ui.item;

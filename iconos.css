@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'iconos';
-	src:url('fonts/iconos.eot?pn0v4j');
-	src:url('fonts/iconos.eot?#iefixpn0v4j') format('embedded-opentype'),
-		url('fonts/iconos.woff?pn0v4j') format('woff'),
-		url('fonts/iconos.ttf?pn0v4j') format('truetype'),
-		url('fonts/iconos.svg?pn0v4j#iconos') format('svg');
+	src:url('fonts/iconos.eot?gfen8g');
+	src:url('fonts/iconos.eot?#iefixgfen8g') format('embedded-opentype'),
+		url('fonts/iconos.woff?gfen8g') format('woff'),
+		url('fonts/iconos.ttf?gfen8g') format('truetype'),
+		url('fonts/iconos.svg?gfen8g#iconos') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -79,6 +79,9 @@
 }
 .icon-droplet:before {
 	content: "\e606";
+}
+.icon-reorganizar:hover:before {
+	content: "\e614";
 }
 .icon-undo:before {
 	content: "\e607";

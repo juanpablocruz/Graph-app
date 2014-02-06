@@ -96,7 +96,6 @@
                 addClasses : false,
                 accept: ".data-list-li",
                 drop: function(e,ui){
-                    console.log(ui);
                     $(this).find("ul").append(ui.draggable)
                 }
             });
@@ -318,6 +317,17 @@
                 else {
                     localStorage.destacado_bars = false;
                 }
+            });
+            $(document).on("mousedown",".data-list-li",function(){
+                $(this).addClass("mousedown");
+            });
+            $(document).on("mouseup",".data-list-li",function(){
+                $(this).removeClass("mousedown");
+            });
+
+            $(document).on("click",".remove-list-item",function() {
+                console.log("remove");
+                $(this).parent().remove();
             });
             $(document).on("click",".label-separador-check",function(){
                 if(!$('#separador-check').is(":checked")){
