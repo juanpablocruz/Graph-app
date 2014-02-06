@@ -524,7 +524,7 @@ img {width:100%;}
     color:red;
     color:red;
 }
-#undo:hover {
+#undo-container #undo:hover {
     color:#000;
     text-shadow:0;
 }
