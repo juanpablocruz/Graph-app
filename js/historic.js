@@ -174,13 +174,6 @@ _.prototype.historyPannel = function() {
 
 
     var ul = document.createElement("UL");
-    $(ul).droppable({
-        addClasses : false,
-        accept: ".data-list-li",
-        drop: function (e, ui) {
-            $(this).append(ui.draggable);
-        }
-    });
     ul.setAttribute("id","groups-ul");
 
     for (var j = 0; j < Object.keys(data[0]).length; j++) {
@@ -356,7 +349,10 @@ _.prototype.addHistTools = function(data) {
     var data_content = document.querySelectorAll("#graph-data")[0];
         data_content.innerHTML =  "";
         data_content.appendChild(this.historyPannel());
-
+     $("#groups-ul").sortable({
+        items: ".data-list-li-holder",
+        handle: ".data-list-element"
+    });
 }
 
 _.prototype.drawHist = function (canvas, data) {
@@ -455,7 +451,7 @@ _.prototype.drawHistoricBars = function (posicion) {
     for ( var j = 0; j < data.length; j++ ) {
         var x_var;
         if(pie_mode == "simple") { x_var = 35 + puntos[0][j]["x"];}
-        else {x_var = 35 + puntos[0][j+1]["x"] - (ctx.measureText(this.data[j][delim]).width/2);}
+        else {x_var = 35 + puntos[0][j+1]["x"] - (this.ctx.measureText(this.data[j][delim]).width/2);}
 
         var year = new Kinetic.Text({
             x: x_var,

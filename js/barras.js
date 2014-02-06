@@ -54,6 +54,10 @@ _.prototype.bars = function (obj) {
 
         this.addBarTools(obj.data);
         this.drawBar(this.canvas,obj.data);
+        $("#groups-ul").sortable({
+            items: ".data-list-li-holder",
+            handle: ".data-list-element"
+        });
     });
 }
 
@@ -166,14 +170,6 @@ _.prototype.addBarTools = function(data){
         div_options.appendChild(check_div);
 
     var ul = document.createElement("UL");
-    /*$(ul).droppable({
-        addClasses : false,
-        accept: ".data-list-li",
-        drop: function (e, ui) {
-            $(this).append(ui.draggable);
-        }
-    });*/
-
 
     ul.setAttribute("id","groups-ul");
     var orden = Object.keys(data[0]);
