@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" href="icono.ico"/>
     <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.7.4.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" ></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
 
 
     <script>
@@ -290,25 +290,19 @@
                 dropOnEmpty: true,
                 forceHelperSize: true,
                 forcePlaceholderSize: true
-                });
-
-                /*
-                x.droppable({
-                    addClasses : false,
-                    accept: ".data-list-li",
-                    drop: function(e,ui){
-                        $(this).find("ul").append(ui.draggable)
-                    }
-                });*/
+                }).disableSelection();
             });
 
             $(document).on("click",".rearrange-button",function(){
                 var ul = $(".data-list-li-holder").parent();
-                $(".data-list-li-holder").toggleClass("data-list-li");
+                $(".data-list-li-holder ").toggleClass("data-list-li");
                 $(".data-list-element-holder").toggleClass("data-list-element");
-                $(ul).sortable();
-            });
 
+            });
+            $("#groups-ul").sortable({
+                items: ".data-list-li-holder",
+                handle: ".data-list-element"
+            });
             $(document).on("click",".label-dibujar-check",function(){
                 if(!$('#dibujar-check').is(":checked")){
                     localStorage.drawLabels = true;

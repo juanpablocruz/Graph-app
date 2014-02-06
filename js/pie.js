@@ -11,6 +11,43 @@ if (!localStorage.pie_mode) {
     pie_mode = localStorage.pie_mode;
 }
 
+function draw_action() {
+    var grupos_list = [];
+            _().each(document.querySelectorAll(".grupo_tag"),function(i,a){     // Fetch all the data inside each item
+                grupos_list.push({label:a[i].innerHTML,value:a[i].getAttribute("val")});
+            });
+            localStorage.grupos = JSON.stringify(grupos_list, 2, 2);
+            var fuent = document.querySelectorAll("#fuente_input")[0].value;
+            localStorage.fuente = fuent;
+            fuente_value = fuent;
+            var data = [];
+            _().each(document.querySelectorAll("#attr-grupos ul>li div"),function(i,a){
+               values = [];
+               var grupo = $(a[i]).parent().parent().parent().find("span").text();
+            _().each(a[i].childNodes,function(j,c){
+                values.push(c[j].value);
+              });
+                if(values[2])color = values[2];
+                else if(i>=colores.length){
+                    colores[(i%colores.length)+2] = new Color(values[2]);
+                    color = colores[(i%colores.length)+2].hex;
+                }
+                else{
+                    colores[i] = new Color(values[2]);
+                    color = colores[i].hex
+                }
+              data[i] = {
+                    label:values[0],
+                    value: parseFloat(values[1]),
+                    group: grupo,
+                    color: color,
+                };
+           });
+            localStorage.data = JSON.stringify(data, 2, 2);
+             dragevents();
+            _("#graph").pie({data:data});
+}
+
 function create_data_set(dest, d) {
     dest.innerHTML = "";
     var f = document.createDocumentFragment(), contenedor = document.createElement("DIV"),
@@ -167,42 +204,7 @@ function create_data_set(dest, d) {
         inpt_sub.type = "submit";
         inpt_sub.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
         inpt_sub.className = "draw_button";
-        inpt_sub.addEventListener('click',function(){                           // Add click event to draw
-            var grupos_list = [];
-            _().each(document.querySelectorAll(".grupo_tag"),function(i,a){     // Fetch all the data inside each item
-                grupos_list.push({label:a[i].innerHTML,value:a[i].getAttribute("val")});
-            });
-            localStorage.grupos = JSON.stringify(grupos_list, 2, 2);
-            var fuent = document.querySelectorAll("#fuente_input")[0].value;
-            localStorage.fuente = fuent;
-            fuente_value = fuent;
-            var data = [];
-            _().each(document.querySelectorAll("#attr-grupos ul>li div"),function(i,a){
-               values = [];
-               var grupo = $(a[i]).parent().parent().parent().find("span").text();
-            _().each(a[i].childNodes,function(j,c){
-                values.push(c[j].value);
-              });
-                if(values[2])color = values[2];
-                else if(i>=colores.length){
-                    colores[(i%colores.length)+2] = new Color(values[2]);
-                    color = colores[(i%colores.length)+2].hex;
-                }
-                else{
-                    colores[i] = new Color(values[2]);
-                    color = colores[i].hex
-                }
-              data[i] = {
-                    label:values[0],
-                    value: parseFloat(values[1]),
-                    group: grupo,
-                    color: color,
-                };
-           });
-            localStorage.data = JSON.stringify(data, 2, 2);
-             dragevents();
-            _("#graph").pie({data:data});
-        },false);
+        inpt_sub.addEventListener('click',draw_action,false);
     grupos.appendChild(inpt_sub);
     f.appendChild(grupos);
     f.appendChild(div_options);

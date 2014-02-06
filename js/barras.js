@@ -173,9 +173,8 @@ _.prototype.addBarTools = function(data){
             $(this).append(ui.draggable);
         }
     });*/
-    $(ul).sortable({
-        items: ".data-list-li-holder"
-    });
+
+
     ul.setAttribute("id","groups-ul");
     var orden = Object.keys(data[0]);
     if(localStorage.ordenacion)
@@ -284,6 +283,7 @@ _.prototype.addBarTools = function(data){
         inpt_activar.className = "rearrange-button";
 
     div_data.appendChild(ul);
+
     div_container.appendChild(div_data);
     div_container.appendChild(div_options);
     f.appendChild(div_container);
