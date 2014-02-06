@@ -212,7 +212,11 @@ _.prototype.addBarTools = function(data){
         inpt_dib.addEventListener("click",function(){
             /* FETCH LABELS */
             var valores = [];
+            var order = [];
             var datos = document.querySelectorAll(".data-list-li-year");
+
+            console.log(datos);
+            //order.push(datos[0].children[0].innerHTML);
             if(typeof datos[0] != "undefined")
                 for (var i = 0; i < datos[0].children[1].children.length; i++) valores.push(new Object);
             else {
@@ -221,6 +225,7 @@ _.prototype.addBarTools = function(data){
             }
             _().each(datos,function(i){
                 var title = datos[i].children[0].children[0].innerHTML;
+                order.push(title);
                 _().each( datos[i].children[1].children,function(j,a){
                     var value = a[j].children[0].innerHTML;
                     valores[j][title] =parseInt( value);
@@ -238,7 +243,7 @@ _.prototype.addBarTools = function(data){
             localStorage.unidad = unit;
             unidad_value = unit;
             var tmp_colors = [];
-            var order = [];
+
 
             var colores = (destc == "true") ? colores_alpha : colores_barras;
 
@@ -258,13 +263,13 @@ _.prototype.addBarTools = function(data){
                     };
                 }
                 tmp_colors.push(tmp);
-                var title = order[i];
+                var title = order[i+1];
                 _().each( datos[i].children[1].children,function(j, a) {
-                    var value = parseInt(a[j].children[0].innerHTML);
+                    var value = parseFloat(a[j].children[0].innerHTML);
                     valores[j][title] = value;
                 });
                 _().each( datos[i].children[1].children,function(j, a) {
-                    var value = parseInt(a[j].children[0].innerHTML);
+                    var value = parseFloat(a[j].children[0].innerHTML);
                     valores[j][title] = value;
                 });
             });
@@ -334,7 +339,6 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
     } else {
         var value = (((this.data[j][orden[i]] * 100) / maximo)*h/100);
     }
-
     var barra = new Kinetic.Shape({
         drawFunc: function(ctx){
             ctx.beginPath();
@@ -344,7 +348,7 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
         },
         stroke: "rgba(0,0,0,0)",
         strokeWidth: 0,
-        fill: this.colores_grupos[i-color_rest]["color"],
+        fill: this.colores_grupos[i-color_rest-1]["color"],
     });
     layer.add(barra);
 }
@@ -370,11 +374,11 @@ _.prototype.createBarsHorizontalAxis = function(max){
          var color_rest = 1;
     } else if(!localStorage.ordenacion && barras_mode == "cols"){
         var orden = Object.keys(this.data[0]);
-        var start = 0;
+        var start = 1;
          var color_rest = 0;
     } else {
         var orden = JSON.parse(localStorage.ordenacion);
-        var start = 0;
+        var start = 1;
          var color_rest = 0;
     }
 
