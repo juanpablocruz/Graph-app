@@ -240,7 +240,6 @@ _.prototype.addBarTools = function(data){
                     var value = a[j].children[0].innerHTML;
                     valores[j][title] = value;
                 });
-                console.log(order);
             });
             /* FETCH VALUES */
             var fuent = document.querySelectorAll("#fuente_input")[0].value;
@@ -390,10 +389,9 @@ _.prototype.createBarsHorizontalAxis = function(max){
         var start = 0;
          var color_rest = 0;
     }
-
+    var drawn = false;
     for (var j=0; j<this.data.length; j++){
         var leyenda = "";
-
         for (var i = start; i< orden.length; i++){
             switch (barras_mode) {
                 case "compuesto":
@@ -417,9 +415,8 @@ _.prototype.createBarsHorizontalAxis = function(max){
                            i, j, h,
                            this.ctx.canvas.height-20,
                            layer2,wBar,m,orden,color_rest,i);
-
+                    if(!drawn){
                     leyenda = Object.keys(this.data[0])[i];
-
                     var year = new Kinetic.Text({
                         x: 40+(j+i)*(wBar+m) - (this.ctx.measureText(leyenda).width/2),
                         y: this.ctx.canvas.height-20,
@@ -431,21 +428,24 @@ _.prototype.createBarsHorizontalAxis = function(max){
                     });
                     layer2.add(year);
                     break;
+                    }
             }
-        }
 
+        }
+        drawn = true;
         if(barras_mode == "compuesto") {
             leyenda = this.data[j][Object.keys(this.data[0])[0]];
-        var year = new Kinetic.Text({
-            x: 45+(j+0)*(wBar+m) - (this.ctx.measureText(leyenda).width/2),
-            y: this.ctx.canvas.height-20,
-            fontSize: 12,
-            fontFamily: "Mic 32 New Rounded,mic32newrd,Helvetica,Arial",
-            text: leyenda,
-            fill: "black",
-            padding: 1,
-        });
-        layer2.add(year);
+
+            var year = new Kinetic.Text({
+                x: 45+(j+0)*(wBar+m) - (this.ctx.measureText(leyenda).width/2),
+                y: this.ctx.canvas.height-20,
+                fontSize: 12,
+                fontFamily: "Mic 32 New Rounded,mic32newrd,Helvetica,Arial",
+                text: leyenda,
+                fill: "black",
+                padding: 1,
+            });
+            layer2.add(year);
         }
         height_accumulated=0;
     }
