@@ -299,6 +299,7 @@ li{
 
 li ul{
     padding-left:1em;
+    min-height:1em;
 }
 
 .step{

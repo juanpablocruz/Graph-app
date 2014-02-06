@@ -173,7 +173,9 @@ _.prototype.addBarTools = function(data){
             $(this).append(ui.draggable);
         }
     });*/
-    $(ul).sortable();
+    $(ul).sortable({
+        items: ".data-list-li-holder"
+    });
     ul.setAttribute("id","groups-ul");
     var orden = Object.keys(data[0]);
     if(localStorage.ordenacion)

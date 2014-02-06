@@ -277,17 +277,29 @@
 
 
             $(document).on("click","#create-group",function(){
-                var x = $("<li><span contenteditable='true' class='grupo_tag complex_pie' val='0'>Grupo</span></li>");
-                var ul = $("<ul></ul>");
+                var x = $("<li class='sortable-group-list'><span contenteditable='true' class='grupo_tag complex_pie' val='0'>Grupo</span></li>");
+                var ul = $("<ul> </ul>");
+                dragevents();
                 x.append(ul);
+
+
                 $("#attr-grupos>ul").append(x);
+
+                $(ul).sortable({
+                connectWith: ".sortable-group-list > ul",
+                dropOnEmpty: true,
+                forceHelperSize: true,
+                forcePlaceholderSize: true
+                });
+
+                /*
                 x.droppable({
                     addClasses : false,
                     accept: ".data-list-li",
                     drop: function(e,ui){
                         $(this).find("ul").append(ui.draggable)
                     }
-                });
+                });*/
             });
 
             $(document).on("click",".rearrange-button",function(){

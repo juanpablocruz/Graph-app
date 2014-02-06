@@ -82,7 +82,7 @@ _.prototype.display_table = function(workbook){
             var r = table_data["rows"][j];
             var text = "";
             if(!isNaN(parseFloat(excel[r][c]["data"]))) {
-                text = (parseFloat(excel[r][c]["data"]) * 100) / 100;
+                text = Math.round(parseFloat(excel[r][c]["data"]) * 100) / 100;
             } else {
                 text = excel[r][c]["data"];
             }
@@ -117,7 +117,7 @@ function draw(a) {
         case "Tartas":
             for(var i = 0; i < a.length; i++) {
                 _().each(Object.keys(a[i]),function(j,t) {
-                    data.push({label: t[j], value: Math.ceil(a[i][t[j]] * 100) / 100});
+                    data.push({label: t[j], value: Math.round(a[i][t[j]] * 100) / 100});
                 });
             }
             localStorage.data = JSON.stringify(data);

@@ -34,33 +34,16 @@ function create_data_set(dest, d) {
             var li = document.createElement("LI");
             li.className = "sortable-group-list";
             if (pie_mode === "simple")
-                li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie'>" + a[j].label + "</span>";
+                li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie '>" + a[j].label + "</span>";
             else
                 li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie'>" + a[j].label + "</span>";
             var ul2 = document.createElement("UL");
-            $(li).droppable({
-                addClasses : false,
-                accept: ".data-list-li",
-                drop: function (e, ui) {
-                    $(this).find("ul").append(ui.draggable);
-                }
-            });
 
             $(".sortable-group-list > ul").sortable({
-                start: function (event, ui) {
-                    item = ui.item;
-                    newList = oldList = ui.item.parent();
-                },
-                stop: function (event, ui) {
-
-                // perform action here
-
-                },
-                change: function (event, ui) {
-                    if (ui.sender) newList = ui.placeholder.parent();
-                },
                 connectWith: ".sortable-group-list > ul",
-                dropOnEmpty: true
+                dropOnEmpty: true,
+                forceHelperSize: true,
+                forcePlaceholderSize: true
             }).disableSelection();
 
             _().each(d, function (i) {                                  // Create each portion in its own group
@@ -225,6 +208,7 @@ function create_data_set(dest, d) {
     f.appendChild(div_options);
     contenedor.appendChild(f);
     dest.appendChild(contenedor);
+    dragevents();
 }
 
 _.prototype.pie= function (obj) {
@@ -577,8 +561,6 @@ _.prototype.writePieText = function (context, i, porciones, r) {
             fill: tc,
             padding: 1,
         });
-    console.log(porciones[i]["porcentaje"]);
-
     group.add(box);
     group.add(text_label); 
     group.add(text_data);
