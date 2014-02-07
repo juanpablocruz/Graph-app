@@ -178,22 +178,30 @@ _.prototype.historyPannel = function() {
 
     for (var j = 0; j < Object.keys(data[0]).length; j++) {
         var li1 = document.createElement("li");
+
         var div = document.createElement("DIV");
         if (Object.keys(data[0])[j] != delim)
             div.className = "data-list-element-holder";
         div.innerHTML = "<div contenteditable='true'>" + Object.keys(data[0])[j] + "</div>";
 
         if (Object.keys(data[0])[j] != delim) {
+
             var colorinpt = document.createElement("input");
                 colorinpt.setAttribute("type","color");
                 colorinpt.value = this.colores_grupos[j-1]["color"];
             div.appendChild(colorinpt);
         }
 
-        li1.appendChild(div);
-        if (j > 0) li1.className = "data-list-li-holder";
-        else li1.className = "data-list-li-year";
 
+        if (j > 0) {
+            $(li1).append("<div class='remove-list-item'></div>");
+            li1.className = "data-list-li-holder";
+        }
+        else {
+            $(li1).append("<div></div>");
+            li1.className = "data-list-li-year";
+        }
+        li1.appendChild(div);
         var set = document.createElement("ul");
         for (var i = 0; i < data.length; i++) {
             var li = document.createElement("LI");
@@ -231,59 +239,67 @@ _.prototype.historyPannel = function() {
             }
 
             var valores = [];
-            var datos = document.querySelectorAll(".data-list-li-year");
-            if(typeof datos[0] != "undefined")
-                for (var i = 0; i < datos[0].children[1].children.length; i++) valores.push(new Object);
-            else {
-                var datos = document.querySelectorAll(".data-list-li-holder");
-                for (var i = 0; i < datos[0].children[1].children.length; i++) valores.push(new Object);
-            }
+            var order = [];
+            var datos = document.querySelectorAll("#groups-ul>li");
+
+            for (var i = 0; i < datos[0].children[2].children.length; i++) valores.push(new Object);
+
 
             _().each(datos,function(i){
-                var title = datos[i].children[0].children[0].innerHTML;
-                _().each( datos[i].children[1].children,function(j,a){
+                var title = datos[i].children[1].children[0].innerHTML;
+
+                order.push(title);
+
+                _().each( datos[i].children[2].children,function(j,a){
+
                     var value = a[j].children[0].innerHTML;
-                    valores[j][title] =parseInt( value);
+                    valores[j][title] =parseFloat( value);
                 });
-                _().each( datos[i].children[1].children,function(j,a){
+
+                _().each( datos[i].children[2].children,function(j,a){
                     var value = a[j].children[0].innerHTML;
                     valores[j][title] = value;
                 });
             });
 
+
             var tmp_colors = [];
-            var order = [];
+
 
             var colores = colores_barras;
-            var datos = document.querySelectorAll(".data-list-li-holder");
+            //var datos = document.querySelectorAll(".data-list-li-holder");
             _().each(datos, function(i) {
-                order.push(datos[i].children[0].children[0].innerHTML);
+                if(i>0) {
+                //order.push(datos[i].children[0].children[0].innerHTML);
                 if(datos[i].children[0].children.length > 1){
                     var tmp = {
-                        grupo: datos[i].children[0].children[0].innerHTML,
-                        color: datos[i].children[0].children[1].value
+                        grupo: datos[i].children[1].children[0].innerHTML,
+                        color: datos[i].children[1].children[1].value
                     };
                 }
                 else{
                     var tmp = {
-                        grupo: datos[i].children[0].children[0].innerHTML,
-                        color: colores[i].hex,
+                        grupo: datos[i].children[1].children[0].innerHTML,
+                        color: colores[i-1].hex,
                     };
                 }
                 tmp_colors.push(tmp);
 
                 var title = order[i];
-                _().each( datos[i].children[1].children,function(j, a) {
-                    var value = parseInt(a[j].children[0].innerHTML);
+                _().each( datos[i].children[2].children,function(j, a) {
+                    var value = parseFloat(a[j].children[0].innerHTML);
                     valores[j][title] = value;
                 });
-                _().each( datos[i].children[1].children,function(j, a) {
-                    var value = parseInt(a[j].children[0].innerHTML);
+                _().each( datos[i].children[2].children,function(j, a) {
+                    var value = parseFloat(a[j].children[0].innerHTML);
                     valores[j][title] = value;
                 });
+                }
             });
+
             localStorage.coloresBarras = JSON.stringify(tmp_colors);
             localStorage.data = JSON.stringify(valores);
+            _().saveStep();
             _("#graph").history({data:valores});
         });
 
