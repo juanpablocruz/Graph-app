@@ -404,12 +404,14 @@ _.prototype.createBarsHorizontalAxis = function(max){
         for (var i = start; i< orden.length; i++){
             switch (barras_mode) {
                 case "compuesto":
+
                     this.drawBarra(maximo,
                            i, j, h,
                            this.ctx.canvas.height-20-height_accumulated,
                            layer2,wBar,m,orden,color_rest,0);
                     if(labels.indexOf(i)==-1 && this.printLabels === "true" ){
-                        if((this.destacado == "true" && i > 0) || this.destacado != "true") {
+                        if((this.destacado == "true" && i > 1) || (this.destacado != "true" && i > 0)) {
+
                         labels.push(i);
                         var texto = orden[i];
                         var lwidth =  this.ctx.measureText(texto).width;
