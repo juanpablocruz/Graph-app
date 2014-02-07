@@ -102,7 +102,7 @@ _.prototype.addBarTools = function(data){
     var div_options = document.createElement("DIV");
         div_options.className = "data-options";
         div_options.setAttribute("id","options-bars");
-
+    if (barras_mode != "cols") {
     var checkbox_labels = document.createElement("input");
         checkbox_labels.type = "checkbox";
         checkbox_labels.setAttribute("id","dibujar-check");
@@ -120,7 +120,9 @@ _.prototype.addBarTools = function(data){
     $(checkbox_labels).on("change",function() {
             _("#graph").bars({data:data});
     });
-    var check_div = document.createElement("DIV");
+        var check_div = document.createElement("DIV");
+    }
+
 
     var fuente_label = document.createElement("DIV");
         fuente_label.innerHTML = "<span>Fuente: </span>";
@@ -163,11 +165,12 @@ _.prototype.addBarTools = function(data){
         $(destaca_labels).on("change",function() {
             _("#graph").bars({data:data});
         });
-    }
-
         check_div.appendChild(checkbox_labels);
         check_div.appendChild(checkbox_title);
         div_options.appendChild(check_div);
+    }
+
+
 
     var ul = document.createElement("UL");
 
