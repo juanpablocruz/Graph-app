@@ -18,6 +18,8 @@ function _(id) {
             case "string":
                 this.id = id;
                 this.alreadySaved = false;
+                if(localStorage.memory)
+                    _.memory = JSON.parse(localStorage.memory);
                 this.e = document.querySelectorAll(id);
                 break;
         }  
@@ -311,17 +313,44 @@ _.prototype = {
 
     saveStep: function() {
         if(_.memory.length >= 6)_.memory.shift();
-        _.memory.push({local: localStorage, output: $("#output").html(), current: $(".current_step")});
+        _.memory.push({local: localStorage, output: $("#output").html(), current: $(".current_step").attr("id")});
+        console.log(_.memory);
+        localStorage.memory = JSON.stringify(_.memory);
     },
     undoAction: function() {
+
         if(_.memory.length > 1) {
-            localStorage = _.memory[_.memory.length - 2]["local"];
+            var a = _.memory[_.memory.length - 2]["local"];
+            localStorage.clear();
+            for( var prop in _.memory[_.memory.length - 2]["local"]) {
+                localStorage[prop] = a[prop];
+            }
             this.loadOutput(_.memory[_.memory.length - 2]["output"]);
             $(".current_step").removeClass("current_step");
-            $(_.memory[_.memory.length - 2]["current"]).addClass("current_step");
+            $("#"+_.memory[_.memory.length - 2]["current"]).addClass("current_step");
+
+            if(_.memory[_.memory.length - 2]["current"] == "designer") {
+                var tipo = localStorage.chartType;
+                var data = JSON.parse(localStorage.data);
+                switch (tipo) {
+                    case "Tartas":
+                        _("#graph").pie({data:data});
+                        break;
+                    case "Barras":
+                        _("#graph").bars({data:data});
+                        break;
+                    case "Históricos":
+                        _("#graph").history({data:data});
+                        break;
+                }
+            }
             _.memory.pop();
             columna = false;fila=false;
+
         }
+    },
+    checkMemory: function() {
+        return _.memory;
     },
     loadOutput: function(data) {
         $("#output").html(data);

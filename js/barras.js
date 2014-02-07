@@ -193,7 +193,10 @@ _.prototype.addBarTools = function(data){
             $(li1).append("<div class='remove-list-item'></div>");
             li1.className = "data-list-li-holder";
         }
-        else li1.className = "data-list-li-year";
+        else {
+            $(li1).append("<div></div>");
+            li1.className = "data-list-li-year";
+        }
         li1.appendChild(div);
         var set = document.createElement("ul");
 
@@ -219,28 +222,28 @@ _.prototype.addBarTools = function(data){
             /* FETCH LABELS */
             var valores = [];
             var order = [];
-            var datos = document.querySelectorAll(".data-list-li-year");
+            var datos = document.querySelectorAll("#groups-ul>li");
 
-            //order.push(datos[0].children[0].innerHTML);
-            if(typeof datos[0] != "undefined")
-                for (var i = 0; i < datos[0].children[1].children.length; i++) valores.push(new Object);
-            else {
-                var datos = document.querySelectorAll(".data-list-li-holder");
-                for (var i = 0; i < datos[0].children[1].children.length; i++) valores.push(new Object);
-            }
+            console.log(datos);
+                for (var i = 0; i < datos[0].children[2].children.length; i++) valores.push(new Object);
+
             _().each(datos,function(i){
                 var title = datos[i].children[1].children[0].innerHTML;
 
                 order.push(title);
+
                 _().each( datos[i].children[2].children,function(j,a){
+
                     var value = a[j].children[0].innerHTML;
                     valores[j][title] =parseInt( value);
                 });
+
                 _().each( datos[i].children[2].children,function(j,a){
                     var value = a[j].children[0].innerHTML;
                     valores[j][title] = value;
                 });
             });
+
             /* FETCH VALUES */
             var fuent = document.querySelectorAll("#fuente_input")[0].value;
             localStorage.fuente = fuent;
@@ -253,9 +256,9 @@ _.prototype.addBarTools = function(data){
 
             var colores = (destc == "true") ? colores_alpha : colores_barras;
 
-            var datos = document.querySelectorAll(".data-list-li-holder");
-            _().each(datos, function(i) {
 
+            _().each(datos, function(i) {
+                if(i>0) {
                 //order.push(datos[i].children[1].children[0].innerHTML);
                 if(datos[i].children[1].children.length > 1){
                     var tmp = {
@@ -266,23 +269,23 @@ _.prototype.addBarTools = function(data){
                 else{
                     var tmp = {
                         grupo: datos[i].children[1].children[0].innerHTML,
-                        color: colores[i].hex,
+                        color: colores[i-1].hex,
                     };
                 }
+                console.log(tmp);
                 tmp_colors.push(tmp);
+                }
                 var title = order[i];
                 _().each( datos[i].children[2].children,function(j, a) {
                     var value = parseFloat(a[j].children[0].innerHTML);
                     valores[j][title] = value;
                 });
-                _().each( datos[i].children[2].children,function(j, a) {
-                    var value = parseFloat(a[j].children[0].innerHTML);
-                    valores[j][title] = value;
-                });
+
             });
             localStorage.coloresBarras = JSON.stringify(tmp_colors);
             localStorage.data = JSON.stringify(valores);
             localStorage.ordenacion = JSON.stringify(order);
+            _().saveStep();
             _("#graph").bars({data:valores});
         });
 
@@ -341,6 +344,7 @@ _.prototype.getMaxColumn = function (){
 }
 
 _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden, color_rest, offset){
+    if(i>0) {
     if(barras_mode != "cols") {
         var value = (((this.data[j][orden[i]] * 100) / this.ceil)*h/100);
     } else {
@@ -356,9 +360,10 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
         },
         stroke: "rgba(0,0,0,0)",
         strokeWidth: 0,
-        fill: this.colores_grupos[i-color_rest]["color"],
+        fill: this.colores_grupos[i-color_rest-1]["color"],
     });
     layer.add(barra);
+    }
 }
 
 _.prototype.createBarsHorizontalAxis = function(max){
