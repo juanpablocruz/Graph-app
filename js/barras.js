@@ -347,25 +347,26 @@ _.prototype.getMaxColumn = function (){
 
 _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden, color_rest, offset){
     if(i>0 || barras_mode == "cols") {
-    if(barras_mode != "cols") {
-        color_rest = -1;
-        var value = (((this.data[j][orden[i]] * 100) / this.ceil)*h/100);
-    } else {
-        color_rest = 0;
-        var value = (((this.data[j][orden[i]] * 100) / maximo)*h/100);
-    }
-    var barra = new Kinetic.Shape({
-        drawFunc: function(ctx){
-            ctx.beginPath();
-            ctx.rect(30 + ((wBar + m) * (j+offset)), height, wBar, -value);
-            ctx.closePath();
-            ctx.fillStrokeShape(this);
-        },
-        stroke: "rgba(0,0,0,0)",
-        strokeWidth: 0,
-        fill: this.colores_grupos[i-color_rest]["color"],
-    });
-    layer.add(barra);
+        if(barras_mode != "cols") {
+            color_rest = 1;
+            var value = (((this.data[j][orden[i]] * 100) / this.ceil)*h/100);
+        } else {
+            color_rest = 0;
+            var value = (((this.data[j][orden[i]] * 100) / maximo)*h/100);
+        }
+
+        var barra = new Kinetic.Shape({
+            drawFunc: function(ctx){
+                ctx.beginPath();
+                ctx.rect(30 + ((wBar + m) * (j+offset)), height, wBar, -value);
+                ctx.closePath();
+                ctx.fillStrokeShape(this);
+            },
+            stroke: "rgba(0,0,0,0)",
+            strokeWidth: 0,
+            fill: this.colores_grupos[i-color_rest]["color"],
+        });
+        layer.add(barra);
     }
 }
 
