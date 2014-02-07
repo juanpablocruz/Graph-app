@@ -224,8 +224,7 @@ _.prototype.addBarTools = function(data){
             var order = [];
             var datos = document.querySelectorAll("#groups-ul>li");
 
-            console.log(datos);
-                for (var i = 0; i < datos[0].children[2].children.length; i++) valores.push(new Object);
+            for (var i = 0; i < datos[0].children[2].children.length; i++) valores.push(new Object);
 
             _().each(datos,function(i){
                 var title = datos[i].children[1].children[0].innerHTML;
@@ -258,7 +257,8 @@ _.prototype.addBarTools = function(data){
 
 
             _().each(datos, function(i) {
-                if(i>0) {
+
+                if(i>0 || barras_mode == "cols") {
                 //order.push(datos[i].children[1].children[0].innerHTML);
                 if(datos[i].children[1].children.length > 1){
                     var tmp = {
@@ -272,7 +272,6 @@ _.prototype.addBarTools = function(data){
                         color: colores[i-1].hex,
                     };
                 }
-                console.log(tmp);
                 tmp_colors.push(tmp);
                 }
                 var title = order[i];
@@ -344,13 +343,14 @@ _.prototype.getMaxColumn = function (){
 }
 
 _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden, color_rest, offset){
-    if(i>0) {
+    if(i>0 || barras_mode == "cols") {
     if(barras_mode != "cols") {
+        color_rest = -1;
         var value = (((this.data[j][orden[i]] * 100) / this.ceil)*h/100);
     } else {
+        color_rest = 0;
         var value = (((this.data[j][orden[i]] * 100) / maximo)*h/100);
     }
-
     var barra = new Kinetic.Shape({
         drawFunc: function(ctx){
             ctx.beginPath();
@@ -360,7 +360,7 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
         },
         stroke: "rgba(0,0,0,0)",
         strokeWidth: 0,
-        fill: this.colores_grupos[i-color_rest-1]["color"],
+        fill: this.colores_grupos[i-color_rest]["color"],
     });
     layer.add(barra);
     }

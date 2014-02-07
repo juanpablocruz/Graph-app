@@ -314,7 +314,6 @@ _.prototype = {
     saveStep: function() {
         if(_.memory.length >= 6)_.memory.shift();
         _.memory.push({local: localStorage, output: $("#output").html(), current: $(".current_step").attr("id")});
-        console.log(_.memory);
         localStorage.memory = JSON.stringify(_.memory);
     },
     undoAction: function() {
