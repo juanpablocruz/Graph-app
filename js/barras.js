@@ -34,7 +34,7 @@ _.prototype.bars = function (obj) {
         this.colores_grupos = [];
         var start_point = 0, color_point = 0;
 
-        //FIXME: Mostrar etiquetas reinicia los cambios no guardados
+        //FIXME: [x]Mostrar etiquetas reinicia los cambios no guardados
 
         for (var j = 0; j < Object.keys(this.data[0]).length; j++) {
             var grupo = Object.keys(this.data[0])[j];
@@ -284,7 +284,7 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
             var value = (((this.data[j][orden[i]] * 100) / maximo)*h/100);
         }
         console.log(colores_barras);
-        var colores = (this.destacado == "true") ? colores_alpha[i-color_rest].hex : colores_barras[i-color_rest].hex;
+        var colores = (this.destacado == "true") ? colores_alpha[(i-color_rest)%colores_alpha.length].hex : colores_barras[(i-color_rest)%colores_barras.length].hex;
         var barra = new Kinetic.Shape({
             drawFunc: function(ctx){
                 ctx.beginPath();
