@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Graph API</title>
-    <link rel="stylesheet" href="iconos.css">
+    <link rel="stylesheet" href="iconos.min.css">
     <link rel="stylesheet" href="theme.css">
     <link rel="icon" type="image/png" href="icono.ico"/>
     <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.7.4.min.js"></script>
@@ -18,7 +18,7 @@
         var rABS = typeof FileReader !== "undefined" && typeof FileReader.prototype !== "undefined" && typeof FileReader.prototype.readAsBinaryString !== "undefined";
 
         function xlsxworker(data, cb) {
-            var worker = new Worker('js/xlsxworker.js');
+            var worker = new Worker('js/xlsxworker.min.js');
 
             worker.onmessage = function(e) {
                 switch(e.data.t) {
@@ -54,8 +54,7 @@
             data = JSON.stringify(output, 2, 2);
             localStorage.data=data;
             tipo = localStorage.chartType;
-    
-            //cargar(output,tipo);
+
             _("#graph").display_table(wb.Sheets);
             
         }
@@ -412,7 +411,7 @@ function undo() {
     <script src="js/core.js"></script>
     <script src="js/excel.js"></script>
     <script src="js/jszip.js"></script>
-    <script src="js/xlsx.js"></script>
+    <script src="js/xlsx.min.js"></script>
     <script src="js/pie.js"></script>
     <script src="js/barras.js"></script>
     <script src="js/historic.js"></script>

@@ -420,7 +420,7 @@ _.prototype.drawHistoricBars = function (posicion) {
         if(pie_mode == "simple") {
             var line = new Kinetic.Line({
                 points: puntos[i],
-                stroke: colores[i]["color"],
+                stroke: colores[i%colores.length]["color"],
                 strokeWidth: 3,
                 lineCap: 'round',
                 lineJoin: 'round',
