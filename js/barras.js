@@ -283,7 +283,6 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
             color_rest = 0;
             var value = (((this.data[j][orden[i]] * 100) / maximo)*h/100);
         }
-        console.log(colores_barras);
         var colores = (this.destacado == "true") ? colores_alpha[(i-color_rest)%colores_alpha.length].hex : colores_barras[(i-color_rest)%colores_barras.length].hex;
         var barra = new Kinetic.Shape({
             drawFunc: function(ctx){

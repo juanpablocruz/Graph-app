@@ -325,10 +325,12 @@ _.prototype = {
                 output[i].push($(l).text());
             });
         });
-        localStorage.memory = JSON.stringify(_.memory);
+
         _.memory.push({local: JSON.stringify(localStorage.data),
                        output: JSON.stringify(output),
                        current: $(".current_step").attr("id")});
+        console.log(_.memory);
+        localStorage.memory = JSON.stringify(_.memory);
     },
     undoAction: function() {
 
