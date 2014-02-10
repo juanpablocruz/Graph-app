@@ -323,10 +323,12 @@
             });
             $(document).on("mouseup",".data-list-li",function(){
                 $(this).removeClass("mousedown");
+
             });
 
             $(document).on("click",".remove-list-item",function() {
                 $(this).parent().remove();
+                 _().saveStep();
             });
             $(document).on("click",".label-separador-check",function(){
                 if(!$('#separador-check').is(":checked")){

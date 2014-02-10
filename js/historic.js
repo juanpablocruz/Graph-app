@@ -189,6 +189,7 @@ _.prototype.historyPannel = function() {
 
             var colorinpt = document.createElement("input");
                 colorinpt.setAttribute("type","color");
+            if(j>0)
                 colorinpt.value = this.colores_grupos[(j-1)%this.colores_grupos.length]["color"];
             div.appendChild(colorinpt);
         }

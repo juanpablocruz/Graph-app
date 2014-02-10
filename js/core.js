@@ -325,6 +325,12 @@ _.prototype = {
         localStorage.memory = JSON.stringify(_.memory);
         _.memory.push({local: localStorage, output: JSON.stringify(output), current: $(".current_step").attr("id")});
 
+        var a = _.memory[_.memory.length - 1]["local"];
+        console.log(a);
+        for( var prop in _.memory[_.memory.length - 1]["local"]) {
+
+            localStorage[prop] = a[prop];
+        }
     },
     undoAction: function() {
 
