@@ -429,7 +429,7 @@ _.prototype.drawHistoricBars = function (posicion) {
         } else {
             var line = new Kinetic.Polygon({
                 points: puntos[i],
-                fill: colores[i]["color"],
+                fill: colores[i%colores.length]["color"],
                 stroke: "white",
                 strokeWidth: 1,
             });

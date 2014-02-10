@@ -6,7 +6,7 @@ var standard =[new Color("#d21f17"),new Color("#d3cec6"),
               ];
 
 var colores = standard.slice(0);
-var colores_barras = [standard[3],standard[2],standard[4],standard[1],standard[0]];
+var colores_barras = [standard[3],standard[0],standard[2],standard[4],standard[1]];
 var colores_alpha = ["rgba(0,0,0,0)",standard[3],standard[2],standard[4],standard[1],standard[0]];
 "use strict";
 
@@ -314,6 +314,7 @@ _.prototype = {
     saveStep: function() {
         if(_.memory.length >= 3)_.memory.shift();
 
+        console.log(_.memory.length);
         var output = new Array();
         $("#output tr").each(function(i,j) {
             output.push(new Array());
@@ -321,9 +322,9 @@ _.prototype = {
                 output[i].push($(l).text());
             });
         });
-
-        _.memory.push({local: localStorage, output: JSON.stringify(output), current: $(".current_step").attr("id")});
         localStorage.memory = JSON.stringify(_.memory);
+        _.memory.push({local: localStorage, output: JSON.stringify(output), current: $(".current_step").attr("id")});
+
     },
     undoAction: function() {
 
@@ -418,7 +419,7 @@ _.prototype = {
             }
             $("tr").each(function(i,e) {
                 $(e).find("td:gt(0)").each(function(j,el) {
-                    a[j][$(e).find("td").first().text()] = Math.ceil($(el).text() * 100) / 100;
+                    a[j][$(e).find("td").first().text()] = $(el).text();
                 });
 
             });
@@ -433,7 +434,7 @@ _.prototype = {
             }
             $("tr:nth-child(1)").find("td").each(function(i,e) {
                 $("tr:gt(0)").find("td:nth-child("+(i+1)+")").each(function(j,el) {
-                    a[j][$(e).text()] = Math.ceil($(el).text() * 100) / 100;
+                    a[j][$(e).text()] = $(el).text();
                 });
             });
             columna = false;fila=false;

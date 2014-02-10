@@ -480,7 +480,7 @@ header,.step{
 }
 img {width:100%;}
 
-#output {
+#data-choose {
     margin: auto;
     margin-top: 3em;
     display: flex;

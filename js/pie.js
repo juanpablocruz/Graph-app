@@ -374,6 +374,7 @@ _.prototype.drawPieSegment = function (context, i, porciones, r) {
     var arcSize = porciones[i]["porcentaje"];
     var endingAngle = startingAngle + arcSize;
     if(typeof porciones[i]["color"] === "undefined")localStorage.clear();
+    console.log(porciones[i]["color"].hex,i);
     var arc = new Kinetic.Shape({
         drawFunc: function(context){
             var centerX = Math.floor(context.canvas.width/2);
@@ -411,6 +412,9 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
     var width = context.measureText( this.grupos[i]["label"]).width;
 
     context.fillStyle = "#FFF";
+    var texto = this.grupos[i]["value"];
+    console.log(texto);
+    if(parseFloat(texto) > 100) texto = 100;
 
     var group = new Kinetic.Group({
         draggable:true,
@@ -460,7 +464,7 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
             y: centery+ (dy*radius) + 24,
             fontSize: 12,
             fontFamily: "'Mic 32 New Rounded',mic32newrd",
-            text: this.grupos[i]["value"]+"%",
+            text: texto+"%",
             fill: tc,
             padding: 1,
         });
