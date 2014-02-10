@@ -313,7 +313,16 @@ _.prototype = {
 
     saveStep: function() {
         if(_.memory.length >= 3)_.memory.shift();
-        _.memory.push({local: localStorage, output: $("#output").html(), current: $(".current_step").attr("id")});
+
+        var output = new Array();
+        $("#output tr").each(function(i,j) {
+            output.push(new Array());
+            $(j).find("td").each(function(k,l) {
+                output[i].push($(l).text());
+            });
+        });
+
+        _.memory.push({local: localStorage, output: JSON.stringify(output), current: $(".current_step").attr("id")});
         localStorage.memory = JSON.stringify(_.memory);
     },
     undoAction: function() {
@@ -352,7 +361,28 @@ _.prototype = {
         return _.memory;
     },
     loadOutput: function(data) {
-        $("#output").html(data);
+        var lista = JSON.parse(data);
+        var table = $("<table></table>");
+        lista.forEach(function(i,j) {
+            var tr = $("<tr></tr>");
+            lista[j].forEach(function(k,l) {
+                $(tr).append("<td>"+lista[j][l]+"</td>");
+            });
+        $(table).append(tr);
+        });
+
+
+
+        $("#output").html(table);
+        var body = $("<div id='body-output'></div>");
+        $(body).append("<div id='abajo'><img src='arriba.jpg'></div><div id='lado'><img src='lado.png'></div>");
+
+        $(body).append("<input type='radio' name='borrar' id='borrar-fila' class='button borrar-fila' value='Borrar fila'><label for='borrar-fila' id='borrar-fila-label'>Borrar fila</label>");
+        $(body).append("<input type='radio' name='borrar' id='borrar-columna' class='button borrar-columna' value='Borrar columna'><label for='borrar-columna' id='borrar-columna-label'>Borrar columna</label>");
+        $(body).append("<input type='radio' name='borrar' id='borrar-neutro' style='display:none;'>");
+        $(body).append("<div id='undo-container'><button id='undo'><div class='icon icon-undo'></div></button></div>");
+        $("#controls").html(body);
+
         $("#undo").on("click",function() {
             _().undoAction();
         })

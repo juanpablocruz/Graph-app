@@ -266,7 +266,6 @@
             $(document).on("click","#bars_cols",function(){
                 $(".complex_pie").addClass("simple_pie");
                 $(".active").removeClass("active");
-                console.log("click");
                 $(this).addClass("active");
                 barras_mode = "cols";
                 if(localStorage.coloresBarras)
@@ -346,7 +345,6 @@
         });
 function undo() {
     _().undoAction();
-    console.log("undo");
 }
 
     </script>
@@ -377,6 +375,7 @@ function undo() {
         <div id="drop"><div class="icon-box-add icono"></div>Arrastra un archivo XLS</div>
         <div class="back">Volver</div>
         <div id="output"></div>
+        <div id="controls"></div>
     </section>
 </div>
     <div id="designer" class="step">
