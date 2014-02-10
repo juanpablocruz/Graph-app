@@ -382,7 +382,7 @@ _.prototype = {
         $(table).append(tr);
         });
 
-
+        //FUTURE: Botón de confirmar datos
 
         $("#output").html(table);
         var body = $("<div id='body-output'></div>");

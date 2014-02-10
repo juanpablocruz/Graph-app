@@ -34,7 +34,7 @@ _.prototype.bars = function (obj) {
         this.colores_grupos = [];
         var start_point = 0, color_point = 0;
 
-
+        //FIXME: Mostrar etiquetas reinicia los cambios no guardados
 
         for (var j = 0; j < Object.keys(this.data[0]).length; j++) {
             var grupo = Object.keys(this.data[0])[j];

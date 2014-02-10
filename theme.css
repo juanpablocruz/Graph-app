@@ -560,6 +560,7 @@ margin-top: 1.7em;
 .remove-list-item:before {
 content: 'x';
 }
+//FUTURE: Arreglar estilo del botón de eliminar
 @media all and (max-width:800px){
     nav ul{width:100%;}
     .step-info{width:100%;}
