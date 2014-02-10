@@ -412,9 +412,8 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
     var width = context.measureText( this.grupos[i]["label"]).width;
 
     context.fillStyle = "#FFF";
-    var texto = this.grupos[i]["value"];
-    console.log(texto);
-    if(parseFloat(texto) > 100) texto = 100;
+    var texto = (Math.round(10*((porciones[i]["porcentaje"]*180/Math.PI)*100/360))/10);
+    if(texto > 100) texto = 100;
 
     var group = new Kinetic.Group({
         draggable:true,
