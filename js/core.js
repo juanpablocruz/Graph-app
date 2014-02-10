@@ -326,29 +326,23 @@ _.prototype = {
             });
         });
         localStorage.memory = JSON.stringify(_.memory);
-        _.memory.push({local: localStorage,
+        _.memory.push({local: JSON.stringify(localStorage.data),
                        output: JSON.stringify(output),
                        current: $(".current_step").attr("id")});
-
-        var a = _.memory[_.memory.length - 1]["local"];
-        for( var prop in _.memory[_.memory.length - 1]["local"]) {
-
-            localStorage[prop] = a[prop];
-        }
     },
     undoAction: function() {
 
         if(_.memory.length > 1) {
             var a = _.memory[_.memory.length - 2]["local"];
-            localStorage.clear();
-            for( var prop in _.memory[_.memory.length - 2]["local"]) {
-                localStorage[prop] = a[prop];
-            }
-            this.loadOutput(_.memory[_.memory.length - 2]["output"]);
-            $(".current_step").removeClass("current_step");
-            $("#"+_.memory[_.memory.length - 2]["current"]).addClass("current_step");
+            localStorage.data = JSON.parse(a);
+            _.memory.pop();
 
-            if(_.memory[_.memory.length - 2]["current"] == "designer") {
+            localStorage.memory =_.memory[_.memory.length - 1]["memory"]
+            this.loadOutput(_.memory[_.memory.length - 1]["output"]);
+            $(".current_step").removeClass("current_step");
+            $("#"+_.memory[_.memory.length - 1]["current"]).addClass("current_step");
+
+            if(_.memory[_.memory.length - 1]["current"] == "designer") {
                 var tipo = localStorage.chartType;
                 var data = JSON.parse(localStorage.data);
                 switch (tipo) {
@@ -363,7 +357,7 @@ _.prototype = {
                         break;
                 }
             }
-            _.memory.pop();
+
             columna = false;fila=false;
 
         }
