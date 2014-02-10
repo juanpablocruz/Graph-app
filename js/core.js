@@ -373,7 +373,7 @@ _.prototype = {
         lista.forEach(function(i,j) {
             var tr = $("<tr></tr>");
             lista[j].forEach(function(k,l) {
-                $(tr).append("<td>"+lista[j][l]+"</td>");
+                $(tr).append("<td class='dato drop'><div>"+lista[j][l]+"</div></td>");
             });
         $(table).append(tr);
         });
@@ -425,6 +425,9 @@ _.prototype = {
             }
             $("tr").each(function(i,e) {
                 $(e).find("td:gt(0)").each(function(j,el) {
+                    if(!isNaN($(el).text())) {
+                       a[j][$(e).find("td").first().text()] = Math.round($(el).text()*100)/100;
+                       } else
                     a[j][$(e).find("td").first().text()] = $(el).text();
                 });
 
@@ -440,7 +443,11 @@ _.prototype = {
             }
             $("tr:nth-child(1)").find("td").each(function(i,e) {
                 $("tr:gt(0)").find("td:nth-child("+(i+1)+")").each(function(j,el) {
+                    if(!isNaN($(el).text())) {
+                    a[j][$(e).text()] = Math.round($(el).text()*100)/100;
+                } else {
                     a[j][$(e).text()] = $(el).text();
+                    }
                 });
             });
             columna = false;fila=false;

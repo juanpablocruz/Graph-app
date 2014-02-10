@@ -272,7 +272,7 @@ _.prototype.addBarTools = function(data){
                 else{
                     var tmp = {
                         grupo: datos[i].children[1].children[0].innerHTML,
-                        color: colores[i-1].hex,
+                        color: colores[(i-1)%(colores.length-1)].hex,
                     };
                 }
                 tmp_colors.push(tmp);
