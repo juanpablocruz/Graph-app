@@ -103,7 +103,7 @@ _.prototype = {
         _.layer.draw();
     },
 
-    drawLabel : function(posx, posy, width, height, fill, textColor, text, padding, layer) {
+    drawLabel : function(posx, posy, height, fill, textColor, texto, padding, layer) {
         
         var group = new Kinetic.Group({
             draggable:true,
@@ -116,18 +116,22 @@ _.prototype = {
             y: posy + 2,
             fontSize: 12,
             fontFamily: "Open Sans",
-            text: text,
+            text: texto,
             fill: textColor,
             padding: padding,
         });
+        var font = this.ctx.font;
+        this.ctx.font = "12px 'Open Sans'";
+
+        var lwidth = this.ctx.measureText(texto).width;
         var box = new Kinetic.Rect({
             x: posx,
             y: posy,
-            width: width + 10,
+            width: lwidth + 5,
             height: height,
             fill: fill,
         });
-
+        this.ctx.font = font;
         group.add(box);
         group.add(text);
         layer.add(group);
@@ -314,7 +318,6 @@ _.prototype = {
     saveStep: function() {
         if(_.memory.length >= 3)_.memory.shift();
 
-        console.log(_.memory.length);
         var output = new Array();
         $("#output tr").each(function(i,j) {
             output.push(new Array());
@@ -323,10 +326,11 @@ _.prototype = {
             });
         });
         localStorage.memory = JSON.stringify(_.memory);
-        _.memory.push({local: localStorage, output: JSON.stringify(output), current: $(".current_step").attr("id")});
+        _.memory.push({local: localStorage,
+                       output: JSON.stringify(output),
+                       current: $(".current_step").attr("id")});
 
         var a = _.memory[_.memory.length - 1]["local"];
-        console.log(a);
         for( var prop in _.memory[_.memory.length - 1]["local"]) {
 
             localStorage[prop] = a[prop];

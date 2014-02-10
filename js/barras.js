@@ -415,7 +415,7 @@ _.prototype.createBarsHorizontalAxis = function(max){
                         labels.push(i);
                         var texto = orden[i];
                         var lwidth =  this.ctx.measureText(texto).width;
-                        this.drawLabel(50,this.ctx.canvas.height-40-height_accumulated,lwidth,20,
+                        this.drawLabel(50,this.ctx.canvas.height-40-height_accumulated,20,
                                        "#333","white",texto,1,layer2);
                         }
                     }

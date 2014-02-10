@@ -442,7 +442,7 @@ _.prototype.drawHistoricBars = function (posicion) {
             var width = this.ctx.measureText(text).width;
             this.drawLabel(30 + puntos[i][1]["x"],
                            h + puntos[i][1]["y"] - 5,
-                           width  + width/9, 24,
+                           24,
                            colores_barras[i%colores_barras.length].hex,
                            "#FFFFFF",
                            text, 4, layer_hist);
@@ -488,7 +488,7 @@ _.prototype.drawHistoricBars = function (posicion) {
                 var width = this.ctx.measureText(text).width;
                 this.drawLabel(60 ,
                            h-((((this.listaSeparador[0]-min) * h)/amplitud)) - 10,
-                           width + width/9, 24,
+                           24,
                            "black",
                            "#FFFFFF",
                            text, 4, layer_hist);
