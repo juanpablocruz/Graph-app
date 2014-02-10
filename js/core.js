@@ -379,7 +379,7 @@ _.prototype = {
         });
 
         //FUTURE: Botón de confirmar datos
-
+        //FIXME: En las tartas al menos el deshacer devuelve a la elección de datos y luego no coge los valores
         $("#output").html(table);
         var body = $("<div id='body-output'></div>");
         $(body).append("<div id='abajo'><img src='arriba.jpg'></div><div id='lado'><img src='lado.png'></div>");

@@ -133,6 +133,7 @@
                             if(typeof data[0] != "undefined" &&
                                Object.keys(data[0]).indexOf("label")>-1){
                                 _("#graph").pie({data:data});
+                                $("#save").attr("download","Grafico-tarta");
                                 changeStep($(".current_step"),"next");
                             }
                             else{
@@ -142,10 +143,12 @@
                             break;
                         case "Barras":
                             _("#graph").bars({data:data});
+                            $("#save").attr("download","Grafico-barras");
                             changeStep($(".current_step"),"next");
                             break;
                         case "Históricos":
                             _("#graph").history({data:data});
+                            $("#save").attr("download","Grafico-historico");
                             changeStep($(".current_step"),"next");
                             break;
                     }

@@ -65,6 +65,7 @@ function create_data_set(dest, d) {
     grupos.className = "data-options";
     var ul = document.createElement("UL");
     grupos.appendChild(create);
+    //TODO: Añadir borrar grupo
     if (localStorage.grupos) {
         var g = JSON.parse(localStorage.grupos);
         _().each(g, function (j, a) {                                   //create each group
@@ -374,7 +375,6 @@ _.prototype.drawPieSegment = function (context, i, porciones, r) {
     var arcSize = porciones[i]["porcentaje"];
     var endingAngle = startingAngle + arcSize;
     if(typeof porciones[i]["color"] === "undefined")localStorage.clear();
-    console.log(porciones[i]["color"].hex,i);
     var arc = new Kinetic.Shape({
         drawFunc: function(context){
             var centerX = Math.floor(context.canvas.width/2);
