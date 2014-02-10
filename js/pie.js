@@ -334,7 +334,7 @@ _.prototype.drawPie = function (canvas, data) {
                     total += data[d].value;
                 }
             });
-            g[i].value = total;
+            g[i].value = Math.round(total*100)/100;
             if(total > 0)
                 fragmentos.push({value: total, label: grupos[i].label});
             total = 0;
@@ -435,15 +435,17 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
         name: "label",
     }
                                  );
+    var x = centerx + (dx*radius);
+    if ( x > centerx*2) x = (centerx*2)-50;
     var box = new Kinetic.Rect({
-            x: centerx + (dx*radius),
+            x: x,
             y: centery+ (dy*radius),
             width: width+22,
             height: 20,
             fill: "#000",
         });
     var text_label = new Kinetic.Text({
-            x: centerx + (dx*radius) +5,
+            x: x +5,
             y: centery+ (dy*radius) ,
             text: this.grupos[i]["label"],
             fontSize: 16,
@@ -454,7 +456,7 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
         });
 
     var text_data = new Kinetic.Text({
-            x: centerx + (dx*radius),
+            x: x,
             y: centery+ (dy*radius) + 24,
             fontSize: 12,
             fontFamily: "'Mic 32 New Rounded',mic32newrd",
