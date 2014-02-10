@@ -41,11 +41,12 @@ _.prototype.history= function (obj) {
             }
         }
         this.colores_grupos = [];
+
         for (var j = 1; j < Object.keys(this.data[0]).length; j++) {
             var grupo = Object.keys(this.data[0])[j];
             var tmp = {
                 grupo: grupo,
-                color: colores_barras[j-1].hex};
+                color: colores_barras[(j-1)%colores_barras.length].hex};
             this.colores_grupos.push(tmp);
         }
 
@@ -188,6 +189,7 @@ _.prototype.historyPannel = function() {
 
             var colorinpt = document.createElement("input");
                 colorinpt.setAttribute("type","color");
+            console.log(this.colores_grupos,j);
                 colorinpt.value = this.colores_grupos[j-1]["color"];
             div.appendChild(colorinpt);
         }
@@ -280,7 +282,7 @@ _.prototype.historyPannel = function() {
                 else{
                     var tmp = {
                         grupo: datos[i].children[1].children[0].innerHTML,
-                        color: colores[i-1].hex,
+                        color: colores[(i-1)%colores.length].hex,
                     };
                 }
                 tmp_colors.push(tmp);
@@ -441,7 +443,7 @@ _.prototype.drawHistoricBars = function (posicion) {
             this.drawLabel(30 + puntos[i][1]["x"],
                            h + puntos[i][1]["y"] - 5,
                            width  + width/9, 24,
-                           colores_barras[i].hex,
+                           colores_barras[i%colores_barras.length].hex,
                            "#FFFFFF",
                            text, 4, layer_hist);
         }
