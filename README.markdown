@@ -1,7 +1,7 @@
 #Graph App#
 
 Aplicación de creación de gráficos de Cores.
-##Librerias##:
+##Librerias##
 
 ###Color.js###
 
