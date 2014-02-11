@@ -90,7 +90,7 @@ Se esperan un conjunto de pares etiqueta valor, por lo que habrá que eliminar c
 
 ###Barras###
 Para una configuración horizontal:
-| Año  | 2003  | 2004 | 2005 | 2006 |
-| ---- |:----: |:----:|:----:|:----:|
-| Total| 2432  | 2432 | 2432 | 2432 |
-| Otros| 2432  | 2432 | 2432 | 2432 |
+| Año   | 2003  | 2004 | 2005 | 2006 |
+| ----- |:----: |:----:|:----:|:----:|
+| Total | 2432  | 2432 | 2432 | 2432 |
+| Otros | 2432  | 2432 | 2432 | 2432 |
