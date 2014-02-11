@@ -3,11 +3,11 @@
     height: 1.6em;
     box-sizing: border-box;
 }
-#palette {
+.palette {
     position: relative;
     display: inline-block;
 }
-#color_palette{
+.color_palette{
 
     width: 9em;
     flex-wrap: wrap;

@@ -26,9 +26,9 @@ clinpt.prototype = {
 
         },
     create_html: function(val) {
-        var html = $('<div id="palette">\
-    <button id="color_selector" class="color_data" value='+val+' style="background:'+val+'"></button>\
-    <div id="color_palette">\
+        var html = $('<div class="palette">\
+    <button class="color_selector color_data" value='+val+' style="background:'+val+'"></button>\
+    <div class="color_palette">\
         <div class="color_data" value="#d21f17" style="background:#d21f17;"></div>\
         <div class="color_data" value="#d3cec6" style="background:#d3cec6;"></div>\
         <div class="color_data" value="#ad9172" style="background:#ad9172;"></div>\
@@ -41,13 +41,15 @@ clinpt.prototype = {
     },
     loadFunctions: function() {
 
-        $("#color_selector").on("click", function () {
-            $("#color_palette").toggleClass("color_active_palette");
+        $(".color_selector").on("click", function () {
+            $(".color_active_palette").removeClass("color_active_palette");
+            $(this).parent().find(".color_palette").toggleClass("color_active_palette");
         });
-        $("#color_palette .color_data").on("click",function() {
-            $("#color_selector").attr("value",$(this).attr("value"));
-            $("#color_selector").css("background",$(this).attr("value"));
-            $("#color_palette").toggleClass("color_active_palette");
+        $(".color_palette .color_data").on("click",function() {
+            var selector = $(this).parent().parent().find(".color_selector")
+            $(selector).attr("value",$(this).attr("value"));
+            $(selector).css("background",$(this).attr("value"));
+            $(this).parent().toggleClass("color_active_palette");
         });
     }
 }

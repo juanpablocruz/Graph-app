@@ -30,13 +30,13 @@ function draw_action() {
                 }
                 else values.push(c[j].value);
             });
-            if(values[2])color = $(values[2]).find("#color_selector").attr("value");
+            if(values[2])color = $(values[2]).find(".color_selector").attr("value");
             else if(i>=colores.length){
-                colores[(i%colores.length)+2] = new Color($(values[2]).find("#color_selector").attr("value"));
+                colores[(i%colores.length)+2] = new Color($(values[2]).find(".color_selector").attr("value"));
                 color = colores[(i%colores.length)+2].hex;
             }
             else{
-                colores[i] = new Color($(values[2]).find("#color_selector").attr("value"));
+                colores[i] = new Color($(values[2]).find(".color_selector").attr("value"));
                 color = colores[i].hex
             }
 
@@ -50,6 +50,7 @@ function draw_action() {
         localStorage.data = JSON.stringify(data);
          dragevents();
         _("#graph").pie({data:data});
+
 }
 
 function create_data_set(dest, d) {
@@ -111,17 +112,12 @@ function create_data_set(dest, d) {
                 inpt_labl.type = "text";
                 inpt_labl.value = d[i]["label"];
                 inpt_labl.className = "label";
-                var inpt_color = document.createElement("DIV");
-                    clinpt(inpt_color).input(color);
-                //inpt_color.type = "color";
-                //inpt_color.value = color;
-                //inpt_color.className = "color";
                 var close_div = document.createElement("DIV");
                 close_div.className = "remove-list-item";
 
                 cont.appendChild(inpt_labl);
                 cont.appendChild(inpt_val);
-                cont.appendChild(inpt_color);
+                clinpt(cont).input(color);
                 li2.appendChild(cont);
                 li2.appendChild(close_div);
                 ul2.appendChild(li2);
@@ -163,15 +159,13 @@ function create_data_set(dest, d) {
             inpt_labl.type = "text";
             inpt_labl.value = d[i]["label"];
             inpt_labl.className = "label";
-            var inpt_color = document.createElement("DIV");
 
-                inpt_color.className = "color";
             var close_div = document.createElement("DIV");
             close_div.className = "remove-list-item";
 
             cont.appendChild(inpt_labl);
             cont.appendChild(inpt_val);
-            //cont.appendChild(inpt_color);
+
             clinpt(cont).input(color);
             li2.appendChild(cont);
             li2.appendChild(close_div);
@@ -192,7 +186,7 @@ function create_data_set(dest, d) {
                 },
                 connectWith: ".sortable-group-list > ul",
                 dropOnEmpty: true
-            }).disableSelection();
+            });
 
         });
         li.appendChild(ul2);
@@ -223,7 +217,6 @@ function create_data_set(dest, d) {
     contenedor.appendChild(f);
     dest.appendChild(contenedor);
     dragevents();
-    clinpt().loadFunctions();
 }
 
 _.prototype.pie= function (obj) {
@@ -234,6 +227,7 @@ _.prototype.pie= function (obj) {
         this.canvas = document.querySelectorAll(id+" canvas")[0];
         this.addPieTools();
         this.drawPie(this.canvas,obj.data); 
+        clinpt().loadFunctions();
     });
     
     
