@@ -2,6 +2,7 @@
     width: 2.25em;
     height: 1.6em;
     box-sizing: border-box;
+    border: none;
 }
 .palette {
     position: relative;
