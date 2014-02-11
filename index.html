@@ -215,6 +215,7 @@
                 $("nav .active").removeClass("active");
                 $(this).addClass("active");
                 localStorage.clear();
+                $("#controls").html("");
                 localStorage.chartType = tx;
                 $(".step-info ul").html("");
                 var iStep = $("<li><div class='halfCircleRight'>"+tx+"</div></li>");
