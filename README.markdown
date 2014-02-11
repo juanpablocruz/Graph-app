@@ -68,3 +68,27 @@ Genera el canvas, aporta las funciones principales y carga los modulos.
 * pie.js
 * barras.js
 * historic.js
+
+##Datos##
+GraphApp acepta todo tipo de xlsx.
+El único requisito, es que el archivo tenga una única hoja de trabajo y tenga una tabla claramente diferenciada y no demasiado grande.
+
+El formato de datos que se esperan para cada tipo de gráfico son:
+
+###Tartas###
+Para una configuración horizontal:
+| Etiqueta  | Valor  |
+| Etiqueta  | Valor  |
+| Etiqueta  | Valor  |
+Por ejemplo:
+
+| Otros productos  | 14.77  |
+| Fuelóleos  | 16.94  |
+| Gasóleos  | 48.62  |
+| Querosenos  | 8.8  |
+| Gasolinas  | 8.21  |
+| GLP´s  | 2.67  |
+
+Se esperan un conjunto de pares etiqueta valor, por lo que habrá que eliminar cualquier campo extra de información, así como valores negativos.
+
+
