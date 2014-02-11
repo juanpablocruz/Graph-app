@@ -529,7 +529,23 @@ img {width:100%;}
     margin:0.3em;
     cursor: pointer;
 }
-
+#body-output {
+    position: relative;
+}
+#dir_tooltip {
+    width: 10em;
+    background: #5893e3;
+    color:white;
+    box-shadow: 0px 0px 12px #999;
+    padding: 1em;
+    display: none;
+    position: absolute;
+    top: -12em;
+    left: 8em;
+}
+#info_dir sup {
+    cursor: help;
+}
 #undo {
     border: 0;
     background: transparent;

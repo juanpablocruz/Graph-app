@@ -383,13 +383,17 @@ _.prototype = {
         $("#output").html(table);
 
         var body = $("<div id='body-output'></div>");
-        $(body).append("<div id='abajo'><img src='arriba.jpg'></div><div id='lado'><img src='lado.png'></div>");
+        $(body).append("<span id='info_dir'>Sentido de datos<sup>?</sup></span>: <div id='abajo'><img src='arriba.jpg'></div><div id='lado'><img src='lado.png'></div>");
 
         $(body).append("<input type='radio' name='borrar' id='borrar-fila' class='button borrar-fila' value='Borrar fila'><label for='borrar-fila' id='borrar-fila-label'>Borrar fila</label>");
         $(body).append("<input type='radio' name='borrar' id='borrar-columna' class='button borrar-columna' value='Borrar columna'><label for='borrar-columna' id='borrar-columna-label'>Borrar columna</label>");
         $(body).append("<input type='radio' name='borrar' id='borrar-neutro' style='display:none;'>");
         $(body).append("<div id='undo-container'><button id='undo'><div class='icon icon-undo'></div></button></div>");
         $(body).append("<div class='button' id='render'>Crear Gráfico</div>");
+
+        var tooltip = $("<div id='dir_tooltip'>Elige el sentido de los datos:<br/> <b>Horizontal</b> si son: etiqueta - valor o <b>Vertical</b> si son etiqueta - etiqueta y los valores debajo.</div>");
+        $(body).append(tooltip);
+
         $("#controls").html(body);
 
         $("#undo").on("click",function() {
@@ -443,6 +447,22 @@ _.prototype = {
                     console.log("Elige dirección");
                     break;
             };
+        });
+        var timer;
+        $("#info_dir sup").on("mouseover",function() {
+            timer = setTimeout(function() {
+                $("#dir_tooltip").show();
+            }, 250);
+        });
+        $("#info_dir sup").on("mouseout",function() {
+            clearTimeout(timer);
+            timer = setTimeout(function() {
+                $("#dir_tooltip").hide();
+            }, 250);
+        });
+        $("#dir_tooltip").on("mouseout",function() {
+            clearTimeout(timer);
+            $("#dir_tooltip").hide();
         });
         function datos_vertical() {
             var a = new Array();
