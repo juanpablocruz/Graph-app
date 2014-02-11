@@ -78,7 +78,6 @@ El formato de datos que se esperan para cada tipo de gráfico son:
 ###Tartas###
 Para una configuración horizontal:
 | Etiqueta | Valor |
-|----------|-------|
 | Etiqueta | Valor |
 | Etiqueta | Valor |
 
