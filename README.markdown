@@ -65,6 +65,6 @@ Guarda los datos en un array y los muestra en una tabla.
 Librería principal.
 Genera el canvas, aporta las funciones principales y carga los modulos.
 
-####pie.js####
-####barras.js####
-####historic.js####
+* pie.js
+* barras.js
+* historic.js
