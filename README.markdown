@@ -88,4 +88,9 @@ Para una configuración horizontal:
 
 Se esperan un conjunto de pares etiqueta valor, por lo que habrá que eliminar cualquier campo extra de información, así como valores negativos.
 
-
+###Barras###
+Para una configuración horizontal:
+| Año  | 2003  | 2004 | 2005 | 2006 |
+| ---- |:----: |:----:|:----:|:----:|
+| Total| 2432  | 2432 | 2432 | 2432 |
+| Otros| 2432  | 2432 | 2432 | 2432 |
