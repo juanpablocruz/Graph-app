@@ -1,25 +1,70 @@
+#Graph App#
+
 Aplicación de creación de gráficos de Cores.
-Archivos:
+##Librerias##:
 
-index.html
-js/color.js Librería para gestionar y convertir colores
-js/core.js  Librería principal del módulo de gráficos
-js/pie.js   Extensión del módulo principal para crear gráficos de tarta
-js/xls.js   Módulo para cargar y leer archivos excel .xls
-js/xlsworker.js Módulo para cargar xls con workers
-theme.css   Estilo principal de la UI
-iconos.css  CSS para cargar fuentes de iconos.
+###Color.js###
+
+Librería de manejo de colores.
+
+Traduce cualquier color en RGB, HSL, HSV, HTML, CMYK, LAB a todos los demás.
+
+```
+var color_html = new Color("#d21f17");
+
+color_html = {
+    XYZ: {
+        x: 27
+        y: 15
+        z: 2
+    },
+    cmyk: {
+        c: 0
+        k: 0.176470588
+        m: 0.852380952
+        y: 0.890476190
+    },
+    hex: "#d21f17",
+    hsl: {
+        h: 0.007130124
+        s: 0.802575107
+        l: 0.456862745
+    },
+    hsv: {
+        h: 2.566844919
+        s: 0.890476190
+        v: 0.823529411
+    },
+    lab: {
+        l: 46
+        b: 53
+        a: 63
+    },
+    rgb: {
+        r: 210
+        g: 31
+        b: 23
+    }
+}
+```
+
+###color_input.js###
+Input de color sustituto a input type=color, con paleta personalizada.
+
+```
+clinpt(contenedor).input(color);
+clinpt().loadFunctions();
+```
+###Excel.js###
+
+Librería para leer archivos xlsx, los carga y los lee buscando la tabla con el contenido relevante.
+Guarda los datos en un array y los muestra en una tabla.
 
 
-Formato:
+###core.js###
+Librería principal.
+Genera el canvas, aporta las funciones principales y carga los modulos.
 
-Tartas.xls
-|  Label  |    Value  |  
-|  África |    3,4    |   
-|  Europa |    20,6   |
-
-Barras.xls
-|  Años  |  Etiqueta1  |  Etiqueta2  |
-|  2009  |    30000    |    20000    |
-|  2010  |    33000    |    34000    |
-|  2011  |    34000    |    23000    |
+####pie.js####
+####barras.js####
+####historic.js####
