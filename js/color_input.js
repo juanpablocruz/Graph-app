@@ -30,11 +30,14 @@ clinpt.prototype = {
     <button class="color_selector color_data" value='+val+' style="background:'+val+'"></button>\
     <div class="color_palette">\
         <div class="color_data" value="#d21f17" style="background:#d21f17;"></div>\
-        <div class="color_data" value="#d3cec6" style="background:#d3cec6;"></div>\
+        <div class="color_data" value="#d3cdc7" style="background:#d3cdc7;"></div>\
         <div class="color_data" value="#ad9172" style="background:#ad9172;"></div>\
         <div class="color_data" value="#4293af" style="background:#4293af;"></div>\
         <div class="color_data" value="#cea072" style="background:#cea072;"></div>\
         <div class="color_data" value="#82afc1" style="background:#82afc1;"></div>\
+        <div class="color_data" value="#7b796c" style="background:#7b796c;"></div>\
+        <div class="color_data" value="#c5beb6" style="background:#c5beb6;"></div>\
+        <div class="color_data" value="#e3dfda" style="background:#e3dfda;"></div>\
     </div>\
     </div>  ');
         return html;

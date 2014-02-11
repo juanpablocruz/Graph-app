@@ -1,6 +1,6 @@
 var modules = [];
 var direccion = "";
-var standard =[new Color("#d21f17"),new Color("#d3cec6"),
+var standard =[new Color("#d21f17"),new Color("#d3cdc7"),
                new Color("#ad9172"),new Color("#4293af"),
                new Color("#cea072"),new Color("#82afc1"),
                new Color("#867c73"),new Color("#e2ddd8"),
