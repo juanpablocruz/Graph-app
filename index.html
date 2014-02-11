@@ -343,7 +343,31 @@
                     localStorage.separado = false;
                 }
             });
-
+            $(document).on("change","#fileSelect",function(e){
+                var files = ($(this)[0].files);
+                var i,f;
+                for (i = 0, f = files[i]; i != files.length; ++i) {
+                var reader = new FileReader();
+                var name = f.name;
+                reader.onload = function(e) {
+                    var data = e.target.result;
+                    if(typeof Worker !== 'undefined') {
+                        xlsxworker(data, process_wb);
+                    } else {
+                        var wb;
+                        if(rABS) {
+                            wb = XLSX.read(data, {type: 'binary'});
+                        } else {
+                        var arr = String.fromCharCode.apply(null, new Uint8Array(data));
+                            wb = XLSX.read(btoa(arr), {type: 'base64'});
+                        }
+                        process_wb(wb);
+                    }
+                };
+                if(rABS) reader.readAsBinaryString(f);
+                else reader.readAsArrayBuffer(f);
+            }
+            })
             dragevents();
             function restaurarColores(){
                 colores = standard.slice(0);
@@ -379,7 +403,9 @@ function undo() {
 <div id="loadData" class="step">
     <section id="tools">
         <div class="step-info"><ul></ul></div>
-        <div id="drop"><div class="icon-box-add icono"></div>Arrastra un archivo XLS</div>
+        <div id="drop"><div class="icon-box-add icono"></div>Arrastra un archivo XLS<br>
+        <input id="fileSelect" type="file" value="Seleccionar archivo" accept=".xlsx">
+        </div>
         <div class="back">Volver</div>
         <div id="data-choose">
             <div id="output"></div>
@@ -388,7 +414,7 @@ function undo() {
 
     </section>
     <div id="aside_help">
-        <p>Arrastra el archivo al area marcada.</p><br>
+        <p>Arrastra el archivo al area marcada o seleccionalo.</p><br>
         <h4>Elección de datos</h4>
         <ul>
             <li>En el caso de gráficos de tartas, los datos esperados son de la forma Etiqueta - Valor, con un único valor y sin campos de etiqueta extra. Por tanto si los datos se muestran en una fila las etiquetas y debajo los valores, se elegira una configuración vertical, en cambio, si salen a dos columnas se eligirá horizontal</li>
