@@ -107,6 +107,27 @@ main{
 section{
     flex:1;
 }
+#aside_help {
+    display: inline-block;
+    width: 29%;
+    height: 70%;
+    background: white;
+    margin-right: 4em;
+    border: 1px solid #999;
+    box-sizing: border-box;
+    padding: 2em;
+    box-shadow: 0px 0px 4px #999;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+#aside_help ul,#aside_help li {
+    list-style:disc;
+    margin-bottom: 1em;
+    margin-top: 1em;
+}
+#output table {
+    font-size: 0.8em;
+}
 main section:first-child{
     overflow-y:auto;
 }
