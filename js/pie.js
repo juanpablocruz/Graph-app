@@ -24,16 +24,16 @@ function draw_action() {
         _().each(document.querySelectorAll("#attr-grupos ul>li .data-list-element"),function(i,a){
            values = [];
            var grupo = $(a[i]).parent().parent().parent().find("span").text();
-        _().each(a[i].childNodes,function(j,c){
-            values.push(c[j].value);
-          });
+            _().each(a[i].childNodes,function(j,c){
+                values.push(c[j].value);
+            });
             if(values[2])color = values[2];
             else if(i>=colores.length){
-                colores[(i%colores.length)+2] = new Color(values[2]);
+                colores[(i%colores.length)+2] = new Color($(values[2]).find("#color_selector").attr("value"));
                 color = colores[(i%colores.length)+2].hex;
             }
             else{
-                colores[i] = new Color(values[2]);
+                colores[i] = new Color($(values[2]).find("#color_selector").attr("value"));
                 color = colores[i].hex
             }
           data[i] = {
@@ -107,10 +107,11 @@ function create_data_set(dest, d) {
                 inpt_labl.type = "text";
                 inpt_labl.value = d[i]["label"];
                 inpt_labl.className = "label";
-                var inpt_color = document.createElement("INPUT");
-                inpt_color.type = "color";
-                inpt_color.value = color;
-                inpt_color.className = "color";
+                var inpt_color = document.createElement("DIV");
+                    clinpt(inpt_color).input(color);
+                //inpt_color.type = "color";
+                //inpt_color.value = color;
+                //inpt_color.className = "color";
                 var close_div = document.createElement("DIV");
                 close_div.className = "remove-list-item";
 
@@ -158,17 +159,16 @@ function create_data_set(dest, d) {
             inpt_labl.type = "text";
             inpt_labl.value = d[i]["label"];
             inpt_labl.className = "label";
-            var inpt_color = document.createElement("INPUT");
-            inpt_color.type = "color";
-            inpt_color.value = color;
-            inpt_color.className = "color";
+            var inpt_color = document.createElement("DIV");
+
+                inpt_color.className = "color";
             var close_div = document.createElement("DIV");
             close_div.className = "remove-list-item";
 
             cont.appendChild(inpt_labl);
             cont.appendChild(inpt_val);
-            cont.appendChild(inpt_color);
-
+            //cont.appendChild(inpt_color);
+            clinpt(cont).input(color);
             li2.appendChild(cont);
             li2.appendChild(close_div);
             ul2.appendChild(li2);
@@ -219,6 +219,7 @@ function create_data_set(dest, d) {
     contenedor.appendChild(f);
     dest.appendChild(contenedor);
     dragevents();
+    clinpt().loadFunctions();
 }
 
 _.prototype.pie= function (obj) {
