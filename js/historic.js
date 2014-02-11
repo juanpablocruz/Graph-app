@@ -470,20 +470,15 @@ _.prototype.draw_history_func = function(d){
 
 
     var colores = colores_barras;
-    //var datos = document.querySelectorAll(".data-list-li-holder");
     _().each(datos, function(i) {
         if(i>0) {
-        //order.push(datos[i].children[0].children[0].innerHTML);
-        console.log(datos[i].children[1].children[1].children[0].value);
         if(datos[i].children[1].children.length > 1){
-            console.log(datos[i].children[1].children[1]);
             var tmp = {
                 grupo: datos[i].children[1].children[0].innerHTML,
                 color: datos[i].children[1].children[1].children[0].value
             };
         }
         else{
-            //console.log("a",colores[(i-1)%colores.length]);
             var tmp = {
                 grupo: datos[i].children[1].children[0].innerHTML,
                 color: colores[(i-1)%colores.length].hex,

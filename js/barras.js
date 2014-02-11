@@ -180,15 +180,8 @@ _.prototype.addBarTools = function(data){
         var div = document.createElement("DIV");
         if (barras_mode == "cols" || j > 0) div.className = "data-list-element-holder";
             div.innerHTML = "<div contenteditable='true'>"+orden[j]+"</div>";
-        //if (barras_mode == "cols") {
-            //var colorinpt = document.createElement("input");
-            //    colorinpt.setAttribute("type","color");
-            //    colorinpt.value = this.colores_grupos[j]["color"];
-            //    div.appendChild(colorinpt);
         if(j>0) {
-            console.log(j);
             clinpt(div).input(this.colores_grupos[j]["color"]);
-        //}
         }
 
         if (barras_mode == "cols" || j > 0) {

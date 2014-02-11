@@ -211,7 +211,6 @@ function create_data_set(dest, d) {
         inpt_sub.className = "draw_button";
         inpt_sub.addEventListener('click',draw_action,false);
     grupos.appendChild(inpt_sub);
-    console.log(grupos);
     f.appendChild(grupos);
     f.appendChild(div_options);
     contenedor.appendChild(f);
@@ -343,7 +342,6 @@ _.prototype.drawPie = function (canvas, data) {
         });
         this.draw(fragmentos,180,false);
         radio = 180;
-        console.log("Frag:",fragmentos,this.grupos,fragmentos == []);
         localStorage.grupos = JSON.stringify(fragmentos);
     }
     else {
