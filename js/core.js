@@ -329,7 +329,6 @@ _.prototype = {
         _.memory.push({local: JSON.stringify(localStorage.data),
                        output: JSON.stringify(output),
                        current: $(".current_step").attr("id")});
-        console.log(_.memory);
         localStorage.memory = JSON.stringify(_.memory);
     },
     undoAction: function() {
@@ -343,9 +342,10 @@ _.prototype = {
             this.loadOutput(_.memory[_.memory.length - 1]["output"]);
             $(".current_step").removeClass("current_step");
             $("#"+_.memory[_.memory.length - 1]["current"]).addClass("current_step");
+            var tipo = localStorage.chartType;
 
+            if(tipo == "Tartas") localStorage.removeItem("grupos");
             if(_.memory[_.memory.length - 1]["current"] == "designer") {
-                var tipo = localStorage.chartType;
                 var data = JSON.parse(localStorage.data);
                 switch (tipo) {
                     case "Tartas":
@@ -361,7 +361,6 @@ _.prototype = {
             }
 
             columna = false;fila=false;
-
         }
     },
     checkMemory: function() {

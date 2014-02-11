@@ -13,39 +13,39 @@ if (!localStorage.pie_mode) {
 
 function draw_action() {
     var grupos_list = [];
-            _().each(document.querySelectorAll(".grupo_tag"),function(i,a){     // Fetch all the data inside each item
-                grupos_list.push({label:a[i].innerHTML,value:a[i].getAttribute("val")});
-            });
-            localStorage.grupos = JSON.stringify(grupos_list, 2, 2);
-            var fuent = document.querySelectorAll("#fuente_input")[0].value;
-            localStorage.fuente = fuent;
-            fuente_value = fuent;
-            var data = [];
-            _().each(document.querySelectorAll("#attr-grupos ul>li .data-list-element"),function(i,a){
-               values = [];
-               var grupo = $(a[i]).parent().parent().parent().find("span").text();
-            _().each(a[i].childNodes,function(j,c){
-                values.push(c[j].value);
-              });
-                if(values[2])color = values[2];
-                else if(i>=colores.length){
-                    colores[(i%colores.length)+2] = new Color(values[2]);
-                    color = colores[(i%colores.length)+2].hex;
-                }
-                else{
-                    colores[i] = new Color(values[2]);
-                    color = colores[i].hex
-                }
-              data[i] = {
-                    label:values[0],
-                    value: parseFloat(values[1]),
-                    group: grupo,
-                    color: color,
-                };
-           });
-            localStorage.data = JSON.stringify(data, 2, 2);
-             dragevents();
-            _("#graph").pie({data:data});
+        _().each(document.querySelectorAll(".grupo_tag"),function(i,a){     // Fetch all the data inside each item
+            grupos_list.push({label:a[i].innerHTML,value:a[i].getAttribute("val")});
+        });
+        localStorage.grupos = JSON.stringify(grupos_list);
+        var fuent = document.querySelectorAll("#fuente_input")[0].value;
+        localStorage.fuente = fuent;
+        fuente_value = fuent;
+        var data = [];
+        _().each(document.querySelectorAll("#attr-grupos ul>li .data-list-element"),function(i,a){
+           values = [];
+           var grupo = $(a[i]).parent().parent().parent().find("span").text();
+        _().each(a[i].childNodes,function(j,c){
+            values.push(c[j].value);
+          });
+            if(values[2])color = values[2];
+            else if(i>=colores.length){
+                colores[(i%colores.length)+2] = new Color(values[2]);
+                color = colores[(i%colores.length)+2].hex;
+            }
+            else{
+                colores[i] = new Color(values[2]);
+                color = colores[i].hex
+            }
+          data[i] = {
+                label:values[0],
+                value: parseFloat(values[1]),
+                group: grupo,
+                color: color,
+            };
+       });
+        localStorage.data = JSON.stringify(data);
+         dragevents();
+        _("#graph").pie({data:data});
 }
 
 function create_data_set(dest, d) {
@@ -66,7 +66,7 @@ function create_data_set(dest, d) {
     var ul = document.createElement("UL");
     grupos.appendChild(create);
     //TODO: Añadir borrar grupo
-    if (localStorage.grupos) {
+    if (localStorage.grupos && localStorage.grupos != "[]" && pie_mode === "complex") {
         var g = JSON.parse(localStorage.grupos);
         _().each(g, function (j, a) {                                   //create each group
             var li = document.createElement("LI");
@@ -85,6 +85,7 @@ function create_data_set(dest, d) {
             }).disableSelection();
 
             _().each(d, function (i) {                                  // Create each portion in its own group
+
                 if (d[i].group !== "" && d[i].group === a[j].label) {
                     if(d[i]["color"])color = d[i]["color"];
                 else if(i>=colores.length){
@@ -93,6 +94,7 @@ function create_data_set(dest, d) {
                 else{
                     var color=colores[i].hex;
                 }
+
                 var li2 = document.createElement("LI");
                 li2.className = "data-list-li";
                 var cont = document.createElement("DIV");
@@ -134,7 +136,6 @@ function create_data_set(dest, d) {
         else
             li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie' val='0'>Grupo1</span>";
         var ul2 = document.createElement("UL");
-
         _().each( d,function (i, a) {
             if (d[i]["color"]) {
                 color = d[i]["color"];
@@ -212,6 +213,7 @@ function create_data_set(dest, d) {
         inpt_sub.className = "draw_button";
         inpt_sub.addEventListener('click',draw_action,false);
     grupos.appendChild(inpt_sub);
+    console.log(grupos);
     f.appendChild(grupos);
     f.appendChild(div_options);
     contenedor.appendChild(f);
@@ -342,6 +344,7 @@ _.prototype.drawPie = function (canvas, data) {
         });
         this.draw(fragmentos,180,false);
         radio = 180;
+        console.log("Frag:",fragmentos,this.grupos,fragmentos == []);
         localStorage.grupos = JSON.stringify(fragmentos);
     }
     else {
