@@ -179,7 +179,7 @@ _.prototype.addBarTools = function(data){
     for (var j=0; j < orden.length; j++) {
         var li1 = document.createElement("li");
         var div = document.createElement("DIV");
-        if (barras_mode == "cols" || j > 0) div.className = "data-list-element-holder icon-reorganizar";
+        if (barras_mode == "cols" || j > 0) div.className = "data-list-element-holder";
             div.innerHTML = "<div contenteditable='true'>"+orden[j]+"</div>";
         if (barras_mode == "cols") {
             var colorinpt = document.createElement("input");

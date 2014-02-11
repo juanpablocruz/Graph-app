@@ -582,12 +582,26 @@ margin-top: 1.7em;
     cursor:pointer;
     color:#cecece;
 }
+.data-list-li .icon-reorganizar{display: inline-block;}
+.data-list-li:hover .icon-reorganizar:before {
+    color:black;
+    display: inline-block;
+    border-color:black;
+    content: "\e614";
+}
 .remove-list-item:hover {
     color:black;
     border-color:black;
 }
 .remove-list-item:before {
 content: 'x';
+}
+
+.data-list-element-holder{
+    display: inline-block;
+}
+.data-list-li-holder .remove-list-item{
+    vertical-align: super;
 }
 //FUTURE: Arreglar estilo del botón de eliminar
 @media all and (max-width:800px){

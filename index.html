@@ -297,6 +297,8 @@
 
             $(document).on("click",".rearrange-button",function(){
                 var ul = $(".data-list-li-holder").parent();
+                $(".remove-list-item").toggleClass("icon-reorganizar");
+                $(".icon-reorganizar").toggleClass("remove-list-item");
                 $(".data-list-li-holder ").toggleClass("data-list-li");
                 $(".data-list-element-holder").toggleClass("data-list-element");
 
