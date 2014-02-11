@@ -25,9 +25,12 @@ function draw_action() {
            values = [];
            var grupo = $(a[i]).parent().parent().parent().find("span").text();
             _().each(a[i].childNodes,function(j,c){
-                values.push(c[j].value);
+                if(j == 2) {
+                    values.push(c[j]);
+                }
+                else values.push(c[j].value);
             });
-            if(values[2])color = values[2];
+            if(values[2])color = $(values[2]).find("#color_selector").attr("value");
             else if(i>=colores.length){
                 colores[(i%colores.length)+2] = new Color($(values[2]).find("#color_selector").attr("value"));
                 color = colores[(i%colores.length)+2].hex;
@@ -36,6 +39,7 @@ function draw_action() {
                 colores[i] = new Color($(values[2]).find("#color_selector").attr("value"));
                 color = colores[i].hex
             }
+
           data[i] = {
                 label:values[0],
                 value: parseFloat(values[1]),
