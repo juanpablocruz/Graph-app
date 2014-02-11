@@ -184,11 +184,13 @@ _.prototype.historyPannel = function() {
 
         if (Object.keys(data[0])[j] != delim) {
 
-            var colorinpt = document.createElement("input");
-                colorinpt.setAttribute("type","color");
-            if(j>0)
-                colorinpt.value = this.colores_grupos[(j-1)%this.colores_grupos.length]["color"];
-            div.appendChild(colorinpt);
+    //        var colorinpt = document.createElement("input");
+      //          colorinpt.setAttribute("type","color");
+            if(j>0) {
+                clinpt(div).input(this.colores_grupos[(j-1)%this.colores_grupos.length]["color"]);
+            }
+//                colorinpt.value = this.colores_grupos[(j-1)%this.colores_grupos.length]["color"];
+  //          div.appendChild(colorinpt);
         }
 
 
@@ -294,6 +296,7 @@ _.prototype.drawHist = function (canvas, data) {
     var maximo = this.getMaxValue();
     var posicion = this.createBarsVerticalAxis(maximo,5,"historico");
     this.drawHistoricBars(posicion);
+    clinpt().loadFunctions();
 }
 
 
@@ -471,13 +474,16 @@ _.prototype.draw_history_func = function(d){
     _().each(datos, function(i) {
         if(i>0) {
         //order.push(datos[i].children[0].children[0].innerHTML);
-        if(datos[i].children[0].children.length > 1){
+        console.log(datos[i].children[1].children[1].children[0].value);
+        if(datos[i].children[1].children.length > 1){
+            console.log(datos[i].children[1].children[1]);
             var tmp = {
                 grupo: datos[i].children[1].children[0].innerHTML,
-                color: datos[i].children[1].children[1].value
+                color: datos[i].children[1].children[1].children[0].value
             };
         }
         else{
+            //console.log("a",colores[(i-1)%colores.length]);
             var tmp = {
                 grupo: datos[i].children[1].children[0].innerHTML,
                 color: colores[(i-1)%colores.length].hex,
