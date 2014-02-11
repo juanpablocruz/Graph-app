@@ -9,7 +9,7 @@ Librería de manejo de colores.
 
 Traduce cualquier color en RGB, HSL, HSV, HTML, CMYK, LAB a todos los demás.
 
-```
+```JavaScript
 var color_html = new Color("#d21f17");
 
 color_html = {
@@ -51,7 +51,7 @@ color_html = {
 ###color_input.js###
 Input de color sustituto a input type=color, con paleta personalizada.
 
-```
+```JavaScript
 clinpt(contenedor).input(color);
 clinpt().loadFunctions();
 ```
