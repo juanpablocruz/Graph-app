@@ -1,4 +1,5 @@
 var modules = [];
+var direccion = "";
 var standard =[new Color("#d21f17"),new Color("#d3cec6"),
                new Color("#ad9172"),new Color("#4293af"),
                new Color("#cea072"),new Color("#82afc1"),
@@ -378,8 +379,9 @@ _.prototype = {
         });
 
         //FUTURE: Botón de confirmar datos
-        //FIXME: En las tartas al menos el deshacer devuelve a la elección de datos y luego no coge los valores
+        //FIXME: [x]En las tartas al menos el deshacer devuelve a la elección de datos y luego no coge los valores
         $("#output").html(table);
+
         var body = $("<div id='body-output'></div>");
         $(body).append("<div id='abajo'><img src='arriba.jpg'></div><div id='lado'><img src='lado.png'></div>");
 
@@ -387,6 +389,7 @@ _.prototype = {
         $(body).append("<input type='radio' name='borrar' id='borrar-columna' class='button borrar-columna' value='Borrar columna'><label for='borrar-columna' id='borrar-columna-label'>Borrar columna</label>");
         $(body).append("<input type='radio' name='borrar' id='borrar-neutro' style='display:none;'>");
         $(body).append("<div id='undo-container'><button id='undo'><div class='icon icon-undo'></div></button></div>");
+        $(body).append("<div class='button' id='render'>Crear Gráfico</div>");
         $("#controls").html(body);
 
         $("#undo").on("click",function() {
@@ -416,8 +419,32 @@ _.prototype = {
         $("table").on("click",function(ev) {
             $(".active").remove();
             _().saveStep();
-        })
+        });
         $("#abajo").on("click",function() {
+            direccion = "abajo";
+            $(".selection_dir").removeClass("selection_dir");
+            $(this).addClass("selection_dir");
+        });
+
+        $("#lado").on("click",function() {
+            direccion = "lado";
+            $(".selection_dir").removeClass("selection_dir");
+            $(this).addClass("selection_dir");
+        });
+        $("#render").on("click",function() {
+            switch(direccion){
+              case "abajo":
+                    datos_vertical();
+                    break;
+                case "lado":
+                    datos_lado();
+                    break;
+                default:
+                    console.log("Elige dirección");
+                    break;
+            };
+        });
+        function datos_vertical() {
             var a = new Array();
             for ( var i = 0; i < ($("tr").first().find("td").length)-1; i++) {
                 a.push({});
@@ -433,9 +460,9 @@ _.prototype = {
             });
             columna = false;fila=false;
             draw(a);
-        });
+        };
 
-        $("#lado").on("click",function() {
+        function datos_lado() {
             var a = new Array();
             for ( var i = 0; i < ($("tr").length)-1; i++) {
                 a.push({});
@@ -451,7 +478,7 @@ _.prototype = {
             });
             columna = false;fila=false;
             draw(a);
-        });
+        };
 
     }
 };

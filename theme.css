@@ -218,7 +218,7 @@ input:focus{
     text-shadow:1px 1px 1px #ddd;
 }
 
-#buttons >div,#buttons >button,.menu-button {
+#buttons >div,#buttons >button,.menu-button, .button {
     width: 100%;
     padding-top: 1em;
     padding-bottom: 1em;
@@ -232,6 +232,18 @@ input:focus{
     text-align:left;
     margin-bottom:0.2em;
     cursor:pointer;
+}
+
+.button {
+    width: auto;
+    text-align: center;
+    margin-top: 1.8em;
+}
+
+.selection_dir {
+    background: cornflowerblue;
+    padding: 3px;
+    padding-top: 3px;
 }
 
 #attr-grupos{
@@ -515,6 +527,7 @@ img {width:100%;}
     width:22px;
     display:inline-block;
     margin:0.3em;
+    cursor: pointer;
 }
 
 #undo {
