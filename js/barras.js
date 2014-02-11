@@ -51,7 +51,6 @@ _.prototype.bars = function (obj) {
         } else {
             this.colores_grupos = JSON.parse(localStorage.coloresBarras);
         }
-
         this.addBarTools(obj.data);
         this.drawBar(this.canvas,obj.data);
         $("#groups-ul").sortable({
@@ -181,14 +180,16 @@ _.prototype.addBarTools = function(data){
         var div = document.createElement("DIV");
         if (barras_mode == "cols" || j > 0) div.className = "data-list-element-holder";
             div.innerHTML = "<div contenteditable='true'>"+orden[j]+"</div>";
-        if (barras_mode == "cols") {
-            var colorinpt = document.createElement("input");
-                colorinpt.setAttribute("type","color");
-                colorinpt.value = this.colores_grupos[j]["color"];
-                div.appendChild(colorinpt);
-
+        //if (barras_mode == "cols") {
+            //var colorinpt = document.createElement("input");
+            //    colorinpt.setAttribute("type","color");
+            //    colorinpt.value = this.colores_grupos[j]["color"];
+            //    div.appendChild(colorinpt);
+        if(j>0) {
+            console.log(j);
+            clinpt(div).input(this.colores_grupos[j]["color"]);
+        //}
         }
-
 
         if (barras_mode == "cols" || j > 0) {
             $(li1).append("<div class='remove-list-item'></div>");
@@ -241,6 +242,7 @@ _.prototype.drawBar = function(canvas,data){
 
     this.createBarsVerticalAxis(maximo,6,"barras");
     this.createBarsHorizontalAxis(maximo);
+    clinpt().loadFunctions();
 }
 _.prototype.getMaxColumn = function (){
     var max = 0;
@@ -283,7 +285,7 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
             color_rest = 0;
             var value = (((this.data[j][orden[i]] * 100) / maximo)*h/100);
         }
-        var colores = (this.destacado == "true") ? colores_alpha[(i-color_rest)%colores_alpha.length].hex : colores_barras[(i-color_rest)%colores_barras.length].hex;
+        var colores = (this.destacado == "true") ? colores_alpha[(i-color_rest)%colores_alpha.length].hex : this.colores_grupos[(i-color_rest)%this.colores_grupos.length]["color"];
         var barra = new Kinetic.Shape({
             drawFunc: function(ctx){
                 ctx.beginPath();
@@ -439,17 +441,17 @@ _.prototype.draw_bars_func = function(d){
     _().each(datos, function(i) {
 
         if(i>0 || barras_mode == "cols") {
-        //order.push(datos[i].children[1].children[0].innerHTML);
         if(datos[i].children[1].children.length > 1){
             var tmp = {
                 grupo: datos[i].children[1].children[0].innerHTML,
-                color: datos[i].children[1].children[1].value
+                color: datos[i].children[1].children[1].children[0].value
             };
         }
         else{
+
             var tmp = {
                 grupo: datos[i].children[1].children[0].innerHTML,
-                color: colores[(i-1)%(colores.length)].hex,
+                color: colores[(i)%(colores.length)].hex,
             };
         }
         tmp_colors.push(tmp);
