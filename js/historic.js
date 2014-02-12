@@ -68,7 +68,8 @@ _.prototype.getMaxValue = function () {
     for (var i = 0; i < this.data.length; i++ ) {
         for (var j = 1; j < Object.keys(this.data[0]).length; j++) {
             if ( this.data[i][Object.keys(this.data[i])[j]] > max ) {
-             max = this.data[i][Object.keys(this.data[i])[j]];
+                if(!isNaN(this.data[i][Object.keys(this.data[i])[j]]))
+                    max = this.data[i][Object.keys(this.data[i])[j]];
             }
         }
     }
@@ -317,6 +318,7 @@ _.prototype.drawHistoricBars = function (posicion) {
             if(pie_mode != "simple") linea_set.push({x:0,y:0});
             for ( var i=0; i < data.length; i++ ) {
                 //var value = ((((data[i][Object.keys(data[0])[j]]-min) * h)/amplitud));
+                if(!isNaN(data[i][Object.keys(data[0])[j]]))
                 var value =  ((data[i][Object.keys(data[0])[j]]-this.origen)/this.step.label)*this.step.val;
                 linea_set.push({x:a + x, y: -( value)});
                 a += x;
@@ -382,7 +384,9 @@ _.prototype.drawHistoricBars = function (posicion) {
     for ( var j = 0; j < data.length; j++ ) {
         var x_var;
         if(pie_mode == "simple") { x_var = 35 + puntos[0][j]["x"];}
-        else {x_var = 35 + puntos[0][j+1]["x"] - (this.ctx.measureText(this.data[j][delim]).width/2);}
+        else {
+
+            x_var = 35 + puntos[0][j+1]["x"] - (this.ctx.measureText(this.data[j][delim]).width/2);}
 
         var year = new Kinetic.Text({
             x: x_var,

@@ -278,6 +278,7 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
             var value = (((this.data[j][orden[i]] * 100) / this.ceil)*h/100);
         } else {
             color_rest = 0;
+
             var value = (((this.data[j][orden[i]] * 100) / maximo)*h/100);
         }
         var colores = (this.destacado == "true") ? colores_alpha[(i-color_rest)%colores_alpha.length].hex : this.colores_grupos[(i-color_rest)%this.colores_grupos.length]["color"];
@@ -436,7 +437,7 @@ _.prototype.draw_bars_func = function(d){
 
     _().each(datos, function(i) {
 
-        if(i>0 || barras_mode == "cols") {
+        if(i>0) {
         if(datos[i].children[1].children.length > 1){
             var tmp = {
                 grupo: datos[i].children[1].children[0].innerHTML,
@@ -444,7 +445,6 @@ _.prototype.draw_bars_func = function(d){
             };
         }
         else{
-
             var tmp = {
                 grupo: datos[i].children[1].children[0].innerHTML,
                 color: colores[(i)%(colores.length)].hex,
