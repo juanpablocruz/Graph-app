@@ -18,8 +18,9 @@
         var data, tipo;
         var rABS = typeof FileReader !== "undefined" && typeof FileReader.prototype !== "undefined" && typeof FileReader.prototype.readAsBinaryString !== "undefined";
         window.onerror = function(msg, url, ln) {
-            console.log(msg, url, ln);
-            location.reload();
+            console.log(msg,typeof msg, url, ln);
+            if(typeof msg === "string")
+                location.reload();
         };
         function xlsxworker(data, cb) {
             var worker = new Worker('js/xlsxworker.min.js');

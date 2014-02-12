@@ -181,7 +181,7 @@ _.prototype.addBarTools = function(data){
         if (barras_mode == "cols" || j > 0) div.className = "data-list-element-holder";
             div.innerHTML = "<div contenteditable='true'>"+orden[j]+"</div>";
         if(j>0) {
-            clinpt(div).input(this.colores_grupos[j]["color"]);
+            clinpt(div).input(this.colores_grupos[j-1]["color"]);
         }
 
         if (barras_mode == "cols" || j > 0) {
