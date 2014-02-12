@@ -243,6 +243,7 @@ _.prototype.getMaxColumn = function (){
         for(var i=0;i< this.data.length;i++){
         var tmp = 0;
         for (var j = 1; j < Object.keys(this.data[0]).length; j++) {
+            if(!isNaN(this.data[i][Object.keys(this.data[i])[j]]))
             tmp += this.data[i][Object.keys(this.data[i])[j]];
         }
         if (tmp > max) {
@@ -254,6 +255,7 @@ _.prototype.getMaxColumn = function (){
         for(var i=0;i< Object.keys(this.data[0]).length;i++){
             var tmp = 0;
             for (var j = 0; j < this.data.length; j++) {
+                if(!isNaN(this.data[j][Object.keys(this.data[j])[i]]))
                 tmp += this.data[j][Object.keys(this.data[j])[i]];
             }
             if (tmp > max) {
@@ -270,7 +272,7 @@ _.prototype.getMaxColumn = function (){
 }
 
 _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden, color_rest, offset){
-    if(i>0 || barras_mode == "cols") {
+    if((i>0 || barras_mode == "cols")&&!isNaN(this.data[j][orden[i]])) {
         if(barras_mode != "cols") {
             color_rest = 1;
             var value = (((this.data[j][orden[i]] * 100) / this.ceil)*h/100);
@@ -343,6 +345,7 @@ _.prototype.createBarsHorizontalAxis = function(max){
                                        "#333","white",texto,1,layer2);
                         }
                     }
+                    if(!isNaN(this.data[j][orden[i]]))
                     height_accumulated+=(((this.data[j][orden[i]] * 100) / (this.ceil))*h/100);
                     break;
                 case "cols":
