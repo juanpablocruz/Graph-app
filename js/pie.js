@@ -33,10 +33,12 @@ function draw_action() {
             if(values[2])color = $(values[2]).find(".color_selector").attr("value");
             else if(i>=colores.length){
                 colores[(i%colores.length)+2] = new Color($(values[2]).find(".color_selector").attr("value"));
+                if(typeof colores[(i%colores.length)+2] === "undefined")colores[(i%colores.length)+2]  = new Color("#000000");
                 color = colores[(i%colores.length)+2].hex;
             }
             else{
                 colores[i] = new Color($(values[2]).find(".color_selector").attr("value"));
+                if(typeof colores[i] === "undefined")colores[i]  = new Color("#000000");
                 color = colores[i].hex
             }
 
@@ -94,9 +96,11 @@ function create_data_set(dest, d) {
                 if (d[i].group !== "" && d[i].group === a[j].label) {
                     if(d[i]["color"])color = d[i]["color"];
                 else if(i>=colores.length){
+                    if(typeof colores[(i%colores.length)+2] === "undefined")colores[(i%colores.length)+2] = new Color("#000000");
                     var color = colores[(i%colores.length)+2].hex;
                 }
                 else{
+                    if(typeof colores[i] === "undefined")colores[i] = new Color("#000000");
                     var color=colores[i].hex;
                 }
 

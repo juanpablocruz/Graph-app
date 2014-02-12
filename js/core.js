@@ -436,6 +436,7 @@ _.prototype = {
             $(this).addClass("selection_dir");
         });
         $("#render").on("click",function() {
+            $("#fileSelect").val("");
             switch(direccion){
               case "abajo":
                     datos_vertical();

@@ -183,14 +183,9 @@ _.prototype.historyPannel = function() {
         div.innerHTML = "<div contenteditable='true'>" + Object.keys(data[0])[j] + "</div>";
 
         if (Object.keys(data[0])[j] != delim) {
-
-    //        var colorinpt = document.createElement("input");
-      //          colorinpt.setAttribute("type","color");
             if(j>0) {
                 clinpt(div).input(this.colores_grupos[(j-1)%this.colores_grupos.length]["color"]);
             }
-//                colorinpt.value = this.colores_grupos[(j-1)%this.colores_grupos.length]["color"];
-  //          div.appendChild(colorinpt);
         }
 
 
