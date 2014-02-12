@@ -19,7 +19,7 @@ function _(id) {
             case "string":
                 this.id = id;
                 this.alreadySaved = false;
-                if(localStorage.memory)
+                if(typeof localStorage.memory != "undefined" && !(localStorage.memory === "undefined"))
                     _.memory = JSON.parse(localStorage.memory);
                 this.e = document.querySelectorAll(id);
                 break;
@@ -336,6 +336,7 @@ _.prototype = {
 
         if(_.memory.length > 1) {
             var a = _.memory[_.memory.length - 2]["local"];
+            if(typeof a != "undefined");
             localStorage.data = JSON.parse(a);
             _.memory.pop();
 
@@ -347,7 +348,9 @@ _.prototype = {
 
             if(tipo == "Tartas") localStorage.removeItem("grupos");
             if(_.memory[_.memory.length - 1]["current"] == "designer") {
+                if(typeof localStorage.data != "undefined")
                 var data = JSON.parse(localStorage.data);
+                else break;
                 switch (tipo) {
                     case "Tartas":
                         _("#graph").pie({data:data});
@@ -368,6 +371,7 @@ _.prototype = {
         return _.memory;
     },
     loadOutput: function(data) {
+        if(typeof data != "undefined")
         var lista = JSON.parse(data);
         var table = $("<table></table>");
         lista.forEach(function(i,j) {
