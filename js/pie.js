@@ -14,7 +14,8 @@ if (!localStorage.pie_mode) {
 function draw_action() {
     var grupos_list = [];
         _().each(document.querySelectorAll(".grupo_tag"),function(i,a){     // Fetch all the data inside each item
-            grupos_list.push({label:a[i].innerHTML,value:a[i].getAttribute("val")});
+            grupos_list.push({label:a[i].innerHTML,value:a[i].getAttribute("val"),
+                              color:$(a[i].nextSibling).find(".color_selector").attr("value")});
         });
         localStorage.grupos = JSON.stringify(grupos_list);
         var fuent = document.querySelectorAll("#fuente_input")[0].value;
@@ -80,8 +81,17 @@ function create_data_set(dest, d) {
             li.className = "sortable-group-list";
             if (pie_mode === "simple")
                 li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie '>" + a[j].label + "</span>";
-            else
+            else {
                 li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie'>" + a[j].label + "</span>";
+                if(a[j].color != "")
+                    clinpt(li).input(a[j].color);
+                else {
+                    clinpt(li).input(colores[j%colores.length].hex);
+                    a[j].color = colores[j%colores.length].hex;
+                }
+
+                console.log(colores,j);
+            }
             var ul2 = document.createElement("UL");
 
             $(".sortable-group-list > ul").sortable({
@@ -138,8 +148,10 @@ function create_data_set(dest, d) {
         li.className = "sortable-group-list";
         if(pie_mode == "simple")
            li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie' val='0'>Grupo1</span>";
-        else
+        else {
             li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie' val='0'>Grupo1</span>";
+        }
+
         var ul2 = document.createElement("UL");
         _().each( d,function (i, a) {
             if (d[i]["color"]) {
@@ -295,8 +307,14 @@ _.prototype.draw = function (data, radio, text) {
     
     
     _().each(data,function (i) {
-        if (localStorage.data && JSON.parse(localStorage.data)[i]["color"])
+        if (localStorage.data && JSON.parse(localStorage.data)[i]["color"] && text){
             var color = new Color(JSON.parse(localStorage.data)[i]["color"]);
+        }
+        else if (!text && pie_mode=="complex" && localStorage.grupos){
+            var c = JSON.parse(localStorage.grupos)[i]["color"];
+            if ( c === "" ) var color=colores[i];
+            else var color=new Color(c);
+        }
         else {
             if(i>=colores.length){
                 var color = colores[(i%colores.length)+2];
@@ -311,6 +329,7 @@ _.prototype.draw = function (data, radio, text) {
     for ( var i = 0; i < data.length; i++) {
         this.drawPieSegment(this.ctx, i,porciones,radio);
     }
+
     if (text) {
         for ( var i = 0; i < data.length; i++) {
             this.writePieText(this.ctx, i,porciones,radio);
@@ -340,8 +359,9 @@ _.prototype.drawPie = function (canvas, data) {
                 }
             });
             g[i].value = Math.round(total*100)/100;
-            if(total > 0)
-                fragmentos.push({value: total, label: grupos[i].label});
+            if(total > 0) {
+                fragmentos.push({value: total, label: grupos[i].label, color: grupos[i].color});
+            }
             total = 0;
         });
         this.draw(fragmentos,180,false);
