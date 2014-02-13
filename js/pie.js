@@ -380,7 +380,7 @@ _.prototype.drawPieSegment = function (context, i, porciones, r) {
     var endingAngle = startingAngle + arcSize;
     var hex = "black";
     try {
-        hex = porciones[i]["color"].hex;
+        hex = porciones[i%porciones.length]["color"].hex;
     } catch (e) {
         console.log("Error accediendo al color "+i);
     }
@@ -410,7 +410,7 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
     var centery = Math.floor(context.canvas.height/2);
     radius = r+20;
     var tc;
-    if(porciones[i]["color"].lab.l < 65)tc = "#FFF";
+    if(porciones[i%porciones.length]["color"].lab.l < 65)tc = "#FFF";
     else tc = "#333";
     var startingAngle = (this.sumTo(porciones,i));
     var arcSize = porciones[i]["porcentaje"]-0.35;
