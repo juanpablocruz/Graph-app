@@ -21,8 +21,15 @@
             console.log(err);
             switch(err.message) {
                 case "Unexpected token u":
+                case "Cannot read property 'color' of undefined":
                     $("#error").css("display","block");
-                    break;
+
+                    $(document).on("click","#error",function() {
+                        localStorage.clear();
+                        $(this).css("display","none");
+                        location.reload();
+                    });
+                    break
                 default:
                     //location.reload();
             }
@@ -98,10 +105,6 @@
         }
 
         function dragevents(){
-            $(document).on("click","#error",function() {
-                localStorage.clear();
-                $(this).css("display","none");
-            });
             $("#attr-grupos>ul>li").droppable({
                 addClasses : false,
                 accept: ".data-list-li",

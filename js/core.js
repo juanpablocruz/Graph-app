@@ -569,8 +569,7 @@ _.prototype = {
                     try {
                         if(isNaN($(el).text())) throw error[2];
                         a[j][$(e).text()] = Math.round($(el).text()*100)/100;
-                    } catch(e) {
-                        console.log("eee");
+                    } catch(err) {
                         a[j][$(e).text()] = $(el).text();
                     }
                 });
