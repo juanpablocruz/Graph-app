@@ -179,17 +179,18 @@ _.prototype.addBarTools = function(data){
     for (var j=0; j < orden.length; j++) {
         var li1 = document.createElement("li");
         var div = document.createElement("DIV");
-        if (barras_mode == "cols" || j > 0) div.className = "data-list-element-holder";
-            div.innerHTML = "<div contenteditable='true'>"+orden[j]+"</div>";
-        if(j>0) {
-            clinpt(div).input(this.colores_grupos[j-1]["color"]);
-        }
 
         if (barras_mode == "cols" || j > 0) {
+            div.className = "data-list-element-holder";
+            div.innerHTML = "<div contenteditable='true'>"+orden[j]+"</div>";
+            var indice = (barras_mode == "cols") ? j:j-1;
+            console.log(indice,this.colores_grupos);
+            clinpt(div).input(this.colores_grupos[indice]["color"]);
             $(li1).append("<div class='remove-list-item'></div>");
             li1.className = "data-list-li-holder";
         }
         else {
+            div.innerHTML = "<div contenteditable='true'>"+orden[j]+"</div>";
             $(li1).append("<div></div>");
             li1.className = "data-list-li-year";
         }
@@ -438,7 +439,7 @@ _.prototype.draw_bars_func = function(d){
 
     _().each(datos, function(i) {
 
-        if(i>0) {
+        if(i>0 || barras_mode == "cols") {
         if(datos[i].children[1].children.length > 1){
             var tmp = {
                 grupo: datos[i].children[1].children[0].innerHTML,
