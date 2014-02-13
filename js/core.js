@@ -1,5 +1,3 @@
-"use strict";
-
 var modules = [];    // Lista de modulos disponibles
 var direccion = "";  // Variable global para albergar la dirección de lectura de datos
 var error = ["", "1: JSON.parse ha recibido una variable indefinida ","2: Se esperaba un número, se encontró texto",
@@ -51,22 +49,22 @@ var Memory = {
 
         }
     },
-}
+};
 
 function _(id) {
-        if (window === this) {
-            return new _(id);
-        }
-        switch (typeof id) {
-            case "string":
-                this.id = id;
-                Memory.init(["data","output","current"]);
-                this.alreadySaved = false;
-                this.e = document.querySelectorAll(id);
-                break;
-        }
-        return this;
+    if (window === this) {
+        return new _(id);
     }
+    switch (typeof id) {
+        case "string":
+            this.id = id;
+            Memory.init(["data","output","current"]);
+            this.alreadySaved = false;
+            this.e = document.querySelectorAll(id);
+            break;
+    }
+    return this;
+}
 
 
 Array.prototype.minVal = function(){
