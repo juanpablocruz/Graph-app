@@ -332,12 +332,12 @@ _.prototype.drawHistoricBars = function (posicion) {
         if(Object.keys(data[0])[j] != delim){
             linea_set = [];
             a = -x;
+            var value = "";
             if(pie_mode != "simple") linea_set.push({x:0,y:0});
             for ( var i=0; i < data.length; i++ ) {
-                //var value = ((((data[i][Object.keys(data[0])[j]]-min) * h)/amplitud));
                 try {
                     if(isNaN(data[i][Object.keys(data[0])[j]])) throw "2";
-                    var value =  ((data[i][Object.keys(data[0])[j]]-this.origen)/this.step.label)*this.step.val;
+                    value =  ((data[i][Object.keys(data[0])[j]]-this.origen)/this.step.label)*this.step.val;
                     linea_set.push({x:a + x, y: -( value)});
                 } catch(e) {
                     console.log(e)
