@@ -18,7 +18,14 @@
         var data, tipo;
         var rABS = typeof FileReader !== "undefined" && typeof FileReader.prototype !== "undefined" && typeof FileReader.prototype.readAsBinaryString !== "undefined";
         window.onerror = function(msg, url, ln) {
-            console.log(msg,typeof msg, url, ln);
+            console.log(msg);
+            switch(msg) {
+                case "Uncaught SyntaxError: Unexpected token u":
+                    $("#error").css("display","block");
+                    break;
+                default:
+                    location.reload();
+            }
         };
         function xlsxworker(data, cb) {
             var worker = new Worker('js/xlsxworker.min.js');
@@ -91,10 +98,10 @@
         }
 
         function dragevents(){
-            /*$(".data-list-li").draggable({
-                addClasses : false,
-                revert: true,
-            });*/
+            $(document).on("click","#error",function() {
+                localStorage.clear();
+                $(this).css("display","none");
+            });
             $("#attr-grupos>ul>li").droppable({
                 addClasses : false,
                 accept: ".data-list-li",
@@ -304,7 +311,10 @@
                 $(".icon-reorganizar").toggleClass("remove-list-item");
                 $(".data-list-li-holder ").toggleClass("data-list-li");
                 $(".data-list-element-holder").toggleClass("data-list-element");
-
+                if($(".data-list-element-holder").hasClass("data-list-element"))
+                    $(".data-list-element-holder").children().first().attr("contenteditable","false");
+                else
+                    $(".data-list-element-holder").children().first().attr("contenteditable","true");
             });
             $("#groups-ul").sortable({
                 items: ".data-list-li-holder",
@@ -456,6 +466,7 @@ function undo() {
         </section>
     </main>
     </div>
+        <div id="error">!</div>
     </div>
     <script src="js/color_input.js"></script>
     <script src="js/color.js"></script>
