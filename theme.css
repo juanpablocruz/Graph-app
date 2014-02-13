@@ -382,7 +382,7 @@ input:focus{                    border-bottom: 3px solid #5893e3; outline:none;}
 
 #attr-grupos{   flex:1;}
 #pie-segments{  flex:1;}
-.complex_pie{   display:block;}
+.complex_pie{   display:inline-block; margin-right: 1em;}
 .simple_pie{    display:none;}
 .icono{         display:inline-block;font-size:1.5em;margin-right:1em;}
 
