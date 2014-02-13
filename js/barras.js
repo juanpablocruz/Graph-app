@@ -184,7 +184,6 @@ _.prototype.addBarTools = function(data){
             div.className = "data-list-element-holder";
             div.innerHTML = "<div contenteditable='true'>"+orden[j]+"</div>";
             var indice = (barras_mode == "cols") ? j:j-1;
-            console.log(indice,this.colores_grupos);
             clinpt(div).input(this.colores_grupos[indice]["color"]);
             $(li1).append("<div class='remove-list-item'></div>");
             li1.className = "data-list-li-holder";

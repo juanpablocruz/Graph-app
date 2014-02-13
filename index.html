@@ -17,10 +17,10 @@
     <script>
         var data, tipo;
         var rABS = typeof FileReader !== "undefined" && typeof FileReader.prototype !== "undefined" && typeof FileReader.prototype.readAsBinaryString !== "undefined";
-        window.onerror = function(msg, url, ln) {
-            console.log(msg);
-            switch(msg) {
-                case "Uncaught SyntaxError: Unexpected token u":
+        window.onerror = function(msg, url, ln, cl, err) {
+            console.log(err);
+            switch(err.message) {
+                case "Unexpected token u":
                     $("#error").css("display","block");
                     break;
                 default:
