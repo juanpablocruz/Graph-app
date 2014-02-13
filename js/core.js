@@ -326,7 +326,7 @@ _.prototype = {
         _.layer.add(fuente);
 
         var unidades = new Kinetic.Text({
-            x: ctx.canvas.width - (ctx.measureText("Unidad: "+unidad_value).width*1.5),
+            x: ctx.canvas.width - (ctx.measureText("Unidad: "+unidad_value).width + 15),
             y: 1 ,
             text: "Unidad: "+unidad_value,
             fontSize: 13,
