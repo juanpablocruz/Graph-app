@@ -1,5 +1,6 @@
-var barras = 1;
 "use strict";
+
+var barras = 1;
 var fuente_value = "Cores";
 if (localStorage.fuente) {
     fuente_value = localStorage.fuente;
@@ -34,7 +35,7 @@ _.prototype.bars = function (obj) {
         this.colores_grupos = [];
         var start_point = 0, color_point = 0;
 
-
+        //FIXME: [x]Mostrar etiquetas reinicia los cambios no guardados
 
         for (var j = 0; j < Object.keys(this.data[0]).length; j++) {
             var grupo = Object.keys(this.data[0])[j];
@@ -51,7 +52,6 @@ _.prototype.bars = function (obj) {
         } else {
             this.colores_grupos = JSON.parse(localStorage.coloresBarras);
         }
-
         this.addBarTools(obj.data);
         this.drawBar(this.canvas,obj.data);
         $("#groups-ul").sortable({
@@ -117,10 +117,9 @@ _.prototype.addBarTools = function(data){
         checkbox_labels.checked = true;
     }
 
-    $(checkbox_labels).on("change",function() {
-            _("#graph").bars({data:data});
-    });
-        var check_div = document.createElement("DIV");
+    $(checkbox_labels).on("change",{destc:this.destacado},this.draw_bars_func);
+    //checkbox_labels.addEventListener("change",this.draw_bars_func,this.destacado);
+    var check_div = document.createElement("DIV");
     }
 
 
@@ -161,10 +160,9 @@ _.prototype.addBarTools = function(data){
         dest_div.appendChild(destaca_labels);
         dest_div.appendChild(destaca_title);
         div_options.appendChild(dest_div);
+        $(destaca_labels).on("change",{destc:this.destacado},this.draw_bars_func);
+        //destaca_labels.addEventListener("change",this.draw_bars_func,this.destacado);
 
-        $(destaca_labels).on("change",function() {
-            _("#graph").bars({data:data});
-        });
         check_div.appendChild(checkbox_labels);
         check_div.appendChild(checkbox_title);
         div_options.appendChild(check_div);
@@ -181,16 +179,11 @@ _.prototype.addBarTools = function(data){
     for (var j=0; j < orden.length; j++) {
         var li1 = document.createElement("li");
         var div = document.createElement("DIV");
-        if (barras_mode == "cols" || j > 0) div.className = "data-list-element-holder icon-reorganizar";
+        if (barras_mode == "cols" || j > 0) div.className = "data-list-element-holder";
             div.innerHTML = "<div contenteditable='true'>"+orden[j]+"</div>";
-        if (barras_mode == "cols") {
-            var colorinpt = document.createElement("input");
-                colorinpt.setAttribute("type","color");
-                colorinpt.value = this.colores_grupos[j]["color"];
-                div.appendChild(colorinpt);
-
+        if(j>0) {
+            clinpt(div).input(this.colores_grupos[j-1]["color"]);
         }
-
 
         if (barras_mode == "cols" || j > 0) {
             $(li1).append("<div class='remove-list-item'></div>");
@@ -220,76 +213,7 @@ _.prototype.addBarTools = function(data){
         inpt_dib.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
         inpt_dib.className = "draw_button";
 
-    var destc = this.destacado;
-        inpt_dib.addEventListener("click",function(){
-            /* FETCH LABELS */
-            var valores = [];
-            var order = [];
-            var datos = document.querySelectorAll("#groups-ul>li");
-
-            for (var i = 0; i < datos[0].children[2].children.length; i++) valores.push(new Object);
-
-            _().each(datos,function(i){
-                var title = datos[i].children[1].children[0].innerHTML;
-
-                order.push(title);
-
-                _().each( datos[i].children[2].children,function(j,a){
-
-                    var value = a[j].children[0].innerHTML;
-                    valores[j][title] =parseInt( value);
-                });
-
-                _().each( datos[i].children[2].children,function(j,a){
-                    var value = a[j].children[0].innerHTML;
-                    valores[j][title] = value;
-                });
-            });
-
-            /* FETCH VALUES */
-            var fuent = document.querySelectorAll("#fuente_input")[0].value;
-            localStorage.fuente = fuent;
-            fuente_value = fuent;
-            var unit = document.querySelectorAll("#unidades_input")[0].value;
-            localStorage.unidad = unit;
-            unidad_value = unit;
-            var tmp_colors = [];
-
-
-            var colores = (destc == "true") ? colores_alpha : colores_barras;
-
-
-            _().each(datos, function(i) {
-
-                if(i>0 || barras_mode == "cols") {
-                //order.push(datos[i].children[1].children[0].innerHTML);
-                if(datos[i].children[1].children.length > 1){
-                    var tmp = {
-                        grupo: datos[i].children[1].children[0].innerHTML,
-                        color: datos[i].children[1].children[1].value
-                    };
-                }
-                else{
-                    var tmp = {
-                        grupo: datos[i].children[1].children[0].innerHTML,
-                        color: colores[i-1].hex,
-                    };
-                }
-                tmp_colors.push(tmp);
-                }
-                var title = order[i];
-                _().each( datos[i].children[2].children,function(j, a) {
-                    var value = parseFloat(a[j].children[0].innerHTML);
-                    valores[j][title] = value;
-                });
-
-            });
-            localStorage.coloresBarras = JSON.stringify(tmp_colors);
-            localStorage.data = JSON.stringify(valores);
-            localStorage.ordenacion = JSON.stringify(order);
-            _().saveStep();
-            _("#graph").bars({data:valores});
-        });
+        $(inpt_dib).on("click",{destc:this.destacado},this.draw_bars_func);
 
     var inpt_activar = document.createElement("BUTTON");
         inpt_activar.innerHTML = "Reordenar<div class='icon-rearrange icono'></div> ";
@@ -312,6 +236,7 @@ _.prototype.drawBar = function(canvas,data){
 
     this.createBarsVerticalAxis(maximo,6,"barras");
     this.createBarsHorizontalAxis(maximo);
+    clinpt().loadFunctions();
 }
 _.prototype.getMaxColumn = function (){
     var max = 0;
@@ -319,6 +244,7 @@ _.prototype.getMaxColumn = function (){
         for(var i=0;i< this.data.length;i++){
         var tmp = 0;
         for (var j = 1; j < Object.keys(this.data[0]).length; j++) {
+            if(!isNaN(this.data[i][Object.keys(this.data[i])[j]]))
             tmp += this.data[i][Object.keys(this.data[i])[j]];
         }
         if (tmp > max) {
@@ -330,6 +256,7 @@ _.prototype.getMaxColumn = function (){
         for(var i=0;i< Object.keys(this.data[0]).length;i++){
             var tmp = 0;
             for (var j = 0; j < this.data.length; j++) {
+                if(!isNaN(this.data[j][Object.keys(this.data[j])[i]]))
                 tmp += this.data[j][Object.keys(this.data[j])[i]];
             }
             if (tmp > max) {
@@ -346,26 +273,28 @@ _.prototype.getMaxColumn = function (){
 }
 
 _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden, color_rest, offset){
-    if(i>0 || barras_mode == "cols") {
-    if(barras_mode != "cols") {
-        color_rest = -1;
-        var value = (((this.data[j][orden[i]] * 100) / this.ceil)*h/100);
-    } else {
-        color_rest = 0;
-        var value = (((this.data[j][orden[i]] * 100) / maximo)*h/100);
-    }
-    var barra = new Kinetic.Shape({
-        drawFunc: function(ctx){
-            ctx.beginPath();
-            ctx.rect(30 + ((wBar + m) * (j+offset)), height, wBar, -value);
-            ctx.closePath();
-            ctx.fillStrokeShape(this);
-        },
-        stroke: "rgba(0,0,0,0)",
-        strokeWidth: 0,
-        fill: this.colores_grupos[i-color_rest]["color"],
-    });
-    layer.add(barra);
+    if((i>0 || barras_mode == "cols")&&!isNaN(this.data[j][orden[i]])) {
+        if(barras_mode != "cols") {
+            color_rest = 1;
+            var value = (((this.data[j][orden[i]] * 100) / this.ceil)*h/100);
+        } else {
+            color_rest = 0;
+
+            var value = (((this.data[j][orden[i]] * 100) / maximo)*h/100);
+        }
+        var colores = (this.destacado == "true") ? colores_alpha[(i-color_rest)%colores_alpha.length].hex : this.colores_grupos[(i-color_rest)%this.colores_grupos.length]["color"];
+        var barra = new Kinetic.Shape({
+            drawFunc: function(ctx){
+                ctx.beginPath();
+                ctx.rect(30 + ((wBar + m) * (j+offset)), height, wBar, -value);
+                ctx.closePath();
+                ctx.fillStrokeShape(this);
+            },
+            stroke: "rgba(0,0,0,0)",
+            strokeWidth: 0,
+            fill: colores,
+        });
+        layer.add(barra);
     }
 }
 
@@ -403,19 +332,22 @@ _.prototype.createBarsHorizontalAxis = function(max){
         for (var i = start; i< orden.length; i++){
             switch (barras_mode) {
                 case "compuesto":
+
                     this.drawBarra(maximo,
                            i, j, h,
                            this.ctx.canvas.height-20-height_accumulated,
                            layer2,wBar,m,orden,color_rest,0);
                     if(labels.indexOf(i)==-1 && this.printLabels === "true" ){
-                        if((this.destacado == "true" && i > 0) || this.destacado != "true") {
+                        if((this.destacado == "true" && i > 1) || (this.destacado != "true" && i > 0)) {
+
                         labels.push(i);
                         var texto = orden[i];
                         var lwidth =  this.ctx.measureText(texto).width;
-                        this.drawLabel(50,this.ctx.canvas.height-40-height_accumulated,lwidth,20,
+                        this.drawLabel(50,this.ctx.canvas.height-40-height_accumulated,20,
                                        "#333","white",texto,1,layer2);
                         }
                     }
+                    if(!isNaN(this.data[j][orden[i]]))
                     height_accumulated+=(((this.data[j][orden[i]] * 100) / (this.ceil))*h/100);
                     break;
                 case "cols":
@@ -466,3 +398,71 @@ _.prototype.createBarsHorizontalAxis = function(max){
 
 }
 
+_.prototype.draw_bars_func = function(d){
+    /* FETCH LABELS */
+    var destc = d.data["destc"];
+    var valores = [];
+    var order = [];
+    var datos = document.querySelectorAll("#groups-ul>li");
+
+    for (var i = 0; i < datos[0].children[2].children.length; i++) valores.push(new Object);
+
+    _().each(datos,function(i){
+        var title = datos[i].children[1].children[0].innerHTML;
+
+        order.push(title);
+
+        _().each( datos[i].children[2].children,function(j,a){
+
+            var value = a[j].children[0].innerHTML;
+            valores[j][title] =parseInt( value);
+        });
+
+        _().each( datos[i].children[2].children,function(j,a){
+            var value = a[j].children[0].innerHTML;
+            valores[j][title] = value;
+        });
+    });
+
+    /* FETCH VALUES */
+    var fuent = document.querySelectorAll("#fuente_input")[0].value;
+    localStorage.fuente = fuent;
+    fuente_value = fuent;
+    var unit = document.querySelectorAll("#unidades_input")[0].value;
+    localStorage.unidad = unit;
+    unidad_value = unit;
+    var tmp_colors = [];
+
+    var colores = (destc == "true") ? colores_alpha : colores_barras;
+
+
+    _().each(datos, function(i) {
+
+        if(i>0) {
+        if(datos[i].children[1].children.length > 1){
+            var tmp = {
+                grupo: datos[i].children[1].children[0].innerHTML,
+                color: datos[i].children[1].children[1].children[0].value
+            };
+        }
+        else{
+            var tmp = {
+                grupo: datos[i].children[1].children[0].innerHTML,
+                color: colores[(i)%(colores.length)].hex,
+            };
+        }
+        tmp_colors.push(tmp);
+        }
+        var title = order[i];
+        _().each( datos[i].children[2].children,function(j, a) {
+            var value = parseFloat(a[j].children[0].innerHTML);
+            valores[j][title] = value;
+        });
+
+    });
+    localStorage.coloresBarras = JSON.stringify(tmp_colors);
+    localStorage.data = JSON.stringify(valores);
+    localStorage.ordenacion = JSON.stringify(order);
+    _().saveStep();
+    _("#graph").bars({data:valores});
+}

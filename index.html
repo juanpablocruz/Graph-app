@@ -5,10 +5,11 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Graph API</title>
-    <link rel="stylesheet" href="iconos.css">
+    <link rel="stylesheet" href="iconos.min.css">
     <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="color_input.css">
     <link rel="icon" type="image/png" href="icono.ico"/>
-    <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.7.4.min.js"></script>
+    <script src="js/kinetic-v4.7.4.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" ></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
 
@@ -16,9 +17,13 @@
     <script>
         var data, tipo;
         var rABS = typeof FileReader !== "undefined" && typeof FileReader.prototype !== "undefined" && typeof FileReader.prototype.readAsBinaryString !== "undefined";
-
+        window.onerror = function(msg, url, ln) {
+            console.log(msg,typeof msg, url, ln);
+            //if(typeof msg === "string")
+                //location.reload();
+        };
         function xlsxworker(data, cb) {
-            var worker = new Worker('js/xlsxworker.js');
+            var worker = new Worker('js/xlsxworker.min.js');
 
             worker.onmessage = function(e) {
                 switch(e.data.t) {
@@ -54,8 +59,7 @@
             data = JSON.stringify(output, 2, 2);
             localStorage.data=data;
             tipo = localStorage.chartType;
-    
-            //cargar(output,tipo);
+            $(".loader").toggle();
             _("#graph").display_table(wb.Sheets);
             
         }
@@ -134,6 +138,7 @@
                             if(typeof data[0] != "undefined" &&
                                Object.keys(data[0]).indexOf("label")>-1){
                                 _("#graph").pie({data:data});
+                                $("#save").attr("download","Grafico-tarta");
                                 changeStep($(".current_step"),"next");
                             }
                             else{
@@ -143,10 +148,12 @@
                             break;
                         case "Barras":
                             _("#graph").bars({data:data});
+                            $("#save").attr("download","Grafico-barras");
                             changeStep($(".current_step"),"next");
                             break;
                         case "Históricos":
                             _("#graph").history({data:data});
+                            $("#save").attr("download","Grafico-historico");
                             changeStep($(".current_step"),"next");
                             break;
                     }
@@ -212,6 +219,7 @@
                 $("nav .active").removeClass("active");
                 $(this).addClass("active");
                 localStorage.clear();
+                $("#controls").html("");
                 localStorage.chartType = tx;
                 $(".step-info ul").html("");
                 var iStep = $("<li><div class='halfCircleRight'>"+tx+"</div></li>");
@@ -266,7 +274,6 @@
             $(document).on("click","#bars_cols",function(){
                 $(".complex_pie").addClass("simple_pie");
                 $(".active").removeClass("active");
-                console.log("click");
                 $(this).addClass("active");
                 barras_mode = "cols";
                 if(localStorage.coloresBarras)
@@ -295,6 +302,8 @@
 
             $(document).on("click",".rearrange-button",function(){
                 var ul = $(".data-list-li-holder").parent();
+                $(".remove-list-item").toggleClass("icon-reorganizar");
+                $(".icon-reorganizar").toggleClass("remove-list-item");
                 $(".data-list-li-holder ").toggleClass("data-list-li");
                 $(".data-list-element-holder").toggleClass("data-list-element");
 
@@ -324,10 +333,12 @@
             });
             $(document).on("mouseup",".data-list-li",function(){
                 $(this).removeClass("mousedown");
+
             });
 
             $(document).on("click",".remove-list-item",function() {
                 $(this).parent().remove();
+                 _().saveStep();
             });
             $(document).on("click",".label-separador-check",function(){
                 if(!$('#separador-check').is(":checked")){
@@ -337,7 +348,31 @@
                     localStorage.separado = false;
                 }
             });
-
+            $(document).on("change","#fileSelect",function(e){
+                var files = ($(this)[0].files);
+                var i,f;
+                for (i = 0, f = files[i]; i != files.length; ++i) {
+                var reader = new FileReader();
+                var name = f.name;
+                reader.onload = function(e) {
+                    var data = e.target.result;
+                    if(typeof Worker !== 'undefined') {
+                        xlsxworker(data, process_wb);
+                    } else {
+                        var wb;
+                        if(rABS) {
+                            wb = XLSX.read(data, {type: 'binary'});
+                        } else {
+                        var arr = String.fromCharCode.apply(null, new Uint8Array(data));
+                            wb = XLSX.read(btoa(arr), {type: 'base64'});
+                        }
+                        process_wb(wb);
+                    }
+                };
+                if(rABS) reader.readAsBinaryString(f);
+                else reader.readAsArrayBuffer(f);
+            }
+            })
             dragevents();
             function restaurarColores(){
                 colores = standard.slice(0);
@@ -346,7 +381,6 @@
         });
 function undo() {
     _().undoAction();
-    console.log("undo");
 }
 
     </script>
@@ -374,10 +408,31 @@ function undo() {
 <div id="loadData" class="step">
     <section id="tools">
         <div class="step-info"><ul></ul></div>
-        <div id="drop"><div class="icon-box-add icono"></div>Arrastra un archivo XLS</div>
+        <div id="drop"><div class="icon-box-add icono"></div>Arrastra un archivo XLSX<br>
+        <input id="fileSelect" type="file" value="Seleccionar archivo" accept=".xlsx">
+        </div>
         <div class="back">Volver</div>
-        <div id="output"></div>
+        <div id="data-choose">
+            <ul class="loader">
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+            <div id="output"></div>
+            <div id="controls"></div>
+        </div>
+
     </section>
+    <div id="aside_help">
+        <h2>Cómo seleccionar los datos</h2><br>
+        <p>Arrastra el archivo al area marcada o selecciónalo.</p><br>
+        <h4>Elección de datos</h4>
+        <ul>
+            <li>En el caso de gráficos de tartas, los datos esperados son de la forma Etiqueta - Valor, con un único valor y sin campos de etiqueta extra. Por tanto si los datos se muestran en una fila las etiquetas y debajo los valores, se elegira una configuración vertical, en cambio, si salen a dos columnas se eligirá horizontal</li>
+            <li>En el caso de gráfico de barras e históricos, se esperan datos de la siguiente manera:<br>En el caso de una disposición horizontal: Columna de etiquetas que se mostrarán en el eje horizontal, y tantas columnas como campos se quieran visualizar con la etiqueta del campo en la primera fila y los valores en las siguientes filas.<p>En caso de una disposición vertical, será lo mismo cambiando filas por columnas.</p></li>
+        </ul>
+
+    </div>
 </div>
     <div id="designer" class="step">
         <aside>
@@ -404,13 +459,15 @@ function undo() {
     </main>
     </div>
     </div>
+    <script src="js/color_input.js"></script>
      <script src="js/color.js"></script>
     <script src="js/core.js"></script>
     <script src="js/excel.js"></script>
-    <script src="js/jszip.js"></script>
-    <script src="js/xlsx.js"></script>
+    <script src="js/jszip.min.js"></script>
+    <script src="js/xlsx.min.js"></script>
     <script src="js/pie.js"></script>
     <script src="js/barras.js"></script>
     <script src="js/historic.js"></script>
+
 </body>
 </html>

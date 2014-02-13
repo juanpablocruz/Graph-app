@@ -13,39 +13,46 @@ if (!localStorage.pie_mode) {
 
 function draw_action() {
     var grupos_list = [];
-            _().each(document.querySelectorAll(".grupo_tag"),function(i,a){     // Fetch all the data inside each item
-                grupos_list.push({label:a[i].innerHTML,value:a[i].getAttribute("val")});
-            });
-            localStorage.grupos = JSON.stringify(grupos_list, 2, 2);
-            var fuent = document.querySelectorAll("#fuente_input")[0].value;
-            localStorage.fuente = fuent;
-            fuente_value = fuent;
-            var data = [];
-            _().each(document.querySelectorAll("#attr-grupos ul>li .data-list-element"),function(i,a){
-               values = [];
-               var grupo = $(a[i]).parent().parent().parent().find("span").text();
+        _().each(document.querySelectorAll(".grupo_tag"),function(i,a){     // Fetch all the data inside each item
+            grupos_list.push({label:a[i].innerHTML,value:a[i].getAttribute("val")});
+        });
+        localStorage.grupos = JSON.stringify(grupos_list);
+        var fuent = document.querySelectorAll("#fuente_input")[0].value;
+        localStorage.fuente = fuent;
+        fuente_value = fuent;
+        var data = [];
+        _().each(document.querySelectorAll("#attr-grupos ul>li .data-list-element"),function(i,a){
+           values = [];
+           var grupo = $(a[i]).parent().parent().parent().find("span").text();
             _().each(a[i].childNodes,function(j,c){
-                values.push(c[j].value);
-              });
-                if(values[2])color = values[2];
-                else if(i>=colores.length){
-                    colores[(i%colores.length)+2] = new Color(values[2]);
-                    color = colores[(i%colores.length)+2].hex;
+                if(j == 2) {
+                    values.push(c[j]);
                 }
-                else{
-                    colores[i] = new Color(values[2]);
-                    color = colores[i].hex
-                }
-              data[i] = {
-                    label:values[0],
-                    value: parseFloat(values[1]),
-                    group: grupo,
-                    color: color,
-                };
-           });
-            localStorage.data = JSON.stringify(data, 2, 2);
-             dragevents();
-            _("#graph").pie({data:data});
+                else values.push(c[j].value);
+            });
+            if(values[2])color = $(values[2]).find(".color_selector").attr("value");
+            else if(i>=colores.length){
+                colores[(i%colores.length)+2] = new Color($(values[2]).find(".color_selector").attr("value"));
+                if(typeof colores[(i%colores.length)+2] === "undefined")colores[(i%colores.length)+2]  = new Color("#000000");
+                color = colores[(i%colores.length)+2].hex;
+            }
+            else{
+                colores[i] = new Color($(values[2]).find(".color_selector").attr("value"));
+                if(typeof colores[i] === "undefined")colores[i]  = new Color("#000000");
+                color = colores[i].hex
+            }
+
+          data[i] = {
+                label:values[0],
+                value: parseFloat(values[1]),
+                group: grupo,
+                color: color,
+            };
+       });
+        localStorage.data = JSON.stringify(data);
+         dragevents();
+        _("#graph").pie({data:data});
+
 }
 
 function create_data_set(dest, d) {
@@ -65,7 +72,8 @@ function create_data_set(dest, d) {
     grupos.className = "data-options";
     var ul = document.createElement("UL");
     grupos.appendChild(create);
-    if (localStorage.grupos) {
+    //TODO: Añadir borrar grupo
+    if (localStorage.grupos && localStorage.grupos != "[]" && pie_mode === "complex") {
         var g = JSON.parse(localStorage.grupos);
         _().each(g, function (j, a) {                                   //create each group
             var li = document.createElement("LI");
@@ -84,14 +92,18 @@ function create_data_set(dest, d) {
             }).disableSelection();
 
             _().each(d, function (i) {                                  // Create each portion in its own group
+
                 if (d[i].group !== "" && d[i].group === a[j].label) {
                     if(d[i]["color"])color = d[i]["color"];
                 else if(i>=colores.length){
+                    if(typeof colores[(i%colores.length)+2] === "undefined")colores[(i%colores.length)+2] = new Color("#000000");
                     var color = colores[(i%colores.length)+2].hex;
                 }
                 else{
+                    if(typeof colores[i] === "undefined")colores[i] = new Color("#000000");
                     var color=colores[i].hex;
                 }
+
                 var li2 = document.createElement("LI");
                 li2.className = "data-list-li";
                 var cont = document.createElement("DIV");
@@ -104,16 +116,12 @@ function create_data_set(dest, d) {
                 inpt_labl.type = "text";
                 inpt_labl.value = d[i]["label"];
                 inpt_labl.className = "label";
-                var inpt_color = document.createElement("INPUT");
-                inpt_color.type = "color";
-                inpt_color.value = color;
-                inpt_color.className = "color";
                 var close_div = document.createElement("DIV");
                 close_div.className = "remove-list-item";
 
                 cont.appendChild(inpt_labl);
                 cont.appendChild(inpt_val);
-                cont.appendChild(inpt_color);
+                clinpt(cont).input(color);
                 li2.appendChild(cont);
                 li2.appendChild(close_div);
                 ul2.appendChild(li2);
@@ -133,7 +141,6 @@ function create_data_set(dest, d) {
         else
             li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie' val='0'>Grupo1</span>";
         var ul2 = document.createElement("UL");
-
         _().each( d,function (i, a) {
             if (d[i]["color"]) {
                 color = d[i]["color"];
@@ -156,17 +163,14 @@ function create_data_set(dest, d) {
             inpt_labl.type = "text";
             inpt_labl.value = d[i]["label"];
             inpt_labl.className = "label";
-            var inpt_color = document.createElement("INPUT");
-            inpt_color.type = "color";
-            inpt_color.value = color;
-            inpt_color.className = "color";
+
             var close_div = document.createElement("DIV");
             close_div.className = "remove-list-item";
 
             cont.appendChild(inpt_labl);
             cont.appendChild(inpt_val);
-            cont.appendChild(inpt_color);
 
+            clinpt(cont).input(color);
             li2.appendChild(cont);
             li2.appendChild(close_div);
             ul2.appendChild(li2);
@@ -186,7 +190,7 @@ function create_data_set(dest, d) {
                 },
                 connectWith: ".sortable-group-list > ul",
                 dropOnEmpty: true
-            }).disableSelection();
+            });
 
         });
         li.appendChild(ul2);
@@ -226,6 +230,7 @@ _.prototype.pie= function (obj) {
         this.canvas = document.querySelectorAll(id+" canvas")[0];
         this.addPieTools();
         this.drawPie(this.canvas,obj.data); 
+        clinpt().loadFunctions();
     });
     
     
@@ -334,7 +339,7 @@ _.prototype.drawPie = function (canvas, data) {
                     total += data[d].value;
                 }
             });
-            g[i].value = total;
+            g[i].value = Math.round(total*100)/100;
             if(total > 0)
                 fragmentos.push({value: total, label: grupos[i].label});
             total = 0;
@@ -411,6 +416,8 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
     var width = context.measureText( this.grupos[i]["label"]).width;
 
     context.fillStyle = "#FFF";
+    var texto = (Math.round(10*((porciones[i]["porcentaje"]*180/Math.PI)*100/360))/10);
+    if(texto > 100) texto = 100;
 
     var group = new Kinetic.Group({
         draggable:true,
@@ -435,15 +442,17 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
         name: "label",
     }
                                  );
+    var x = centerx + (dx*radius);
+    if ( x > centerx*2) x = (centerx*2)-50;
     var box = new Kinetic.Rect({
-            x: centerx + (dx*radius),
+            x: x,
             y: centery+ (dy*radius),
             width: width+22,
             height: 20,
             fill: "#000",
         });
     var text_label = new Kinetic.Text({
-            x: centerx + (dx*radius) +5,
+            x: x +5,
             y: centery+ (dy*radius) ,
             text: this.grupos[i]["label"],
             fontSize: 16,
@@ -454,11 +463,11 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
         });
 
     var text_data = new Kinetic.Text({
-            x: centerx + (dx*radius),
+            x: x,
             y: centery+ (dy*radius) + 24,
             fontSize: 12,
             fontFamily: "'Mic 32 New Rounded',mic32newrd",
-            text: this.grupos[i]["value"]+"%",
+            text: texto+"%",
             fill: tc,
             padding: 1,
         });

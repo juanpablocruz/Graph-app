@@ -15,6 +15,7 @@ if(localStorage.leyenda)
     delim = localStorage.leyenda;
 else
     delim = "Leyenda";
+
 _.prototype.history= function (obj) {
     var id = this.id;
     _().canvas( this.e[0], function() {
@@ -35,17 +36,23 @@ _.prototype.history= function (obj) {
                 this.separador_title = "Separador";
             }
             if (localStorage.separacionList){
-                this.listaSeparador = JSON.parse(localStorage.separacionList);
+                try {
+                    this.listaSeparador = JSON.parse(localStorage.separacionList);
+                } catch(e) {
+                    console.log(e);
+                    this.listaSeparador = [100,100,100,100,100,400,400,400,400,400,400,400];
+                }
             } else {
                 this.listaSeparador = [100,100,100,100,100,400,400,400,400,400,400,400];
             }
         }
         this.colores_grupos = [];
+
         for (var j = 1; j < Object.keys(this.data[0]).length; j++) {
             var grupo = Object.keys(this.data[0])[j];
             var tmp = {
                 grupo: grupo,
-                color: colores_barras[j-1].hex};
+                color: colores_barras[(j-1)%colores_barras.length].hex};
             this.colores_grupos.push(tmp);
         }
 
@@ -53,7 +60,12 @@ _.prototype.history= function (obj) {
         if (!localStorage.coloresBarras) {
             localStorage.coloresBarras = JSON.stringify(this.colores_grupos);
         } else {
-            this.colores_grupos = JSON.parse(localStorage.coloresBarras);
+            try {
+                if(typeof localStorage.coloresBarras === "undefined" || localStorage.coloresBarras === "undefined") throw error[1];
+                this.colores_grupos = JSON.parse(localStorage.coloresBarras);
+            } catch(e) {
+                console.log(e);
+            }
         }
 
 
@@ -67,7 +79,8 @@ _.prototype.getMaxValue = function () {
     for (var i = 0; i < this.data.length; i++ ) {
         for (var j = 1; j < Object.keys(this.data[0]).length; j++) {
             if ( this.data[i][Object.keys(this.data[i])[j]] > max ) {
-             max = this.data[i][Object.keys(this.data[i])[j]];
+                if(!isNaN(this.data[i][Object.keys(this.data[i])[j]]))
+                    max = this.data[i][Object.keys(this.data[i])[j]];
             }
         }
     }
@@ -140,12 +153,9 @@ _.prototype.historyPannel = function() {
     div_fila2.appendChild(separador_label);
     div_fila2.appendChild(separador_title);
 
-    $(checkbox_labels).on("change",function() {
-            _("#graph").history({data:data});
-    });
-    $(separador_label).on("change",function() {
-            _("#graph").history({data:data});
-    });
+    $(checkbox_labels).on("change",{separado: this.separado, lista: ""},this.draw_history_func);
+    $(separador_label).on("change",{separado: this.separado, lista: ""},this.draw_history_func);
+
     div_options.appendChild(div_fila1);
     div_options.appendChild(div_fila2);
     if (this.separado === "true") {
@@ -185,11 +195,14 @@ _.prototype.historyPannel = function() {
         div.innerHTML = "<div contenteditable='true'>" + Object.keys(data[0])[j] + "</div>";
 
         if (Object.keys(data[0])[j] != delim) {
-
-            var colorinpt = document.createElement("input");
-                colorinpt.setAttribute("type","color");
-                colorinpt.value = this.colores_grupos[j-1]["color"];
-            div.appendChild(colorinpt);
+            if(j>0) {
+                try {
+                    clinpt(div).input(this.colores_grupos[(j-1)%this.colores_grupos.length]["color"]);
+                } catch(e) {
+                    console.log(e);
+                    clinpt(div).input("black");
+                }
+            }
         }
 
 
@@ -219,89 +232,7 @@ _.prototype.historyPannel = function() {
     var inpt_dib = document.createElement("BUTTON");
         inpt_dib.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
         inpt_dib.className = "draw_button";
-        inpt_dib.addEventListener("click",function(){
-            var fuent = document.querySelectorAll("#fuente_input")[0].value;
-            localStorage.fuente = fuent;
-            fuente_value = fuent;
-
-            var unit = document.querySelectorAll("#unidades_input")[0].value;
-            localStorage.unidad = unit;
-            unidad_value = unit;
-
-            if(separado== "true"){
-                var sepDiv = document.querySelectorAll(".data-list-separador");
-                _().each(sepDiv,function(i,a) {
-                    lista[i] = a[i].innerHTML;
-                });
-                localStorage.separacionList = JSON.stringify(lista);
-                var titulo_separador= document.querySelector("#separador_text").innerHTML;
-                localStorage.separador_title = titulo_separador;
-            }
-
-            var valores = [];
-            var order = [];
-            var datos = document.querySelectorAll("#groups-ul>li");
-
-            for (var i = 0; i < datos[0].children[2].children.length; i++) valores.push(new Object);
-
-
-            _().each(datos,function(i){
-                var title = datos[i].children[1].children[0].innerHTML;
-
-                order.push(title);
-
-                _().each( datos[i].children[2].children,function(j,a){
-
-                    var value = a[j].children[0].innerHTML;
-                    valores[j][title] =parseFloat( value);
-                });
-
-                _().each( datos[i].children[2].children,function(j,a){
-                    var value = a[j].children[0].innerHTML;
-                    valores[j][title] = value;
-                });
-            });
-
-
-            var tmp_colors = [];
-
-
-            var colores = colores_barras;
-            //var datos = document.querySelectorAll(".data-list-li-holder");
-            _().each(datos, function(i) {
-                if(i>0) {
-                //order.push(datos[i].children[0].children[0].innerHTML);
-                if(datos[i].children[0].children.length > 1){
-                    var tmp = {
-                        grupo: datos[i].children[1].children[0].innerHTML,
-                        color: datos[i].children[1].children[1].value
-                    };
-                }
-                else{
-                    var tmp = {
-                        grupo: datos[i].children[1].children[0].innerHTML,
-                        color: colores[i-1].hex,
-                    };
-                }
-                tmp_colors.push(tmp);
-
-                var title = order[i];
-                _().each( datos[i].children[2].children,function(j, a) {
-                    var value = parseFloat(a[j].children[0].innerHTML);
-                    valores[j][title] = value;
-                });
-                _().each( datos[i].children[2].children,function(j, a) {
-                    var value = parseFloat(a[j].children[0].innerHTML);
-                    valores[j][title] = value;
-                });
-                }
-            });
-
-            localStorage.coloresBarras = JSON.stringify(tmp_colors);
-            localStorage.data = JSON.stringify(valores);
-            _().saveStep();
-            _("#graph").history({data:valores});
-        });
+        $(inpt_dib).on("click",{separado: this.separado, lista:lista},this.draw_history_func);
 
     var inpt_activar = document.createElement("BUTTON");
         inpt_activar.innerHTML = "Reordenar<div class='icon-rearrange icono'></div> ";
@@ -377,6 +308,7 @@ _.prototype.drawHist = function (canvas, data) {
     var maximo = this.getMaxValue();
     var posicion = this.createBarsVerticalAxis(maximo,5,"historico");
     this.drawHistoricBars(posicion);
+    clinpt().loadFunctions();
 }
 
 
@@ -396,14 +328,20 @@ _.prototype.drawHistoricBars = function (posicion) {
     this.step = this.getStep(maximo, 5);
 
     for ( var j = 0; j < Object.keys(data[0]).length; j++ ) {
+
         if(Object.keys(data[0])[j] != delim){
             linea_set = [];
             a = -x;
             if(pie_mode != "simple") linea_set.push({x:0,y:0});
             for ( var i=0; i < data.length; i++ ) {
                 //var value = ((((data[i][Object.keys(data[0])[j]]-min) * h)/amplitud));
-                var value =  ((data[i][Object.keys(data[0])[j]]-this.origen)/this.step.label)*this.step.val;
-                linea_set.push({x:a + x, y: -( value)});
+                try {
+                    if(isNaN(data[i][Object.keys(data[0])[j]])) throw "2";
+                    var value =  ((data[i][Object.keys(data[0])[j]]-this.origen)/this.step.label)*this.step.val;
+                    linea_set.push({x:a + x, y: -( value)});
+                } catch(e) {
+                    console.log(e)
+                }
                 a += x;
             }
             if(pie_mode != "simple") linea_set.push({ x:a, y:0 });
@@ -418,7 +356,7 @@ _.prototype.drawHistoricBars = function (posicion) {
         if(pie_mode == "simple") {
             var line = new Kinetic.Line({
                 points: puntos[i],
-                stroke: colores[i]["color"],
+                stroke: colores[i%colores.length]["color"],
                 strokeWidth: 3,
                 lineCap: 'round',
                 lineJoin: 'round',
@@ -428,7 +366,7 @@ _.prototype.drawHistoricBars = function (posicion) {
         } else {
             var line = new Kinetic.Polygon({
                 points: puntos[i],
-                fill: colores[i]["color"],
+                fill: colores[i%colores.length]["color"],
                 stroke: "white",
                 strokeWidth: 1,
             });
@@ -440,8 +378,8 @@ _.prototype.drawHistoricBars = function (posicion) {
             var width = this.ctx.measureText(text).width;
             this.drawLabel(30 + puntos[i][1]["x"],
                            h + puntos[i][1]["y"] - 5,
-                           width  + width/9, 24,
-                           colores_barras[i].hex,
+                           24,
+                           colores_barras[i%colores_barras.length].hex,
                            "#FFFFFF",
                            text, 4, layer_hist);
         }
@@ -467,7 +405,9 @@ _.prototype.drawHistoricBars = function (posicion) {
     for ( var j = 0; j < data.length; j++ ) {
         var x_var;
         if(pie_mode == "simple") { x_var = 35 + puntos[0][j]["x"];}
-        else {x_var = 35 + puntos[0][j+1]["x"] - (this.ctx.measureText(this.data[j][delim]).width/2);}
+        else {
+
+            x_var = 35 + puntos[0][j+1]["x"] - (this.ctx.measureText(this.data[j][delim]).width/2);}
 
         var year = new Kinetic.Text({
             x: x_var,
@@ -486,7 +426,7 @@ _.prototype.drawHistoricBars = function (posicion) {
                 var width = this.ctx.measureText(text).width;
                 this.drawLabel(60 ,
                            h-((((this.listaSeparador[0]-min) * h)/amplitud)) - 10,
-                           width + width/9, 24,
+                           24,
                            "black",
                            "#FFFFFF",
                            text, 4, layer_hist);
@@ -499,4 +439,87 @@ _.prototype.drawHistoricBars = function (posicion) {
 
     this.stage.add(layer_hist);
     layer_hist.draw();
+}
+_.prototype.draw_history_func = function(d){
+    var separado = d.data["separado"];
+    var lista = d.data["lista"];
+    var fuent = document.querySelectorAll("#fuente_input")[0].value;
+    localStorage.fuente = fuent;
+    fuente_value = fuent;
+
+    var unit = document.querySelectorAll("#unidades_input")[0].value;
+    localStorage.unidad = unit;
+    unidad_value = unit;
+
+    if(separado== "true"){
+        var sepDiv = document.querySelectorAll(".data-list-separador");
+        _().each(sepDiv,function(i,a) {
+            lista[i] = a[i].innerHTML;
+        });
+        localStorage.separacionList = JSON.stringify(lista);
+        var titulo_separador= document.querySelector("#separador_text").innerHTML;
+        localStorage.separador_title = titulo_separador;
+    }
+
+    var valores = [];
+    var order = [];
+    var datos = document.querySelectorAll("#groups-ul>li");
+
+    for (var i = 0; i < datos[0].children[2].children.length; i++) valores.push(new Object);
+
+
+    _().each(datos,function(i){
+        var title = datos[i].children[1].children[0].innerHTML;
+
+        order.push(title);
+
+        _().each( datos[i].children[2].children,function(j,a){
+
+            var value = a[j].children[0].innerHTML;
+            valores[j][title] =parseFloat( value);
+        });
+
+        _().each( datos[i].children[2].children,function(j,a){
+            var value = a[j].children[0].innerHTML;
+            valores[j][title] = value;
+        });
+    });
+
+
+    var tmp_colors = [];
+
+
+    var colores = colores_barras;
+    _().each(datos, function(i) {
+        if(i>0) {
+        if(datos[i].children[1].children.length > 1){
+            var tmp = {
+                grupo: datos[i].children[1].children[0].innerHTML,
+                color: datos[i].children[1].children[1].children[0].value
+            };
+        }
+        else{
+            var tmp = {
+                grupo: datos[i].children[1].children[0].innerHTML,
+                color: colores[(i-1)%colores.length].hex,
+            };
+        }
+        tmp_colors.push(tmp);
+
+        var title = order[i];
+        _().each( datos[i].children[2].children,function(j, a) {
+            var value = parseFloat(a[j].children[0].innerHTML);
+            valores[j][title] = value;
+        });
+        _().each( datos[i].children[2].children,function(j, a) {
+            var value = parseFloat(a[j].children[0].innerHTML);
+            valores[j][title] = value;
+        });
+        }
+    });
+
+    localStorage.coloresBarras = JSON.stringify(tmp_colors);
+    localStorage.data = JSON.stringify(valores);
+    _().saveStep();
+    _("#graph").history({data:valores});
 }
