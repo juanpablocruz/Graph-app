@@ -118,7 +118,7 @@ _.prototype.addBarTools = function(data){
     }
 
     $(checkbox_labels).on("change",{destc:this.destacado},this.draw_bars_func);
-    //checkbox_labels.addEventListener("change",this.draw_bars_func,this.destacado);
+
     var check_div = document.createElement("DIV");
     }
 
@@ -356,7 +356,8 @@ _.prototype.createBarsHorizontalAxis = function(max){
                            this.ctx.canvas.height-20,
                            layer2,wBar,m,orden,color_rest,i);
                     if(!drawn){
-                    leyenda = Object.keys(this.data[0])[i];
+                    //leyenda = Object.keys(this.data[0])[i];
+                    leyenda = orden[i];
                     var year = new Kinetic.Text({
                         x: 40+(j+i)*(wBar+m) - (this.ctx.measureText(leyenda).width/2),
                         y: this.ctx.canvas.height-20,
