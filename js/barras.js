@@ -458,7 +458,6 @@ _.prototype.draw_bars_func = function(d){
             var value = parseFloat(a[j].children[0].innerHTML);
             valores[j][title] = value;
         });
-
     });
     localStorage.coloresBarras = JSON.stringify(tmp_colors);
     localStorage.data = JSON.stringify(valores);

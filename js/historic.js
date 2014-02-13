@@ -38,12 +38,13 @@ _.prototype.history= function (obj) {
             if (localStorage.separacionList){
                 try {
                     this.listaSeparador = JSON.parse(localStorage.separacionList);
+                    if ( typeof this.listaSeparador === "string") this.listaSeparador = [0,0];
                 } catch(e) {
                     console.log(e);
-                    this.listaSeparador = [100,100,100,100,100,400,400,400,400,400,400,400];
+                    this.listaSeparador = [0,0];
                 }
             } else {
-                this.listaSeparador = [100,100,100,100,100,400,400,400,400,400,400,400];
+                this.listaSeparador = [0,0];
             }
         }
         this.colores_grupos = [];
@@ -171,7 +172,7 @@ _.prototype.historyPannel = function() {
             var separador_num = document.createElement("li");
             separador_num.className = "data-list-separador";
             separador_num.setAttribute("contenteditable","true");
-            if(!localStorage.separacionList)
+            if(!localStorage.separacionList || this.listaSeparador[i] === undefined)
                 separador_num.innerHTML = 0;
             else
                 separador_num.innerHTML = this.listaSeparador[i];
@@ -456,6 +457,12 @@ _.prototype.draw_history_func = function(d){
         _().each(sepDiv,function(i,a) {
             lista[i] = a[i].innerHTML;
         });
+        try {
+            if(typeof lista === "string") throw "Lista Vacia";
+            var tmp = lista[0];
+        } catch (e) {
+            lista = "";
+        }
         localStorage.separacionList = JSON.stringify(lista);
         var titulo_separador= document.querySelector("#separador_text").innerHTML;
         localStorage.separador_title = titulo_separador;
