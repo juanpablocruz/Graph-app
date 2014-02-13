@@ -378,6 +378,12 @@ _.prototype.drawPieSegment = function (context, i, porciones, r) {
     var startingAngle = (this.sumTo(porciones, i));
     var arcSize = porciones[i]["porcentaje"];
     var endingAngle = startingAngle + arcSize;
+    var hex = "black";
+    try {
+        hex = porciones[i]["color"].hex;
+    } catch (e) {
+        console.log("Error accediendo al color "+i);
+    }
     if(typeof porciones[i]["color"] === "undefined")localStorage.clear();
     var arc = new Kinetic.Shape({
         drawFunc: function(context){
@@ -391,7 +397,7 @@ _.prototype.drawPieSegment = function (context, i, porciones, r) {
             context.closePath();
             context.fillStrokeShape(this);
         },
-        fill: porciones[i]["color"].hex,
+        fill: hex,
         stroke: "#FFF",
         strokeWidth: 1,
     });
