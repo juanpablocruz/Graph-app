@@ -15,6 +15,7 @@ if(localStorage.leyenda)
     delim = localStorage.leyenda;
 else
     delim = "Leyenda";
+
 _.prototype.history= function (obj) {
     var id = this.id;
     _().canvas( this.e[0], function() {
@@ -35,7 +36,12 @@ _.prototype.history= function (obj) {
                 this.separador_title = "Separador";
             }
             if (localStorage.separacionList){
-                this.listaSeparador = JSON.parse(localStorage.separacionList);
+                try {
+                    this.listaSeparador = JSON.parse(localStorage.separacionList);
+                } catch(e) {
+                    console.log(e);
+                    this.listaSeparador = [100,100,100,100,100,400,400,400,400,400,400,400];
+                }
             } else {
                 this.listaSeparador = [100,100,100,100,100,400,400,400,400,400,400,400];
             }
@@ -54,7 +60,12 @@ _.prototype.history= function (obj) {
         if (!localStorage.coloresBarras) {
             localStorage.coloresBarras = JSON.stringify(this.colores_grupos);
         } else {
-            this.colores_grupos = JSON.parse(localStorage.coloresBarras);
+            try {
+                if(typeof localStorage.coloresBarras === "undefined" || localStorage.coloresBarras === "undefined") throw error[1];
+                this.colores_grupos = JSON.parse(localStorage.coloresBarras);
+            } catch(e) {
+                console.log(e);
+            }
         }
 
 
@@ -185,7 +196,12 @@ _.prototype.historyPannel = function() {
 
         if (Object.keys(data[0])[j] != delim) {
             if(j>0) {
-                clinpt(div).input(this.colores_grupos[(j-1)%this.colores_grupos.length]["color"]);
+                try {
+                    clinpt(div).input(this.colores_grupos[(j-1)%this.colores_grupos.length]["color"]);
+                } catch(e) {
+                    console.log(e);
+                    clinpt(div).input("black");
+                }
             }
         }
 
@@ -312,15 +328,20 @@ _.prototype.drawHistoricBars = function (posicion) {
     this.step = this.getStep(maximo, 5);
 
     for ( var j = 0; j < Object.keys(data[0]).length; j++ ) {
+
         if(Object.keys(data[0])[j] != delim){
             linea_set = [];
             a = -x;
             if(pie_mode != "simple") linea_set.push({x:0,y:0});
             for ( var i=0; i < data.length; i++ ) {
                 //var value = ((((data[i][Object.keys(data[0])[j]]-min) * h)/amplitud));
-                if(!isNaN(data[i][Object.keys(data[0])[j]]))
-                var value =  ((data[i][Object.keys(data[0])[j]]-this.origen)/this.step.label)*this.step.val;
-                linea_set.push({x:a + x, y: -( value)});
+                try {
+                    if(isNaN(data[i][Object.keys(data[0])[j]])) throw "2";
+                    var value =  ((data[i][Object.keys(data[0])[j]]-this.origen)/this.step.label)*this.step.val;
+                    linea_set.push({x:a + x, y: -( value)});
+                } catch(e) {
+                    console.log(e)
+                }
                 a += x;
             }
             if(pie_mode != "simple") linea_set.push({ x:a, y:0 });

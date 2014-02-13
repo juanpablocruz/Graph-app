@@ -123,17 +123,20 @@ function draw(a) {
             }
             localStorage.data = JSON.stringify(data);
             _().saveStep();
+            $(".loader").toggle();
             _("#graph").pie({data:data});
             break;
         case "Barras":
             localStorage.data = JSON.stringify(a);
             _().saveStep();
+            $(".loader").toggle();
             _("#graph").bars({data:a});
             break;
         case "Históricos":
             localStorage.data = JSON.stringify(a);
             localStorage.leyenda = Object.keys(a[0])[0];
             _().saveStep();
+            $(".loader").toggle();
             _("#graph").history({data:a});
             break;
     }

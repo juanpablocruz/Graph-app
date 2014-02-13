@@ -1,31 +1,73 @@
-var modules = [];
-var direccion = "";
-var standard =[new Color("#d21f17"),new Color("#d3cdc7"),
+"use strict";
+
+var modules = [];    // Lista de modulos disponibles
+var direccion = "";  // Variable global para albergar la dirección de lectura de datos
+var error = ["", "1: JSON.parse ha recibido una variable indefinida ","2: Se esperaba un número, se encontró texto",
+             "3: Se esperaba un número, se encontró Infinity", "4: División por cero"];
+var colores =[new Color("#d21f17"),new Color("#d3cdc7"),   // Lista de colores
                new Color("#ad9172"),new Color("#4293af"),
                new Color("#cea072"),new Color("#82afc1"),
                new Color("#867c73"),new Color("#e2ddd8"),
               ];
 
-var colores = standard.slice(0);
-var colores_barras = [standard[3],standard[0],standard[2],standard[4],standard[1]];
-var colores_alpha = ["rgba(0,0,0,0)",standard[3],standard[2],standard[4],standard[1],standard[0]];
-"use strict";
+var colores_barras = [colores[3],colores[0],colores[2],colores[4],colores[1]];  // Lista de colores para las barras
+var colores_alpha = ["rgba(0,0,0,0)",colores[3],colores[2],colores[4],colores[1],colores[0]];   // Lista de colores para las barras con destacado, el primer elemento se hace invisible
+
+var Memory = {
+    memoria:[],
+    config:{max:3},
+    fields: [],
+    log: function(t) {
+        console.log(t);
+    },
+    each: function(a,f) { for(var i = 0; i < a.length; i++) {f(a[i],i,a,this);}  },
+    dump: function() { this.each(this.memoria,function(i,a,c,d) {d.log(i);}); },
+    save: function(d) {
+        if ( this.memoria.length == this.config["max"] )this.memoria.shift();
+        this.memoria.push(d);
+        this.each(this.fields, function (e,i,a,m) {
+            localStorage[e] = m.memoria[m.memoria.length - 1][e];
+        });
+        sessionStorage["memory"] = JSON.stringify(this.memoria);
+    },
+    load: function() {
+        if(this.memoria.length > 1) {
+            this.memoria.pop();
+            return this.memoria[this.memoria.length-1];
+        }
+        else {
+            return -1;
+        }
+    },
+    parse: function(d) {
+        try {return JSON.parse(d);}
+        catch(e) {return d;}
+    },
+    init: function(f) {
+        this.fields = f;
+        try {
+            if(sessionStorage.memory) this.memoria = this.parse(sessionStorage.memory);
+        } catch(e) {
+
+        }
+    },
+}
 
 function _(id) {
         if (window === this) {
-            return new _(id);   
+            return new _(id);
         }
         switch (typeof id) {
             case "string":
                 this.id = id;
+                Memory.init(["data","output","current"]);
                 this.alreadySaved = false;
-                if(typeof localStorage.memory != "undefined" && !(localStorage.memory === "undefined"))
-                    _.memory = JSON.parse(localStorage.memory);
                 this.e = document.querySelectorAll(id);
                 break;
-        }  
+        }
         return this;
     }
+
 
 Array.prototype.minVal = function(){
     var min = Infinity;
@@ -35,24 +77,25 @@ Array.prototype.minVal = function(){
     return min;
 }
 
-_.memory = new Array();
-
 _.prototype = {
     get: function(selector) {
           return this;
     },
 
-    each: function(array, callback){
+    each: function(array, callback){                                        // función de iteración
         for(var i = 0; i<array.length;i++)callback.call(this,i,array);
     },
 
     checkModules: function() {
+        /*
+        *  Si existe el modulo, crea el elemento de menu
+        *  y añadelo a la lista de módulos
+        */
         if (typeof(tartas) != "undefined") {
             var d = document.createDocumentFragment();
             var li=document.createElement("LI");
             li.setAttribute("tipo","Tartas");
             li.innerHTML = "Tartas<div class='icon-pie icono'></div> ";
-            
             d.appendChild(li);
             modules.push(d);
         }
@@ -155,6 +198,7 @@ _.prototype = {
         var rectY = this.stage.getHeight() / 2 -25;
                
         var stage = this.stage;       
+
         document.getElementById('save').addEventListener('click', function(e) {
             var c = document.getElementsByTagName("canvas")[0];
             c.style.background="#fff";  
@@ -199,36 +243,62 @@ _.prototype = {
         }
         return imageData;
     },
+
     getInterval: function (max,bars) {
-        var v = Math.round(max/bars)
-        var len = v.toString().length;
-        var orden = Math.pow(10, len - 1);
-        var next = parseInt( v / orden );
-        return parseInt(next * orden);
+        try {
+            if(isNaN(max) || isNaN(bars)) throw error[2];
+            var v = Math.round(max/bars)
+            var len = v.toString().length;
+            var orden = Math.pow(10, len - 1);
+            var next = parseInt( v / orden );
+            return parseInt(next * orden);
+        } catch (e) {
+            console.log("Error"+e);
+            return -1;
+        }
     },
 
     getMinValue: function () {
         var min = Infinity;
         for (var i = 0;i < this.data.length; i++) {
             for (var j = 1; j < Object.keys(this.data[0]).length; j++) {
-                if (this.data[i][Object.keys(this.data[i])[j]] < min) {
-                    min = this.data[i][Object.keys(this.data[i])[j]];
+                try {
+                    if (isNaN(this.data[i][Object.keys(this.data[i])[j]])) throw error[2];
+                    if (this.data[i][Object.keys(this.data[i])[j]] < min) {
+                        min = this.data[i][Object.keys(this.data[i])[j]];
+                    }
+                } catch(e) {
+                    console.log("Error"+e);
                 }
             }
         }
-        var len = min.toString().length;
-        var orden = Math.pow(10, len - 1);
-        var next = parseInt( min / orden );
-        var min = next * orden;
-        return parseInt(min);
+        try {
+            if (min === Infinity) throw error[3];
+            var len = min.toString().length;
+            var orden = Math.pow(10, len - 1);
+            var next = parseInt( min / orden );
+            var min = next * orden;
+            return parseInt(min);
+        } catch(e) {
+            console.log("Error"+e);
+        }
+
+        return -1
     },
+
     getStep : function(max,bars) {
         var step = this.getInterval(max,bars);
         var h = this.ctx.canvas.height-20;
-        var posy = Math.floor((h)/(max/step));
-        return {val: posy,
-                label: step};
+        var posy = 0;
+        try {
+            if(step == 0) throw error[4];
+            posy = Math.floor((h)/(max/step));
+        } catch (e) {
+            console.log("Error"+e);
+        }
+        return {val: posy, label: step};
     },
+
     createBarsVerticalAxis: function(max_val,bars,type){
         if(barras_mode != "cols") {
             var max = max_val;
@@ -254,7 +324,9 @@ _.prototype = {
             fill: "#7B796C",
             rotationDeg: -90,
         });
+
         _.layer.add(fuente);
+
         var unidades = new Kinetic.Text({
             x: ctx.canvas.width - (ctx.measureText("Unidad: "+unidad_value).width*1.5),
             y: 1 ,
@@ -265,10 +337,18 @@ _.prototype = {
             fill: "#7B796C",
 
         });
+
         _.layer.add(unidades);
 
         var h = ctx.canvas.height-20;
-        var posy = Math.floor((h)/(max/step));
+        var posy = 0;
+        try {
+            if(step == 0 || max/step == 0) throw error[4];
+            posy = Math.floor((h)/(max/step));
+        } catch(e) {
+            console.log("Error"+e);
+        }
+
         var contador = 0;
         ctx.font = "12px 'Mic 32 New Rounded',mic32newrd,arial";
         //ctx.fillStyle = "#333";
@@ -315,10 +395,7 @@ _.prototype = {
 
         return posicion;
     },
-
     saveStep: function() {
-        if(_.memory.length >= 3)_.memory.shift();
-
         var output = new Array();
         $("#output tr").each(function(i,j) {
             output.push(new Array());
@@ -326,31 +403,24 @@ _.prototype = {
                 output[i].push($(l).text());
             });
         });
-
-        _.memory.push({local: JSON.stringify(localStorage.data),
+        Memory.save({data:localStorage.data,
                        output: JSON.stringify(output),
                        current: $(".current_step").attr("id")});
-        localStorage.memory = JSON.stringify(_.memory);
     },
+
     undoAction: function() {
+        var tipo = "";
+        var data = [];
+        var m = Memory.load();
+        if (m!=-1) {
+        $(".current_step").removeClass("current_step");
+        $("#"+m["current"]).addClass("current_step");
 
-        if(_.memory.length > 1) {
-            var a = _.memory[_.memory.length - 2]["local"];
-            if(typeof a != "undefined");
-            localStorage.data = JSON.parse(a);
-            _.memory.pop();
-
-            localStorage.memory =_.memory[_.memory.length - 1]["memory"]
-            this.loadOutput(_.memory[_.memory.length - 1]["output"]);
-            $(".current_step").removeClass("current_step");
-            $("#"+_.memory[_.memory.length - 1]["current"]).addClass("current_step");
-            var tipo = localStorage.chartType;
-
-            if(tipo == "Tartas") localStorage.removeItem("grupos");
-            if(_.memory[_.memory.length - 1]["current"] == "designer") {
-                if(typeof localStorage.data != "undefined")
-                var data = JSON.parse(localStorage.data);
-                else break;
+        switch(m["current"]) {
+            case "designer":
+                data = Memory.parse(m["data"]);
+                console.log(data);
+                localStorage.data = JSON.stringify(data);
                 switch (tipo) {
                     case "Tartas":
                         _("#graph").pie({data:data});
@@ -362,28 +432,29 @@ _.prototype = {
                         _("#graph").history({data:data});
                         break;
                 }
-            }
-
-            columna = false;fila=false;
+                break;
+            case "loadData":
+                    this.loadOutput(m["output"]);
+                    $(".loader").toggle();
+                break;
+        }
+        columna = false;fila=false;
         }
     },
-    checkMemory: function() {
-        return _.memory;
-    },
+
+
     loadOutput: function(data) {
-        if(typeof data != "undefined")
-        var lista = JSON.parse(data);
+        var lista = Memory.parse(data);
+
         var table = $("<table></table>");
         lista.forEach(function(i,j) {
             var tr = $("<tr></tr>");
             lista[j].forEach(function(k,l) {
                 $(tr).append("<td class='dato drop'><div>"+lista[j][l]+"</div></td>");
             });
-        $(table).append(tr);
+            $(table).append(tr);
         });
 
-        //FUTURE: Botón de confirmar datos
-        //FIXME: [x]En las tartas al menos el deshacer devuelve a la elección de datos y luego no coge los valores
         $("#output").html(table);
 
         var body = $("<div id='body-output'></div>");
@@ -399,6 +470,7 @@ _.prototype = {
         $(body).append(tooltip);
 
         $("#controls").html(body);
+        $(".loader").toggle();
 
         $("#undo").on("click",function() {
             _().undoAction();
@@ -470,6 +542,7 @@ _.prototype = {
             $("#dir_tooltip").hide();
         });
         function datos_vertical() {
+            $(".loader").toggle();
             var a = new Array();
             for ( var i = 0; i < ($("tr").first().find("td").length)-1; i++) {
                 a.push({});
@@ -488,16 +561,19 @@ _.prototype = {
         };
 
         function datos_lado() {
+            $(".loader").toggle();
             var a = new Array();
             for ( var i = 0; i < ($("tr").length)-1; i++) {
                 a.push({});
             }
             $("tr:nth-child(1)").find("td").each(function(i,e) {
                 $("tr:gt(0)").find("td:nth-child("+(i+1)+")").each(function(j,el) {
-                    if(!isNaN($(el).text())) {
-                    a[j][$(e).text()] = Math.round($(el).text()*100)/100;
-                } else {
-                    a[j][$(e).text()] = $(el).text();
+                    try {
+                        if(isNaN($(el).text())) throw error[2];
+                        a[j][$(e).text()] = Math.round($(el).text()*100)/100;
+                    } catch(e) {
+                        console.log("eee");
+                        a[j][$(e).text()] = $(el).text();
                     }
                 });
             });

@@ -1,5 +1,6 @@
-var barras = 1;
 "use strict";
+
+var barras = 1;
 var fuente_value = "Cores";
 if (localStorage.fuente) {
     fuente_value = localStorage.fuente;

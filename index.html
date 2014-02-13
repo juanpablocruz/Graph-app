@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="theme.css">
     <link rel="stylesheet" href="color_input.css">
     <link rel="icon" type="image/png" href="icono.ico"/>
-    <script src="js/kinetic-v4.7.4.min.js"></script>
+    <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.7.4.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" ></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
 
@@ -19,8 +19,8 @@
         var rABS = typeof FileReader !== "undefined" && typeof FileReader.prototype !== "undefined" && typeof FileReader.prototype.readAsBinaryString !== "undefined";
         window.onerror = function(msg, url, ln) {
             console.log(msg,typeof msg, url, ln);
-            if(typeof msg === "string")
-                location.reload();
+            //if(typeof msg === "string")
+                //location.reload();
         };
         function xlsxworker(data, cb) {
             var worker = new Worker('js/xlsxworker.min.js');
@@ -59,7 +59,7 @@
             data = JSON.stringify(output, 2, 2);
             localStorage.data=data;
             tipo = localStorage.chartType;
-
+            $(".loader").toggle();
             _("#graph").display_table(wb.Sheets);
             
         }
@@ -413,6 +413,11 @@ function undo() {
         </div>
         <div class="back">Volver</div>
         <div id="data-choose">
+            <ul class="loader">
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
             <div id="output"></div>
             <div id="controls"></div>
         </div>
