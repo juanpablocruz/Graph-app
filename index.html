@@ -227,6 +227,7 @@
                 $("nav .active").removeClass("active");
                 $(this).addClass("active");
                 localStorage.clear();
+                sessionStorage.clear();
                 $("#controls").html("");
                 localStorage.chartType = tx;
                 $(".step-info ul").html("");

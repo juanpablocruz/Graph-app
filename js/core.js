@@ -418,6 +418,7 @@ _.prototype = {
             case "designer":
                 data = Memory.parse(m["data"]);
                 console.log(data);
+                tipo = localStorage.chartType;
                 localStorage.data = JSON.stringify(data);
                 switch (tipo) {
                     case "Tartas":
