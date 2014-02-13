@@ -489,7 +489,7 @@ _.prototype.writePieText = function (context, i, porciones, r) {
     radius = r+20;
 
     var tc;
-    if (porciones[i]["color"].lab.l < 65) tc = "#FFF";
+    if (porciones[i%porciones.length]["color"].lab.l < 65) tc = "#FFF";
     else tc = "#333";
     var startingAngle = (this.sumTo(porciones,i));
     var arcSize = porciones[i]["porcentaje"]-0.35;
