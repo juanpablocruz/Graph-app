@@ -58,7 +58,7 @@ function _(id) {
     switch (typeof id) {
         case "string":
             this.id = id;
-            Memory.init(["data","output","current"]);
+            Memory.init(["data","output","current","ordenacion","coloresBarras"]);
             this.alreadySaved = false;
             this.e = document.querySelectorAll(id);
             break;
@@ -395,15 +395,24 @@ _.prototype = {
     },
     saveStep: function() {
         var output = new Array();
+        var orden;
+        var coloresBarras;
         $("#output tr").each(function(i,j) {
             output.push(new Array());
             $(j).find("td").each(function(k,l) {
                 output[i].push($(l).text());
             });
         });
+        if(localStorage.ordenacion) orden = localStorage.ordenacion;
+        else orden = "";
+        if(localStorage.coloresBarras) coloresBarras = localStorage.coloresBarras;
+        else coloresBarras = "";
         Memory.save({data:localStorage.data,
-                       output: JSON.stringify(output),
-                       current: $(".current_step").attr("id")});
+                    output: JSON.stringify(output),
+                    current: $(".current_step").attr("id"),
+                    ordenacion: orden,
+                    coloresBarras:coloresBarras,
+                    });
     },
 
     undoAction: function() {
@@ -425,6 +434,8 @@ _.prototype = {
                         _("#graph").pie({data:data});
                         break;
                     case "Barras":
+                        if(m["ordenacion"] != "") localStorage.ordenacion = m["ordenacion"];
+                        if(m["coloresBarras"] != "") localStorage.coloresBarras = m["coloresBarras"];
                         _("#graph").bars({data:data});
                         break;
                     case "Históricos":

@@ -89,8 +89,6 @@ function create_data_set(dest, d) {
                     clinpt(li).input(colores[j%colores.length].hex);
                     a[j].color = colores[j%colores.length].hex;
                 }
-
-                console.log(colores,j);
             }
             var ul2 = document.createElement("UL");
 
