@@ -35,8 +35,6 @@ _.prototype.bars = function (obj) {
         this.colores_grupos = [];
         var start_point = 0, color_point = 0;
 
-        //FIXME: [x]Mostrar etiquetas reinicia los cambios no guardados
-
         for (var j = 0; j < Object.keys(this.data[0]).length; j++) {
             var grupo = Object.keys(this.data[0])[j];
             if( barras_mode == "compuesto")
@@ -286,7 +284,11 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
             color_rest = 0;
             var value = ((this.data[j][orden[i]] * 100 / total)*h/100);
         }
-        var colores = (this.destacado == "true") ? colores_alpha[(i-color_rest)%colores_alpha.length].hex : this.colores_grupos[(i-color_rest)%this.colores_grupos.length]["color"];
+
+        var colores = (this.destacado == "true") ?
+            colores_alpha[ (i - color_rest) % colores_alpha.length ].hex :
+            this.colores_grupos[(i - color_rest) % this.colores_grupos.length]["color"];
+
         var barra = new Kinetic.Shape({
             drawFunc: function(ctx){
                 ctx.beginPath();
@@ -332,19 +334,21 @@ _.prototype.createBarsHorizontalAxis = function(max){
     }
     var drawn = false;
     var total = this.suma(orden);
+
+    this.ctx.fontFamily = "Mic 32 New Rounded,mic32newrd,Helvetica,Arial";
+    this.ctx.fontSize = 12;
+
     for (var j=0; j<this.data.length; j++){
         var leyenda = "";
         for (var i = start; i< orden.length; i++){
             switch (barras_mode) {
                 case "compuesto":
-
                     this.drawBarra(maximo,
                            i, j, h,
                            this.ctx.canvas.height-20-height_accumulated,
                            layer2,wBar,m,orden,total,0);
                     if(labels.indexOf(i)==-1 && this.printLabels === "true" ){
                         if((this.destacado == "true" && i > 1) || (this.destacado != "true" && i > 0)) {
-
                         labels.push(i);
                         var texto = orden[i];
                         var lwidth =  this.ctx.measureText(texto).width;
@@ -352,8 +356,9 @@ _.prototype.createBarsHorizontalAxis = function(max){
                                        "#333","white",texto,1,layer2);
                         }
                     }
-                    if(!isNaN(this.data[j][orden[i]]))
-                    height_accumulated+=(((this.data[j][orden[i]] * 100) / (this.ceil))*h/100);
+                    if(!isNaN(this.data[j][orden[i]]) && i>0) {
+                        height_accumulated+=(((this.data[j][orden[i]] * 100) / (this.ceil))*h/100);
+                    }
                     break;
                 case "cols":
                     this.drawBarra(maximo,
@@ -361,10 +366,9 @@ _.prototype.createBarsHorizontalAxis = function(max){
                            this.ctx.canvas.height-20,
                            layer2,wBar,m,orden,total,i);
                     if(!drawn){
-                    //leyenda = Object.keys(this.data[0])[i];
                     leyenda = orden[i];
                     var year = new Kinetic.Text({
-                        x: 40+(j+i)*(wBar+m) - (this.ctx.measureText(leyenda).width/2),
+                        x: 45+(i)*((wBar)+m) - (this.ctx.measureText(leyenda).width/2),
                         y: this.ctx.canvas.height-20,
                         fontSize: 12,
                         fontFamily: "Mic 32 New Rounded,mic32newrd,Helvetica,Arial",
