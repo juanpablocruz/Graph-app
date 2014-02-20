@@ -429,7 +429,7 @@ _.prototype.draw_bars_func = function(d){
             valores[j][title] =parseInt( value);
         });
 
-        _().each( datos[i].children[2].children,function(j,a){
+        _().each( datos[i].children[2].children,function(j,a) {
             var value = a[j].children[0].innerHTML;
             valores[j][title] = value;
         });

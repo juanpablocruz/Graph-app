@@ -234,7 +234,6 @@ function create_data_set(dest, d) {
 
 _.prototype.pie= function (obj) {
     var id = this.id;
-
     _().canvas(this.e[0],function() {
         this.data_content = document.querySelectorAll("#graph-data")[0];
         this.canvas = document.querySelectorAll(id+" canvas")[0];

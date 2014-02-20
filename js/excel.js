@@ -101,7 +101,7 @@ function draw(a) {
     tipo = localStorage.chartType;
 
     var data = new Array();
-    changeStep($(".current_step"),"next");
+
 
     switch(tipo) {
         case "Tartas":
@@ -110,15 +110,23 @@ function draw(a) {
                     data.push({label: t[j], value: Math.round(a[i][t[j]] * 100) / 100});
                 });
             }
-            localStorage.data = JSON.stringify(data);
-            _().saveStep();
-            $(".loader").toggle();
-            _("#graph").pie({data:data});
+            if( data.length > 0 ) {
+                localStorage.data = JSON.stringify(data);
+                _().saveStep();
+                $(".loader").toggle();
+                changeStep($(".current_step"),"next");
+                _("#graph").pie({data:data});
+            } else {
+                alert("Error, no hay ningún dato que dibujar. Por favor, carga un archivo con el formato válido.");
+                localStorage.clear();
+                $(".loader").toggle();
+            }
             break;
         case "Barras":
             localStorage.data = JSON.stringify(a);
             _().saveStep();
             $(".loader").toggle();
+            changeStep($(".current_step"),"next");
             _("#graph").bars({data:a});
             break;
         case "Históricos":
@@ -126,6 +134,7 @@ function draw(a) {
             localStorage.leyenda = Object.keys(a[0])[0];
             _().saveStep();
             $(".loader").toggle();
+            changeStep($(".current_step"),"next");
             _("#graph").history({data:a});
             break;
     }
