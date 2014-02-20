@@ -279,7 +279,8 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
     if((i>0 || barras_mode == "cols")&&!isNaN(this.data[j][orden[i]])) {
         if(barras_mode != "cols") {
             color_rest = 1;
-            var value = (((this.data[j][orden[i]] * 100) / this.ceil)*h/100);
+            var value = Math.ceil(((this.data[j][orden[i]] * 100) / this.ceil)*h/100);
+            if (i>1)height-=5;
         } else {
             color_rest = 0;
             var value = ((this.data[j][orden[i]] * 100 / total)*h/100);
