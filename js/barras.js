@@ -466,7 +466,10 @@ _.prototype.draw_bars_func = function(d){
         }
         var title = order[i];
         _().each( datos[i].children[2].children,function(j, a) {
+            if(!isNaN(a[j].children[0].innerHTML)){
             var value = parseFloat(a[j].children[0].innerHTML);
+            }
+            else {var value = a[j].children[0].innerHTML;}
             valores[j][title] = value;
         });
     });
