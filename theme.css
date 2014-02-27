@@ -252,9 +252,7 @@ section{    flex:1;}
 }
 #output {
     max-width: 100%;
-}
-.show_output {
-    overflow: scroll;
+    overflow: auto;
 }
 #output table {
     font-size: 0.8em;
@@ -548,6 +546,7 @@ img {                       width:100%;}
     margin: auto;
     margin-top: 3em;
 }
+
 #output table {
     border-collapse:collapse;
     margin-left:1em;

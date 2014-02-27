@@ -41,7 +41,6 @@ _.prototype.display_table = function(workbook){
     }
     var tabla = $("<table align='center'></table>");
     $("#output").html("");
-    $("#output").addClass("show_output");
     for(var i = 0; i < limits.n; i++) {
         for(var j = 1; j < limits.m+1; j++) {
             if(j < excel[i].length && excel[i][j]["data"] != ""){
