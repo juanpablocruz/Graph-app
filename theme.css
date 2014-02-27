@@ -250,6 +250,12 @@ section{    flex:1;}
     margin-bottom: 1em;
     margin-top: 1em;
 }
+#output {
+    max-width: 100%;
+}
+.show_output {
+    overflow: scroll;
+}
 #output table {
     font-size: 0.8em;
 }

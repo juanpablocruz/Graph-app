@@ -457,7 +457,7 @@ _.prototype = {
     loadOutput: function(data) {
         var lista = Memory.parse(data);
 
-        var table = $("<table></table>");
+        var table = $("<table align='center'></table>");
         lista.forEach(function(i,j) {
             var tr = $("<tr></tr>");
             lista[j].forEach(function(k,l) {

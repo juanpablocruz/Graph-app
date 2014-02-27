@@ -15,7 +15,7 @@ _.prototype.display_table = function(workbook){
         limits = {n:mapa[boundaries[0]],m:parseInt(num)};
         var excel = new Array();
         var weights = new Array();
-        for(var n=0;n < limits.n+1; n++) {
+        for(var n=0;n < limits.n; n++) {
             excel.push(new Array());
             weights.push(new Array());
             for (var m=0; m< limits.m; m++) {
@@ -39,12 +39,12 @@ _.prototype.display_table = function(workbook){
             }
         }
     }
-    var tabla = $("<table></table>");
+    var tabla = $("<table align='center'></table>");
     $("#output").html("");
+    $("#output").addClass("show_output");
     for(var i = 0; i < limits.n; i++) {
         for(var j = 1; j < limits.m+1; j++) {
-
-            if(excel[i][j]["data"] != ""){
+            if(j < excel[i].length && excel[i][j]["data"] != ""){
                 weights[i][j] = 1;
             }
         }
@@ -59,16 +59,14 @@ _.prototype.display_table = function(workbook){
         col.push(tmp);
     }
     var fil = new Array();
-    for (var c=0; c<limits.n+1; c++) {
+    for (var c=0; c<limits.n; c++) {
         var tmp = 0;
         for (var f = 0; f < limits.m; f++) {
             tmp += weights[c][f];
         }
         fil.push(tmp);
     }
-
     var table_data = findTable(col,fil);
-
     for(var i = 0; i < table_data["cols"].length; i++) {
         var tr = $("<tr></tr>");
         for(var j = 0; j < table_data["rows"].length; j++) {
@@ -82,6 +80,7 @@ _.prototype.display_table = function(workbook){
         }
         tabla.append(tr);
     }
+
     $("#output").append(tabla);
 
 
@@ -148,19 +147,23 @@ function findMedian(lista) {
     var total =0;
     var count = 0;
     lista.forEach(function(i) {
-       total+= i;
-        if(i != 0) count++;
+        if(!isNaN(i) ) {
+            total+= i;
+            if(i != 0) count++;
+        }
     });
     return Math.floor(total/count);
 }
 function foundRelativeModa (lista) {
     var frecuencias = {};
     lista.forEach(function(i) {
+        if(!isNaN(i) ) {
         if(typeof frecuencias[i] == "undefined" && i != 0) {
             frecuencias[i] = 1;
         }
         else if(i != 0){
             frecuencias[i] = frecuencias[i]+1;
+        }
         }
     });
     var max = 0;

@@ -196,6 +196,7 @@ var data, tipo;
 
             $(document).on("click","#nuevo-graph",function(){
                 $("#output").html("");
+                $("#output").removeClass("show_output");
                 $(".current_step").removeClass("current_step");
                 $("#tipoGrafico").addClass("current_step");
             });
@@ -243,6 +244,7 @@ var data, tipo;
                 pie_mode = "simple";
                 localStorage.pie_mode = pie_mode;
                 $("#output").html("");
+                $("#output").removeClass("show_output");
                 var fs = $("#fileSelect").clone()
                 $("#fileSelect").replaceWith(fs);
             });
@@ -254,6 +256,7 @@ var data, tipo;
                 pie_mode = "complex";
                 localStorage.pie_mode = pie_mode;
                 $("#output").html("");
+                $("#output").removeClass("show_output");
                 var fs = $("#fileSelect").clone()
                 $("#fileSelect").replaceWith(fs);
             });
@@ -267,6 +270,7 @@ var data, tipo;
                     localStorage.removeItem("coloresBarras");
                 localStorage.barras_mode = barras_mode;
                 $("#output").html("");
+                $("#output").removeClass("show_output");
                 var fs = $("#fileSelect").clone()
                 $("#fileSelect").replaceWith(fs);
             });
@@ -280,6 +284,7 @@ var data, tipo;
                     localStorage.removeItem("coloresBarras");
                 localStorage.barras_mode = barras_mode;
                 $("#output").html("");
+                $("#output").removeClass("show_output");
                 var fs = $("#fileSelect").clone()
                 $("#fileSelect").replaceWith(fs);
             });
