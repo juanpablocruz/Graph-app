@@ -162,6 +162,7 @@ _.prototype = {
             fill: textColor,
             padding: padding,
         });
+
         var font = this.ctx.font;
         this.ctx.font = "12px 'Open Sans'";
 
@@ -180,7 +181,7 @@ _.prototype = {
         return this;
     },
 
-    canvas: function(canvas,callback) {
+    createCanvas: function(canvas,callback) {
         var w = 370;
         var h = 380;
         this.stage = new Kinetic.Stage({

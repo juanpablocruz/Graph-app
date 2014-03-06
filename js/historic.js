@@ -18,7 +18,7 @@ else
 
 _.prototype.history= function (obj) {
     var id = this.id;
-    _().canvas( this.e[0], function() {
+    _().createCanvas( this.e[0], function() {
         this.data_content = document.querySelectorAll("#graph-data")[0];
         this.canvas = document.querySelectorAll(id+" canvas")[0];
         this.data = obj.data;

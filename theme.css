@@ -664,6 +664,18 @@ img {                       width:100%;}
     display: flex !important;
 }
 
+#add-label-button:before {
+    content: '+';
+    font-weight: bold;
+    margin-right: 1em;
+}
+
+#add-label > ul > li > div.new-label-div {
+    display: inline-block;
+    vertical-align: top;
+}
+
+
 @media all and ( max-width:800px ){
 
     nav ul{             width:100%;}

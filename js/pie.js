@@ -13,46 +13,53 @@ if (!localStorage.pie_mode) {
 
 function draw_action() {
     var grupos_list = [];
-        _().each(document.querySelectorAll(".grupo_tag"),function(i,a){     // Fetch all the data inside each item
-            grupos_list.push({label:a[i].innerHTML,value:a[i].getAttribute("val"),
-                              color:$(a[i].nextSibling).find(".color_selector").attr("value")});
+    _().each(document.querySelectorAll(".grupo_tag"),function(i,a){     // Fetch all the data inside each item
+        grupos_list.push({label:a[i].innerHTML,value:a[i].getAttribute("val"),
+                          color:$(a[i].nextSibling).find(".color_selector").attr("value")});
+    });
+    localStorage.grupos = JSON.stringify(grupos_list);
+    var fuent = document.querySelectorAll("#fuente_input")[0].value;
+    localStorage.fuente = fuent;
+    fuente_value = fuent;
+    var data = [];
+    _().each(document.querySelectorAll("#attr-grupos ul>li .data-list-element"),function(i,a){
+       values = [];
+       var grupo = $(a[i]).parent().parent().parent().find("span").text();
+        _().each(a[i].childNodes,function(j,c){
+            if(j == 2) {
+                values.push(c[j]);
+            }
+            else values.push(c[j].value);
         });
-        localStorage.grupos = JSON.stringify(grupos_list);
-        var fuent = document.querySelectorAll("#fuente_input")[0].value;
-        localStorage.fuente = fuent;
-        fuente_value = fuent;
-        var data = [];
-        _().each(document.querySelectorAll("#attr-grupos ul>li .data-list-element"),function(i,a){
-           values = [];
-           var grupo = $(a[i]).parent().parent().parent().find("span").text();
-            _().each(a[i].childNodes,function(j,c){
-                if(j == 2) {
-                    values.push(c[j]);
-                }
-                else values.push(c[j].value);
-            });
-            if(values[2])color = $(values[2]).find(".color_selector").attr("value");
-            else if(i>=colores.length){
-                colores[(i%colores.length)+2] = new Color($(values[2]).find(".color_selector").attr("value"));
-                if(typeof colores[(i%colores.length)+2] === "undefined")colores[(i%colores.length)+2]  = new Color("#000000");
-                color = colores[(i%colores.length)+2].hex;
-            }
-            else{
-                colores[i] = new Color($(values[2]).find(".color_selector").attr("value"));
-                if(typeof colores[i] === "undefined")colores[i]  = new Color("#000000");
-                color = colores[i].hex
-            }
+        if(values[2])color = $(values[2]).find(".color_selector").attr("value");
+        else if(i>=colores.length){
+            colores[(i%colores.length)+2] = new Color($(values[2]).find(".color_selector").attr("value"));
+            if(typeof colores[(i%colores.length)+2] === "undefined")colores[(i%colores.length)+2]  = new Color("#000000");
+            color = colores[(i%colores.length)+2].hex;
+        }
+        else{
+            colores[i] = new Color($(values[2]).find(".color_selector").attr("value"));
+            if(typeof colores[i] === "undefined")colores[i]  = new Color("#000000");
+            color = colores[i].hex
+        }
 
-          data[i] = {
-                label:values[0],
-                value: parseFloat(values[1]),
-                group: grupo,
-                color: color,
-            };
-       });
-        localStorage.data = JSON.stringify(data);
-         dragevents();
-        _("#graph").pie({data:data});
+      data[i] = {
+            label:values[0],
+            value: parseFloat(values[1]),
+            group: grupo,
+            color: color,
+        };
+    });
+    localStorage.data = JSON.stringify(data);
+    var custom_tags = [];
+    _().each(document.querySelectorAll("#add-label ul li .new-label"), function(i,a) {
+        if(a[i].value != "")
+            custom_tags.push(a[i].value);
+    });
+
+    localStorage.customTags = JSON.stringify(custom_tags);
+    dragevents();
+    _("#graph").pie({data:data});
 
 }
 
@@ -219,6 +226,30 @@ function create_data_set(dest, d) {
     fuente_label.appendChild(fuente_inpt);
     div_options.appendChild(fuente_label);
 
+    var add_label = $("<div id='add-label'></div>");
+    var label_span = $("<button id='add-label-button' class='draw_button'>Crear etiqueta</button>");
+    var label_list = $("<ul></ul>");
+    $(label_list).html("");
+    if (localStorage.customTags) {
+        var custom_tags = JSON.parse(localStorage.customTags);
+        _().each(custom_tags, function(i,a) {
+            $(label_list).append("<li><div class='new-label-div'>\
+                                    <input type='text' class='new-label' placeholder='Etiqueta' value='"+a[i]+"'/></div>\
+                                    <div class='remove-list-item'></div>\
+                                    </li>");
+        });
+    }
+    $(add_label).append(label_span);
+    $(add_label).append(label_list);
+    $(div_options).append(add_label);
+
+    $(document).on("click","#add-label-button", function() {
+        $(label_list).append("<li><div class='new-label-div'>\
+                                    <input type='text' class='new-label' placeholder='Etiqueta'/></div>\
+                                    <div class='remove-list-item'></div>\
+                                    </li>");
+    });
+
     var inpt_sub = document.createElement("BUTTON");                            // Create draw button
         inpt_sub.type = "submit";
         inpt_sub.innerHTML = "Dibujar<div class='icon-pencil icono'></div> ";
@@ -234,7 +265,7 @@ function create_data_set(dest, d) {
 
 _.prototype.pie= function (obj) {
     var id = this.id;
-    _().canvas(this.e[0],function() {
+    _().createCanvas(this.e[0],function() {
         this.data_content = document.querySelectorAll("#graph-data")[0];
         this.canvas = document.querySelectorAll(id+" canvas")[0];
         this.addPieTools();
@@ -341,6 +372,7 @@ _.prototype.draw = function (data, radio, text) {
 
 _.prototype.drawPie = function (canvas, data) {
     this.data = data;
+
     create_data_set(this.data_content,data);
     this.ctx = canvas.getContext("2d");
     var radio = 0;
@@ -383,7 +415,51 @@ _.prototype.drawPie = function (canvas, data) {
     _.layer.add(fuente);
 
     this.draw(data, radio-20, true);
+    if(localStorage.customTags) {
+        var custom_tags = JSON.parse(localStorage.customTags);
+        var layer2 = new Kinetic.Layer();
+        var ctx = this.ctx;
+        _().each(custom_tags, function(i,a) {
+            var group = new Kinetic.Group({
+                draggable:true,
+                id: "group_label",
+                name:"label"
+            });
 
+            var text = new Kinetic.Text({
+                x: 10,
+                y: 12,
+                fontSize: 16,
+                fontFamily: "'Mic 32 New Rounded',mic32newrd",
+                text: a[i],
+                fill: "black",
+                padding: 2,
+            });
+
+            var font = ctx.font;
+            ctx.font = "16px 'Mic 32 New Rounded',mic32newrd'";
+
+            var lwidth = ctx.measureText(a[i]).width;
+            var box = new Kinetic.Rect({
+                x: 10,
+                y: 10,
+                width: lwidth + 5,
+                height: 20,
+                fill: "#d3cdc7",
+            });
+            ctx.font = font;
+            group.add(box);
+            group.add(text);
+            layer2.add(group);
+
+        });
+        var labels = layer2.find('.label');
+        labels.forEach(function(i){
+            i.setZIndex(50);
+        });
+        this.stage.add(layer2);
+        layer2.draw();
+    }
 }
 _.prototype.sumTo = function (a, i) {
     var sum = 0;
