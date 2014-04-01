@@ -65,7 +65,9 @@ _.prototype.display_table = function(workbook){
         }
         fil.push(tmp);
     }
+
     var table_data = findTable(col,fil);
+    console.log(table_data);
     for(var i = 0; i < table_data["cols"].length; i++) {
         var tr = $("<tr></tr>");
         for(var j = 0; j < table_data["rows"].length; j++) {
@@ -187,20 +189,23 @@ function calculateDistances(lista) {
 function findTable ( cols, rows) {
     var col_m = findMedian(cols);
     var row_m = findMedian(rows);
+
     var col_rated = new Array;
     var row_rated = new Array;
     var col_def = new Array;
     var row_def = new Array;
 
-    if(col_m == 1) col_m = 2;
-    if(row_m == 1) row_m = 2;
+    //if(col_m == 1) col_m = 2;
+    //if(row_m == 1) row_m = 2;
 
     for(var i = 0; i < cols.length; i++) {
         if(cols[i] >= col_m) col_rated.push(i);
     }
     for(var i = 0; i < rows.length; i++) {
+        console.log(rows[i],row_m);
         if(rows[i] >= row_m) row_rated.push(i);
     }
+
     var distancias = {dc: calculateDistances(col_rated),
                       dr:calculateDistances(row_rated)};
 
