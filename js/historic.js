@@ -396,7 +396,7 @@ _.prototype.drawHistoricBars = function (posicion) {
             this.drawLabel(30 + puntos[i][1]["x"],
                            h + puntos[i][1]["y"] - 5,
                            24,
-                           colores[i%colores.length]["color"],
+                           "black",
                            "#FFFFFF",
                            text, 4, layer_hist);
         }

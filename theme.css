@@ -44,15 +44,33 @@ body{
 
 header{display:block;}
 header,.step{               min-width:480px;}
+footer {background: #F3F3F3;
+font-size: 0.8em;
+padding-top: 2em;
+padding-left: 1.3em;}
+
+footer > img {
+    margin-top: 0.7em;
+    margin-bottom: 1em;
+    width: 12em;
+}
 
 body > header> h1{
-    color:#58524f;
-    margin-bottom:0.3em;
-    margin-left:1%;
+    color:#7c7b6c;
+    margin-bottom:0.6em;
+    margin-left:2em;
     margin-top:1%;
     min-height:1em;
-    font-size:3em;
+    font-size:2em;
     text-shadow:1px 1px 1px #9f9f9f;
+    font-family: "mic32newrd";
+    display: inline-block;
+}
+
+body > header > img {
+    width: 10em;
+    display: inline-block;
+    vertical-align: bottom;
 }
 
 .mousedown{                 cursor:move !important;}
@@ -208,7 +226,7 @@ nav li{
     text-align:center;
 }
 nav li .icono{
-    color:#5893e3;
+    color:#d21f17;
     display:block;
     font-size:5rem;
     margin:auto;
@@ -262,7 +280,7 @@ main section:first-child{
     overflow-y:auto;
 }
 #graph{
-    border-bottom:2px solid #5893e3;
+    border-bottom:2px solid #d3cdc7;
     box-shadow:1px 1px 3px #aaa;
     display:block;
     min-height:400px;
@@ -295,11 +313,11 @@ main section:first-child{
 #graph-data>div:first-child {   display:flex;}
 canvas{                         border:1px solid black !important;}
 .draw_button,#create-group,.rearrange-button{
-    color: white;
+    color: #333;
     cursor:pointer;
     height: 2.5em;
     border:none;
-    background:#5893e3;
+    background:#d3cdc7;
     font-family: inherit;
     font-size: 1em;
     font-weight:inherit;
@@ -316,7 +334,7 @@ canvas{                         border:1px solid black !important;}
 #buttons >button:hover,
 .menu-button:hover,
 #create-group:hover,
-.rearrange-button:hover{        background:#4578bf; cursor:pointer;}
+.rearrange-button:hover{        background:#d21f17; color: white;cursor:pointer;}
 
 input[type=color] {             vertical-align:middle;margin-top:2em;}
 input[type=text],input[type=number]{
@@ -328,7 +346,7 @@ input[type=text],input[type=number]{
     vertical-align: top;
 }
 
-input:focus{                    border-bottom: 3px solid #5893e3; outline:none;}
+input:focus{                    border-bottom: 3px solid #d3cdc7; outline:none;}
 #drop{
     border: 5px dashed #999;
     height:50%;
@@ -357,9 +375,9 @@ input:focus{                    border-bottom: 3px solid #5893e3; outline:none;}
 }
 
 #buttons >div,#buttons >button,.menu-button, .button {
-    background: #5893e3;
+    background: #d3cdc7;
     border: none;
-    color: white;
+    color: #333;
     cursor:pointer;
     font-family: inherit;
     font-size: 1em;
@@ -379,7 +397,7 @@ input:focus{                    border-bottom: 3px solid #5893e3; outline:none;}
 }
 
 .selection_dir {
-    background: #5893e3;
+    background: #d3cdc7;
     padding: 3px;
     padding-top: 3px;
 }
@@ -584,7 +602,7 @@ img {                       width:100%;}
     position: relative;
 }
 #dir_tooltip {
-    background: #5893e3;
+    background: #d3cdc7;
     box-shadow: 0px 0px 12px #999;
     color:white;
     display: none;
@@ -603,7 +621,6 @@ img {                       width:100%;}
     color: #cecece;
     cursor: pointer;
     font-size: 1.3em;
-    text-shadow: 0px 0px 2px #333;
 }
 #undo:active {                          color:red;}
 #undo-container #undo:hover {           color:#000;text-shadow:0;}

@@ -105,7 +105,6 @@ _.prototype.display_table = function(workbook){
 function draw(a) {
     if($("#output tr").length > 0) {
     tipo = localStorage.chartType;
-
     var data = new Array();
 
 
