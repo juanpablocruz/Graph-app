@@ -216,9 +216,24 @@ _.prototype.historyPannel = function() {
             li1.className = "data-list-li-year";
         }
         li1.appendChild(div);
+        if(localStorage.check_matrix)
+            var check_matrix = JSON.parse(localStorage.check_matrix);
+        else
+            var check_matrix  = -1;
         var set = document.createElement("ul");
         for (var i = 0; i < data.length; i++) {
             var li = document.createElement("LI");
+            if (j <= 0) {
+                var check = document.createElement("input");
+                check.type = "checkbox";
+                check.className = "data-list-year-check";
+                if(check_matrix != -1) {
+                    check.checked = check_matrix[i];
+                } else {
+                    check.checked = true;
+                }
+                li.appendChild(check);
+            }
             var cont = document.createElement("DIV");
                 cont.setAttribute("contenteditable","true");
                 cont.innerHTML = data[i][Object.keys(data[i])[j]];
@@ -404,6 +419,10 @@ _.prototype.drawHistoricBars = function (posicion) {
         separador.move(40,h);
         layer_hist.add(separador);
     }
+    if(localStorage.check_matrix)
+            var check_matrix = JSON.parse(localStorage.check_matrix);
+        else
+            var check_matrix  = -1;
 
     for ( var j = 0; j < data.length; j++ ) {
         var x_var;
@@ -411,17 +430,19 @@ _.prototype.drawHistoricBars = function (posicion) {
         else {
             x_var = 35 + puntos[1][j+1]["x"] - (this.ctx.measureText(this.data[j][delim]).width/2);
         }
-       var texto = (typeof this.data[j][delim] === "undefined") ? "" : this.data[j][delim];
-        var year = new Kinetic.Text({
-            x: x_var,
-            y: h,
-            fontSize: 12,
-            fontFamily: 'Mic 32 New Rounded,mic32newrd,Helvetica,Arial',
-            text: texto,
-            fill: "black",
-            padding: 1,
-        });
-        layer_hist.add(year);
+        if( check_matrix == -1 || check_matrix[j] == 1){
+            var texto = (typeof this.data[j][delim] === "undefined") ? "" : this.data[j][delim];
+            var year = new Kinetic.Text({
+                x: x_var,
+                y: h,
+                fontSize: 12,
+                fontFamily: 'Mic 32 New Rounded,mic32newrd,Helvetica,Arial',
+                text: texto,
+                fill: "#857E69",
+                padding: 1,
+            });
+            layer_hist.add(year);
+        }
     }
     if (this.printLabels === "true") {
         if(this.separado == "true") {
@@ -483,17 +504,13 @@ _.prototype.draw_history_func = function(d){
         order.push(title);
 
         _().each( datos[i].children[2].children,function(j,a){
-
-            var value = a[j].children[0].innerHTML;
-            valores[j][title] =parseFloat( value);
-        });
-
-        _().each( datos[i].children[2].children,function(j,a){
-            var value = a[j].children[0].innerHTML;
+            if(i == 0)
+                var value = a[j].children[1].innerHTML;
+            else
+                var value = a[j].children[0].innerHTML;
             valores[j][title] = value;
         });
     });
-
 
     var tmp_colors = [];
 
@@ -520,13 +537,14 @@ _.prototype.draw_history_func = function(d){
             var value = parseFloat(a[j].children[0].innerHTML);
             valores[j][title] = value;
         });
-        _().each( datos[i].children[2].children,function(j, a) {
-            var value = parseFloat(a[j].children[0].innerHTML);
-            valores[j][title] = value;
-        });
         }
     });
-
+    var check_labels = document.querySelectorAll(".data-list-year-check");
+    var check_matrix = new Array;
+    _().each(check_labels, function(i,j) {
+        check_matrix.push(j[i].checked?1:0);
+    });
+    localStorage.check_matrix = JSON.stringify(check_matrix);
     localStorage.coloresBarras = JSON.stringify(tmp_colors);
     localStorage.data = JSON.stringify(valores);
     _().saveStep();

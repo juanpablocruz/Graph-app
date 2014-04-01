@@ -43,20 +43,27 @@ _.prototype.display_table = function(workbook){
     $("#output").html("");
     for(var i = 0; i < limits.n; i++) {
         for(var j = 1; j < limits.m+1; j++) {
-            if(j < excel[i].length && excel[i][j]["data"] != ""){
+            console.log(i,j,excel[i][j]["data"],typeof excel[i][j]["data"],
+                       excel[i][j]["data"] == "0");
+            if(j < excel[i].length && (excel[i][j]["data"] != "" || excel[i][j]["data"] == "0")){
                 weights[i][j] = 1;
             }
         }
     }
-
     var col = new Array();
+    var tmp = 0;
     for (var f=1; f<limits.m+1; f++) {
-        var tmp = 0;
+        tmp = 0;
         for (var c = 0; c < limits.n; c++) {
-            tmp += weights[c][f];
+            tmp += parseInt(weights[c][f]);
+            /*if(limits.n-2 == c && f == limits.m) {
+                console.log(tmp,f,c,weights[c],weights[c][f],weights);
+            }*/
         }
+
         col.push(tmp);
     }
+
     var fil = new Array();
     for (var c=0; c<limits.n; c++) {
         var tmp = 0;
@@ -67,7 +74,6 @@ _.prototype.display_table = function(workbook){
     }
 
     var table_data = findTable(col,fil);
-    console.log(table_data);
     for(var i = 0; i < table_data["cols"].length; i++) {
         var tr = $("<tr></tr>");
         for(var j = 0; j < table_data["rows"].length; j++) {
@@ -202,7 +208,6 @@ function findTable ( cols, rows) {
         if(cols[i] >= col_m) col_rated.push(i);
     }
     for(var i = 0; i < rows.length; i++) {
-        console.log(rows[i],row_m);
         if(rows[i] >= row_m) row_rated.push(i);
     }
 

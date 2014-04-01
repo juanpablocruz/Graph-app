@@ -354,7 +354,7 @@ _.prototype.createBarsHorizontalAxis = function(max){
                         var texto = orden[i];
                         var lwidth =  this.ctx.measureText(texto).width;
                         this.drawLabel(50,this.ctx.canvas.height-40-height_accumulated,20,
-                                       "#333","white",texto,1,layer2);
+                                       "black","white",texto,1,layer2);
                         }
                     }
                     if(!isNaN(this.data[j][orden[i]]) && i>0) {
@@ -368,13 +368,14 @@ _.prototype.createBarsHorizontalAxis = function(max){
                            layer2,wBar,m,orden,total,i);
                     if(!drawn){
                     leyenda = orden[i];
+
                     var year = new Kinetic.Text({
                         x: 45+(i)*((wBar)+m) - (this.ctx.measureText(leyenda).width/2),
                         y: this.ctx.canvas.height-20,
                         fontSize: 12,
                         fontFamily: "Mic 32 New Rounded,mic32newrd,Helvetica,Arial",
                         text: leyenda,
-                        fill: "black",
+                        fill: "#857E69",
                         padding: 1,
                     });
                     layer2.add(year);
@@ -393,7 +394,7 @@ _.prototype.createBarsHorizontalAxis = function(max){
                 fontSize: 12,
                 fontFamily: "Mic 32 New Rounded,mic32newrd,Helvetica,Arial",
                 text: leyenda,
-                fill: "black",
+                fill: "#857E69",
                 padding: 1,
             });
             layer2.add(year);

@@ -154,7 +154,7 @@ _.prototype = {
         });
 
         var text = new Kinetic.Text({
-            x: posx,
+            x: posx+3,
             y: posy + 2,
             fontSize: 12,
             fontFamily: "Open Sans",
@@ -170,7 +170,7 @@ _.prototype = {
         var box = new Kinetic.Rect({
             x: posx,
             y: posy,
-            width: lwidth + 5,
+            width: lwidth + 12,
             height: height,
             fill: fill,
         });
@@ -371,13 +371,15 @@ _.prototype = {
         }
 
         this.origen = origen;
+        ctx.strokeStyle = "#bcb7a9";
+        ctx.fillStyle = "#857E69";
+
         var yaxis = new Kinetic.Shape({
             drawFunc: function(ctx) {
                 for (var j = origen; j < max-(step/2)+origen; j+= step) {
-
                     var x = j.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                     oy = h - (posy * contador);
-                    if(x.length > 3) x = x.substring(0,x.length-4);
+                    if(minimo.length > 3) x = x.substring(0,x.length-4);
                     ctx.fillText(x, 0, oy - 5);
                     ctx.beginPath();
                     ctx.moveTo(0,oy);

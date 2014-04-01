@@ -525,7 +525,7 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
         dragBoundFunc: function(pos,e) {
             var centerX = context.canvas.width/2;
             var centerY = (context.canvas.height/2);
-                r = radius - 20;
+                r = radius+20;
             if(typeof e != "undefined"){
 
             var x = centerX - e.offsetX;
@@ -658,7 +658,7 @@ _.prototype.writePieText = function (context, i, porciones, r) {
     var box = new Kinetic.Rect({
             x: centerx + (dx*radius),
             y: centery+ (dy*radius),
-            width: width+22,
+            width: width+12,
             height: padding,
             fill: "#000",
         });

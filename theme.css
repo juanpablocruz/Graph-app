@@ -253,6 +253,7 @@ section{    flex:1;}
 #output {
     max-width: 100%;
     overflow: auto;
+    max-height: 25em;
 }
 #output table {
     font-size: 0.8em;
@@ -418,6 +419,8 @@ input:focus{                    border-bottom: 3px solid #5893e3; outline:none;}
 }
 .data-list-li{              display:table-row;}
 .data-list-element{         display:inline-block;}
+.data-list-li-year li {text-align: left;}
+.data-list-year-check, .data-list-li-year div {display: inline-block; margin-right: 1em;}
 
 .step-info{
     background: #eee;
