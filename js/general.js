@@ -365,14 +365,11 @@ var data, tipo;
                         case "Central":
                         localStorage.dimensiones = JSON.stringify({width: "ancho", height: "cuadrado"});
                         break;
-                        case "Alto":
-                        if (localStorage.dimensiones) {
-                            var d = JSON.parse(localStorage.dimensiones);
-                            localStorage.dimensiones = JSON.stringify({width: d.width, height: "alto"});
-                        } else {
-                            localStorage.dimensiones = JSON.stringify({width: "cuadrado", height: "alto"});
-                        }
-
+                        case "Alto Cuadrado":
+                        localStorage.dimensiones = JSON.stringify({width: "cuadrado", height: "alto"});
+                        break;
+                        case "Alto Central":
+                        localStorage.dimensiones = JSON.stringify({width: "ancho", height: "alto"});
                         break;
                 }
 
