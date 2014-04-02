@@ -354,6 +354,30 @@ var data, tipo;
                     localStorage.separado = false;
                 }
             });
+
+            $(document).on("click", "#dimensiones li", function() {
+                $(".active_dimension").removeClass("active_dimension");
+                $(this).addClass("active_dimension");
+                switch($(this).text()) {
+                        case "Cuadrado":
+                        localStorage.dimensiones = JSON.stringify({width: "cuadrado", height: "cuadrado"});
+                        break;
+                        case "Central":
+                        localStorage.dimensiones = JSON.stringify({width: "ancho", height: "cuadrado"});
+                        break;
+                        case "Alto":
+                        if (localStorage.dimensiones) {
+                            var d = JSON.parse(localStorage.dimensiones);
+                            localStorage.dimensiones = JSON.stringify({width: d.width, height: "alto"});
+                        } else {
+                            localStorage.dimensiones = JSON.stringify({width: "cuadrado", height: "alto"});
+                        }
+
+                        break;
+                }
+
+            });
+
             $(document).on("change","#fileSelect",function(e){
                 var files = ($(this)[0].files);
                 var i,f;

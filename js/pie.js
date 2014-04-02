@@ -626,7 +626,7 @@ _.prototype.writePieText = function (context, i, porciones, r) {
 
     /* Split the labels in lines and get the box size  */
 
-    var width = context.measureText( this.data[i]["label"]).width;
+/*    var width = context.measureText( this.data[i]["label"]).width;
     var t =  this.data[i]["label"];
     var texto = "",w = 0, l1 = 80, l2 = 110,ancho=0,lineas = 1;
     var mayor = 0;
@@ -653,7 +653,12 @@ _.prototype.writePieText = function (context, i, porciones, r) {
     });
 
     if (lineas > 1) width = mayor;              // if there's more than one line set the width to the greatest line width
-    var padding = 20*lineas;
+    var padding = 20*lineas;*/
+
+    var etiqueta = this.splitLabels (this.data[i]["label"], context, 80, 110);
+    var texto = etiqueta.texto;
+    var width = etiqueta.width;
+    var padding = etiqueta.padding;
 
     var box = new Kinetic.Rect({
             x: centerx + (dx*radius),

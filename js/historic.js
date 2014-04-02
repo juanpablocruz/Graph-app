@@ -329,9 +329,9 @@ _.prototype.drawHist = function (canvas, data) {
 
 
 _.prototype.drawHistoricBars = function (posicion) {
-    var w = this.ctx.canvas.width - 30;
-    var h = this.ctx.canvas.height - 20;
-    var x = w / this.data.length;
+    var w = this.ctx.canvas.width - 40;
+    var h = dimensiones.height.cuadrado - 20;
+    var x = Math.floor(w / this.data.length);
     var data = this.data;
     var a = -x;
     var maximo = this.getMaxValue();
@@ -431,7 +431,10 @@ _.prototype.drawHistoricBars = function (posicion) {
             x_var = 35 + puntos[1][j+1]["x"] - (this.ctx.measureText(this.data[j][delim]).width/2);
         }
         if( check_matrix == -1 || check_matrix[j] == 1){
-            var texto = (typeof this.data[j][delim] === "undefined") ? "" : this.data[j][delim];
+            var t = (typeof this.data[j][delim] === "undefined") ? "" : this.data[j][delim];
+            var etiquetas = this.splitLabels(t, this.ctx, 20, 40);
+            var padding = etiquetas.padding;
+            var texto = etiquetas.texto;
             var year = new Kinetic.Text({
                 x: x_var,
                 y: h,

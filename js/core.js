@@ -11,6 +11,8 @@ var colores =[new Color("#d21f17"),new Color("#d3cdc7"),   // Lista de colores
 var colores_barras = [colores[3],colores[0],colores[2],colores[4],colores[1]];  // Lista de colores para las barras
 var colores_alpha = ["rgba(0,0,0,0)",colores[3],colores[2],colores[4],colores[1],colores[0]];   // Lista de colores para las barras con destacado, el primer elemento se hace invisible
 
+var dimensiones = {width: {cuadrado: 370, ancho: 600}, height: {cuadrado: 380, alto: 400}};
+
 var Memory = {
     memoria:[],
     config:{max:3},
@@ -181,9 +183,48 @@ _.prototype = {
         return this;
     },
 
+    splitLabels : function(text,context, l1, l2) {
+        var width = context.measureText(text.toString()).width;
+        var t =  text.toString();
+        var texto = "",w = 0,ancho=0,lineas = 1;
+        var mayor = 0;
+
+        _().each(t.split(" "), function (k, te) {   // Iterate through each word
+           w=context.measureText(te[k]).width;      // get each word width
+            if ( mayor < ancho ) mayor = ancho;     // check if the current line width is the longest and if so change it
+            if ((ancho + w) > l1) {                 // if the current line plus the word is longer than the first control limit
+             if ((ancho + w) > l2) {                // check if its greater than the longest limit
+                 texto += "\n"+te[k]+" ";           // if so, break the line and add the word
+                 if (k != te.length-1) ancho=0;     // if its not the last word reset the line width to 0
+                 else ancho = l1;                   // else, set it to the first limit
+                 lineas++                           // increase the number of lines written
+             }
+             else {
+                texto+=te[k]+" ";                   // if its smaller than the last limit just add it
+                ancho += w;                         // increase the line width
+             }
+           }
+           else {
+                texto += te[k] + " ";               // if its smaller than the first limit add it
+                ancho += w;                         // increase the line width
+           }
+        });
+
+        if (lineas > 1) width = mayor+10;              // if there's more than one line set the width to the greatest line width
+        var padding = 20*lineas;
+        return {width: width, texto: texto, padding: padding};
+    },
+
     createCanvas: function(canvas,callback) {
-        var w = 370;
-        var h = 380;
+        if ( localStorage.dimensiones ) {
+            var w = dimensiones.width[JSON.parse(localStorage.dimensiones).width];
+            var h = dimensiones.height[JSON.parse(localStorage.dimensiones).height];
+        } else {
+            var w = dimensiones.width.ancho;
+            var h = dimensiones.height.cuadrado;
+            localStorage.dimensiones = JSON.stringify({width: "ancho", height: "cuadrado"});
+        }
+
         this.stage = new Kinetic.Stage({
             container: canvas,
             width: w,
@@ -273,10 +314,17 @@ _.prototype = {
         }
         try {
             if (min === Infinity) throw error[3];
-            var len = min.toString().length;
-            var orden = Math.pow(10, len - 1);
-            var next = parseInt( min / orden );
-            var min = next * orden;
+            if (min >= 0) {
+                var len = min.toString().length;
+                var orden = Math.pow(10, len - 1);
+                var next = parseInt( min / orden );
+                var min = next * orden;
+            } else {
+                var len = (-min).toString().length;
+                var orden = Math.pow(10, len - 1);
+                var next = parseInt( min / orden );
+                var min = (next * orden);
+            }
             return parseInt(min);
         } catch(e) {
             console.log("Error"+e);
@@ -287,7 +335,7 @@ _.prototype = {
 
     getStep : function(max,bars) {
         var step = this.getInterval(max,bars);
-        var h = this.ctx.canvas.height-20;
+        var h = dimensiones.height.cuadrado-20;
         var posy = 0;
         try {
             if(step == 0) throw error[4];
@@ -299,6 +347,7 @@ _.prototype = {
     },
 
     createBarsVerticalAxis: function(max_val,bars,type){
+
         if(barras_mode != "cols") {
             var max = max_val;
             var step = this.getInterval(max,bars);
@@ -315,7 +364,7 @@ _.prototype = {
 
         var fuente = new Kinetic.Text({
             x: ctx.canvas.width - 15,
-            y: ctx.canvas.height - 20 ,
+            y: dimensiones.height.cuadrado - 20 ,
             text: "Fuente: "+fuente_value,
             fontSize: 13,
             fontFamily: "infotext,InfoTextBook,Helvetica,arial",
@@ -339,7 +388,7 @@ _.prototype = {
 
         _.layer.add(unidades);
 
-        var h = ctx.canvas.height-20;
+        var h = dimensiones.height.cuadrado-20;
         var posy = 0;
         try {
             if(step == 0 || max/step == 0) throw error[4];
@@ -363,11 +412,14 @@ _.prototype = {
 
             origen=minimo;
             step = this.getInterval(max,bars);
-            if(minimo < 0) origen = -step;
+            if(minimo < 0) {
+                origen = -step;
+                this.ceil = ((((max+step*2)/step)-2)*step);
+                console.log(origen,step,this.ceil);
+            }
             else {
                 origen = step * parseInt(minimo/step);
             }
-
         }
 
         this.origen = origen;
@@ -489,11 +541,13 @@ _.prototype = {
         $("#undo").on("click",function() {
             _().undoAction();
         })
+
         $(".borrar-fila").on("click",function() {
             if(!fila)fila = true;
             else {fila = false;$('#borrar-neutro').prop('checked', true);}
             columna = false;
         });
+
         $(".borrar-columna").on("click",function() {
             if(!columna)columna = true;
             else {columna = false; $('#borrar-neutro').prop('checked', true);}

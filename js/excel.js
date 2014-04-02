@@ -43,8 +43,6 @@ _.prototype.display_table = function(workbook){
     $("#output").html("");
     for(var i = 0; i < limits.n; i++) {
         for(var j = 1; j < limits.m+1; j++) {
-            console.log(i,j,excel[i][j]["data"],typeof excel[i][j]["data"],
-                       excel[i][j]["data"] == "0");
             if(j < excel[i].length && (excel[i][j]["data"] != "" || excel[i][j]["data"] == "0")){
                 weights[i][j] = 1;
             }
