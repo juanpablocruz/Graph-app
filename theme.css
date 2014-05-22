@@ -724,6 +724,13 @@ img {                       width:100%;}
     color: #333;
     border-bottom: 1px solid #FFF;
 }
+#logo-jp{
+    position: fixed;
+    bottom: 1em;
+    font-size: 1.2em;
+    color: #EEEEEE;
+    left: 0.3em;
+}
 
 @media all and ( max-width:800px ){
 
@@ -743,4 +750,7 @@ img {                       width:100%;}
     .menu-text{                     display:none; }
     #data-container{                flex-flow:column;}
     #dimensiones ul { left: 4em;}
+    #logo-jp{left:0.3em;}
+    footer {padding: 0; font-size: 0.6em;}
+    footer > img {width: 6.7em;}
 }

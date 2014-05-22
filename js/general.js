@@ -286,7 +286,7 @@ var data, tipo;
 
 
 
-            $(document).on("click","#create-group",function(){
+            $(document).on("click","#create-group", function(){
                 var x = $("<li class='sortable-group-list'><span contenteditable='true' class='grupo_tag complex_pie' val='0'>Grupo</span></li>");
                 var ul = $("<ul> </ul>");
                 dragevents();

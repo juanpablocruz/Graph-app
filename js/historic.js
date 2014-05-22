@@ -353,7 +353,9 @@ _.prototype.drawHistoricBars = function (posicion) {
             for ( var i=0; i < data.length; i++ ) {
                 try {
                     if(isNaN(data[i][Object.keys(data[0])[j]])) throw error[2];
+
                     value =  ((data[i][Object.keys(data[0])[j]]-this.origen)/this.step.label)*this.step.val;
+                    console.log(value);
                     linea_set.push({x:a + x, y: -( value)});
                 } catch(e) {
                     console.log(e)

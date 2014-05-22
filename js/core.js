@@ -212,7 +212,7 @@ _.prototype = {
 
         if (lineas > 1) width = mayor+10;              // if there's more than one line set the width to the greatest line width
         var padding = 20*lineas;
-        return {width: width, texto: texto, padding: padding};
+        return {width: width, texto: texto, padding: padding,lineas:lineas};
     },
 
     createCanvas: function(canvas,callback) {
@@ -287,7 +287,8 @@ _.prototype = {
     getInterval: function (max,bars) {
         try {
             if(isNaN(max) || isNaN(bars)) throw error[2];
-            var v = Math.round(max/bars)
+            var min = (this.getMinValue(this.data));
+            var v = Math.round((max+Math.abs(min))/bars);
             var len = v.toString().length;
             var orden = Math.pow(10, len - 1);
             var next = parseInt( v / orden );
@@ -347,16 +348,17 @@ _.prototype = {
     },
 
     createBarsVerticalAxis: function(max_val,bars,type){
-
+        var min = this.getMinValue(this.data);
         if(barras_mode != "cols") {
             var max = max_val;
+
             var step = this.getInterval(max,bars);
-            this.ceil = ((((max+step*2)/step)-2)*step);
+            this.ceil = (((((max+Math.abs(min))+step*2)/step)-2)*step);
         }
         else {
             var max = 100;
             var step = 20;
-            this.ceil = ((((max+step*2)/step)-2)*step);
+            this.ceil = (((((max+Math.abs(min))+step*2)/step)-2)*step);
         }
 
         this.step = step;
@@ -392,7 +394,7 @@ _.prototype = {
         var posy = 0;
         try {
             if(step == 0 || max/step == 0) throw error[4];
-            posy = Math.floor((h)/(max/step));
+            posy = Math.floor((h)/((max+Math.abs(min))/step));
         } catch(e) {
             console.log("Error"+e);
         }
@@ -415,7 +417,6 @@ _.prototype = {
             if(minimo < 0) {
                 origen = -step;
                 this.ceil = ((((max+step*2)/step)-2)*step);
-                console.log(origen,step,this.ceil);
             }
             else {
                 origen = step * parseInt(minimo/step);
@@ -428,10 +429,12 @@ _.prototype = {
 
         var yaxis = new Kinetic.Shape({
             drawFunc: function(ctx) {
+                console.log(max-(step/2)+origen);
                 for (var j = origen; j < max-(step/2)+origen; j+= step) {
                     var x = j.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                     oy = h - (posy * contador);
                     if(minimo.length > 3) x = x.substring(0,x.length-4);
+                    console.log(j);
                     ctx.fillText(x, 0, oy - 5);
                     ctx.beginPath();
                     ctx.moveTo(0,oy);
@@ -507,7 +510,6 @@ _.prototype = {
         columna = false;fila=false;
         }
     },
-
 
     loadOutput: function(data) {
         var lista = Memory.parse(data);
@@ -622,7 +624,6 @@ _.prototype = {
                        } else
                     a[j][$(e).find("td").first().text()] = $(el).text();
                 });
-
             });
             columna = false;fila=false;
             draw(a);

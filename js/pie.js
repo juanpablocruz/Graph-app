@@ -419,6 +419,8 @@ _.prototype.drawPie = function (canvas, data) {
         var custom_tags = JSON.parse(localStorage.customTags);
         var layer2 = new Kinetic.Layer();
         var ctx = this.ctx;
+        var font_size = (JSON.parse(localStorage.dimensiones).width == "ancho")? {t:28,p:26} : {t:16,p:12};
+
         _().each(custom_tags, function(i,a) {
             var group = new Kinetic.Group({
                 draggable:true,
@@ -429,7 +431,7 @@ _.prototype.drawPie = function (canvas, data) {
             var text = new Kinetic.Text({
                 x: 10,
                 y: 12,
-                fontSize: 16,
+                fontSize: font_size.t,
                 fontFamily: "'Mic 32 New Rounded',mic32newrd",
                 text: a[i],
                 fill: "black",
@@ -437,14 +439,16 @@ _.prototype.drawPie = function (canvas, data) {
             });
 
             var font = ctx.font;
-            ctx.font = "16px 'Mic 32 New Rounded',mic32newrd'";
-
+            ctx.font = "'Mic 32 New Rounded',mic32newrd'";
+            ctx.fontSize = font_size.t;
             var lwidth = ctx.measureText(a[i]).width;
+            if (font_size.t > 16) var lw = lwidth + (font_size.t * 2)+ 5;
+            else var lw = lwidth + 5;
             var box = new Kinetic.Rect({
                 x: 10,
                 y: 10,
-                width: lwidth + 5,
-                height: 20,
+                width: lw,
+                height: font_size.t + 4,
                 fill: "#d3cdc7",
             });
             ctx.font = font;
@@ -470,7 +474,7 @@ _.prototype.sumTo = function (a, i) {
 }
 
 _.prototype.drawPieSegment = function (context, i, porciones, r) {
-    var startingAngle = (this.sumTo(porciones, i));
+    var startingAngle = (this.sumTo(porciones, i))-Math.PI/2;
     var arcSize = porciones[i]["porcentaje"];
     var endingAngle = startingAngle + arcSize;
     var hex = "black";
@@ -509,7 +513,7 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
     else tc = "#333";
     var startingAngle = (this.sumTo(porciones,i));
     var arcSize = porciones[i]["porcentaje"]-0.35;
-    var endingAngle = (startingAngle + arcSize/2);
+    var endingAngle = (startingAngle + arcSize/2)-Math.PI/2;
 
     var dy = Math.sin(endingAngle) / 2;
     var dx = 2 * Math.cos(endingAngle) / 3;
@@ -592,7 +596,7 @@ _.prototype.writePieText = function (context, i, porciones, r) {
     }
     var startingAngle = (this.sumTo(porciones,i));
     var arcSize = porciones[i]["porcentaje"]-0.35;
-    var endingAngle = (startingAngle + arcSize/2);
+    var endingAngle = (startingAngle + arcSize/2)-Math.PI/2;
 
     var dy = Math.sin(endingAngle)/2;
     var dx = 2*Math.cos(endingAngle)/3;
@@ -655,33 +659,40 @@ _.prototype.writePieText = function (context, i, porciones, r) {
     if (lineas > 1) width = mayor;              // if there's more than one line set the width to the greatest line width
     var padding = 20*lineas;*/
 
+
+    //var font_size = {t:16,p:12};
+    var font_size = (JSON.parse(localStorage.dimensiones).width == "ancho")? {t:24,p:24} : {t:16,p:14};
+    context.fontSize = font_size.t;
     var etiqueta = this.splitLabels (this.data[i]["label"], context, 80, 110);
     var texto = etiqueta.texto;
-    var width = etiqueta.width;
+    var width = etiqueta.width *3/2;
     var padding = etiqueta.padding;
+    if(font_size.t == 24) padding *= 3/2;
 
     var box = new Kinetic.Rect({
             x: centerx + (dx*radius),
             y: centery+ (dy*radius),
-            width: width+12,
+            width: width + 12,
             height: padding,
             fill: "#000",
         });
+
 
     var text_label = new Kinetic.Text({
             x: centerx + (dx*radius) +5,
             y: centery+ (dy*radius) ,
             text: texto,
-            fontSize: 16,
+            fontSize: font_size.t,
             fontFamily: "'Mic 32 New Rounded',mic32newrd",
             fill: "#fff",
             padding: 2,
             paddingLeft: -5,
         });
+
     var text_data = new Kinetic.Text({
             x: centerx + (dx*radius),
             y: centery+ (dy*radius) + padding+4,
-            fontSize: 12,
+            fontSize: font_size.p,
             fontFamily: "'Mic 32 New Rounded',mic32newrd",
             text: (Math.round(10*((porciones[i]["porcentaje"]*180/Math.PI)*100/360))/10)+"%",
             fill: tc,
