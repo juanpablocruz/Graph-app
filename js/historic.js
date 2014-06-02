@@ -23,6 +23,9 @@ _.prototype.history= function (obj) {
         this.canvas = document.querySelectorAll(id+" canvas")[0];
         this.data = obj.data;
 
+        if(localStorage.homeMode)this.home = localStorage.homeMode;
+        else this.home = false;
+
         this.printLabels = true;
         if ( localStorage.drawLabels ) {
             this.printLabels = localStorage.drawLabels;
@@ -140,8 +143,31 @@ _.prototype.historyPannel = function() {
         checkbox_labels.checked = true;
     }
 
+    var checkbox_labels_home = document.createElement("input");
+        checkbox_labels_home.type = "checkbox";
+        checkbox_labels_home.setAttribute("id","home-check");
+
+    var checkbox_title_home = document.createElement("label");
+        checkbox_title_home.setAttribute("for","home-check");
+        checkbox_title_home.setAttribute("class","label-home-check");
+        checkbox_title_home.innerHTML = "Para home";
+        checkbox_labels_home.checked = false;
+    if(localStorage.homeMode) {
+        checkbox_labels_home.checked = (localStorage.homeMode==="false")?false:true;
+    }
+
+    $(checkbox_labels_home).on("change",function() {
+        this.home = $("#home-check").is(":checked");
+        localStorage.homeMode = this.home;
+    });
+    var checkbox_home = $("<div class='checkhome'></div>");
+    $(checkbox_home).append(checkbox_labels_home);
+    $(checkbox_home).append(checkbox_title_home);
+
+
     div_fila1.appendChild(checkbox_labels);
     div_fila1.appendChild(checkbox_title);
+
 
     var separador_label = document.createElement("input");
         separador_label.type = "checkbox";
@@ -159,6 +185,9 @@ _.prototype.historyPannel = function() {
 
     div_options.appendChild(div_fila1);
     div_options.appendChild(div_fila2);
+    console.log(div_options);
+    $(div_options).append($(checkbox_home));
+
     if (this.separado === "true") {
         var div_separador = document.createElement("div");
         var ul_separador = document.createElement("ul");
@@ -370,13 +399,14 @@ _.prototype.drawHistoricBars = function (posicion) {
 
     var layer_hist = new Kinetic.Layer();
     var colores = this.colores_grupos;
-
+    if(this.home === "true")var sw = 4;
+    else var sw = 3;
     for ( var i = 0; i < puntos.length;i++ ) {
         if(pie_mode == "simple") {
             var line = new Kinetic.Line({
                 points: puntos[i],
                 stroke: colores[i%colores.length]["color"],
-                strokeWidth: 3,
+                strokeWidth: sw,
                 lineCap: 'round',
                 lineJoin: 'round',
             });
@@ -432,6 +462,8 @@ _.prototype.drawHistoricBars = function (posicion) {
         else {
             x_var = 35 + puntos[1][j+1]["x"] - (this.ctx.measureText(this.data[j][delim]).width/2);
         }
+
+        var font_size = (this.home === "true")? {t:23,p:21} : {t:16,p:14};
         if( check_matrix == -1 || check_matrix[j] == 1){
             var t = (typeof this.data[j][delim] === "undefined") ? "" : this.data[j][delim];
             var etiquetas = this.splitLabels(t, this.ctx, 20, 40);
@@ -440,8 +472,8 @@ _.prototype.drawHistoricBars = function (posicion) {
             var year = new Kinetic.Text({
                 x: x_var,
                 y: h,
-                fontSize: 12,
-                fontFamily: 'Mic 32 New Rounded,mic32newrd,Helvetica,Arial',
+                fontSize: font_size.p,
+                fontFamily: 'mic32newrd,Helvetica,Arial',
                 text: texto,
                 fill: "#857E69",
                 padding: 1,

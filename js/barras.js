@@ -19,6 +19,8 @@ _.prototype.bars = function (obj) {
         this.data_content = document.querySelectorAll("#graph-data")[0];
         this.canvas = document.querySelectorAll(id+" canvas")[0];
         this.printLabels = true;
+        if(localStorage.homeMode)this.home = localStorage.homeMode;
+        else this.home = false;
 
         if(localStorage.drawLabels){
             this.printLabels = localStorage.drawLabels;
@@ -119,6 +121,27 @@ _.prototype.addBarTools = function(data){
 
     var check_div = document.createElement("DIV");
     }
+     var checkbox_labels_home = document.createElement("input");
+        checkbox_labels_home.type = "checkbox";
+        checkbox_labels_home.setAttribute("id","home-check");
+
+    var checkbox_title_home = document.createElement("label");
+        checkbox_title_home.setAttribute("for","home-check");
+        checkbox_title_home.setAttribute("class","label-home-check");
+        checkbox_title_home.innerHTML = "Para home";
+        checkbox_labels_home.checked = false;
+    if(localStorage.homeMode) {
+        checkbox_labels_home.checked = (localStorage.homeMode==="false")?false:true;
+    }
+
+    $(checkbox_labels_home).on("change",function() {
+        this.home = $("#home-check").is(":checked");
+        localStorage.homeMode = this.home;
+    });
+    var checkbox_home = $("<div class='checkhome'></div>");
+    $(checkbox_home).append(checkbox_labels_home);
+    $(checkbox_home).append(checkbox_title_home);
+
 
 
     var fuente_label = document.createElement("DIV");
@@ -165,7 +188,7 @@ _.prototype.addBarTools = function(data){
         check_div.appendChild(checkbox_title);
         div_options.appendChild(check_div);
     }
-
+    $(div_options).append(checkbox_home);
 
 
     var ul = document.createElement("UL");
@@ -280,7 +303,7 @@ _.prototype.drawBarra = function(maximo, i, j, h, height, layer, wBar, m, orden,
         if(barras_mode != "cols") {
             color_rest = 1;
             var value = Math.ceil(((this.data[j][orden[i]] * 100) / this.ceil)*h/100);
-            if (i>1)height-=5;
+            if (i>1) height-=5;
         } else {
             color_rest = 0;
             var value = ((this.data[j][orden[i]] * 100 / total)*h/100);
@@ -336,9 +359,11 @@ _.prototype.createBarsHorizontalAxis = function(max){
     var drawn = false;
     var total = this.suma(orden);
 
-    this.ctx.fontFamily = "Mic 32 New Rounded,mic32newrd,Helvetica,Arial";
-    this.ctx.fontSize = 12;
+    var font_size = (this.home === "true")? {t:23,p:21} : {t:16,p:14};
 
+    this.ctx.fontFamily = "mic32newrd,Helvetica,Arial";
+    this.ctx.fontSize = font_size.p;
+    var accumWidth = 0;
     for (var j=0; j<this.data.length; j++){
         var leyenda = "";
         for (var i = start; i< orden.length; i++){
@@ -366,19 +391,29 @@ _.prototype.createBarsHorizontalAxis = function(max){
                            i, j, h,
                            dimensiones.height.cuadrado-20,
                            layer2,wBar,m,orden,total,i);
+
                     if(!drawn){
+
                     leyenda = orden[i];
                     var etiquetas = this.splitLabels(leyenda, this.ctx, 20, 50);
                     var padding = etiquetas.padding;
                     var texto = etiquetas.texto;
                     var width = etiquetas.width;
                     if (this.ctx.canvas.width == dimensiones.width.cuadrado) var factor = -5;
-                        else var factor = 15;
+                    else var factor = 15;
+                    if (font_size.p == 21)  {
+                        var x = ((i+1)*((wBar)+m)) - ((width/2)+35)+accumWidth/5;
+                        console.log(texto,width+35,wBar);
+                        if((width+35) > wBar)
+                            accumWidth = width;
+                        else accumWidth = 0;
+                    }else var x = ((i+1)*((wBar)+m)) - ((width/2)+factor);
                     var year = new Kinetic.Text({
-                        x: ((i+1)*((wBar)+m)) - ((width/2)+factor),
+                        x: x,
                         y: dimensiones.height.cuadrado-20,
-                        fontSize: 12,
-                        fontFamily: "Mic 32 New Rounded,mic32newrd,Helvetica,Arial",
+                        fontSize: font_size.p,
+                        fontFamily: "mic32newrd,Helvetica,Arial",
+                        lineHeight: 0.8,
                         text: texto,
                         fill: "#857E69",
                         padding: 1,
@@ -396,14 +431,18 @@ _.prototype.createBarsHorizontalAxis = function(max){
             var padding = etiquetas.padding;
             var texto = etiquetas.texto;
             var width = etiquetas.width;
-            if (this.ctx.canvas.width == dimensiones.width.cuadrado) var factor = -5;
-                        else var factor = 15;
+            if (localStorage.homeMode === "true") {
+                var hpad = 30;
+            }
+            else {
+                var hpad = 20;
+            }
 
             var year = new Kinetic.Text({
-                x: ((j+1)*((wBar)+m)) - ((width/2)+factor),
-                y: dimensiones.height.cuadrado-20,
-                fontSize: 12,
-                fontFamily: "Mic 32 New Rounded,mic32newrd,Helvetica,Arial",
+                x: ((j)*((wBar)+m)) + ((wBar+m)/2) -((width/2)),
+                y: dimensiones.height.cuadrado-hpad,
+                fontSize: font_size.p,
+                fontFamily: "mic32newrd,Helvetica,Arial",
                 text: texto,
                 fill: "#857E69",
                 padding: 1,

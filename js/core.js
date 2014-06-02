@@ -11,7 +11,7 @@ var colores =[new Color("#d21f17"),new Color("#d3cdc7"),   // Lista de colores
 var colores_barras = [colores[3],colores[0],colores[2],colores[4],colores[1]];  // Lista de colores para las barras
 var colores_alpha = ["rgba(0,0,0,0)",colores[3],colores[2],colores[4],colores[1],colores[0]];   // Lista de colores para las barras con destacado, el primer elemento se hace invisible
 
-var dimensiones = {width: {cuadrado: 370, ancho: 600}, height: {cuadrado: 380, alto: 400}};
+var dimensiones = {width: {cuadrado: 370, ancho: 600}, height: {cuadrado: 380, alto: 450}};
 
 var Memory = {
     memoria:[],
@@ -149,6 +149,20 @@ _.prototype = {
 
     drawLabel : function(posx, posy, height, fill, textColor, texto, padding, layer) {
 
+        var font = this.ctx.font;
+        var font_size, pad, hpad;
+        if ( localStorage.homeMode === "true" ) {
+            font_size = 24;
+            pad = 20;
+            hpad = 15;
+        } else {
+            font_size = 12;
+            pad = 9;
+            hpad = 0;
+        }
+        this.ctx.font = "Open Sans";
+        this.ctx.fontSize = font_size;
+
         var group = new Kinetic.Group({
             draggable:true,
             id: "group_label",
@@ -158,22 +172,20 @@ _.prototype = {
         var text = new Kinetic.Text({
             x: posx+3,
             y: posy + 2,
-            fontSize: 12,
+            fontSize: font_size,
             fontFamily: "Open Sans",
             text: texto,
             fill: textColor,
             padding: padding,
         });
 
-        var font = this.ctx.font;
-        this.ctx.font = "12px 'Open Sans'";
-
-        var lwidth = this.ctx.measureText(texto).width;
+        var lwidth = this.ctx.measureText(texto).width + pad;
+        var h = height + pad;
         var box = new Kinetic.Rect({
             x: posx,
             y: posy,
-            width: lwidth + 12,
-            height: height,
+            width: lwidth + pad,
+            height: height+hpad,
             fill: fill,
         });
         this.ctx.font = font;
@@ -362,6 +374,8 @@ _.prototype = {
         }
 
         this.step = step;
+        var font_size = (localStorage.homeMode == "true")? {t:23,p:23} : {t:16,p:12};
+        this.ctx.fontSize = font_size.p;
         var ctx = this.ctx;
 
         var fuente = new Kinetic.Text({
@@ -378,7 +392,7 @@ _.prototype = {
         _.layer.add(fuente);
 
         var unidades = new Kinetic.Text({
-            x: ctx.canvas.width - (ctx.measureText("Unidad: "+unidad_value).width + 15),
+            x: ctx.canvas.width - (ctx.measureText("Unidad: "+unidad_value).width + 35),
             y: 1 ,
             text: "Unidad: "+unidad_value,
             fontSize: 13,
@@ -400,7 +414,9 @@ _.prototype = {
         }
 
         var contador = 0;
-        ctx.font = "12px 'Mic 32 New Rounded',mic32newrd,arial";
+
+        //ctx.font = "'Mic 32 New Rounded',mic32newrd,arial";
+        ctx.fontSize = font_size.p;
         //ctx.fillStyle = "#333";
         var oy=0;
         var text;
@@ -426,15 +442,17 @@ _.prototype = {
         this.origen = origen;
         ctx.strokeStyle = "#bcb7a9";
         ctx.fillStyle = "#857E69";
+        ctx.font = (localStorage.homeMode === "true")? "19px mic32newrd,Helvetica,Arial" : "11px mic32newrd,Helvetica,Arial";
+
+        var x;
 
         var yaxis = new Kinetic.Shape({
             drawFunc: function(ctx) {
-                console.log(max-(step/2)+origen);
+
                 for (var j = origen; j < max-(step/2)+origen; j+= step) {
-                    var x = j.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    x = j.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                     oy = h - (posy * contador);
                     if(minimo.length > 3) x = x.substring(0,x.length-4);
-                    console.log(j);
                     ctx.fillText(x, 0, oy - 5);
                     ctx.beginPath();
                     ctx.moveTo(0,oy);

@@ -226,6 +226,27 @@ function create_data_set(dest, d) {
     fuente_label.appendChild(fuente_inpt);
     div_options.appendChild(fuente_label);
 
+    var checkbox_labels = document.createElement("input");
+        checkbox_labels.type = "checkbox";
+        checkbox_labels.setAttribute("id","home-check");
+
+    var checkbox_title = document.createElement("label");
+        checkbox_title.setAttribute("for","home-check");
+        checkbox_title.setAttribute("class","label-home-check");
+        checkbox_title.innerHTML = "Para home";
+        checkbox_labels.checked = false;
+    if(localStorage.homeMode) {
+        checkbox_labels.checked = (localStorage.homeMode==="false")?false:true;
+    }
+
+    $(checkbox_labels).on("change",function() {
+        this.home = $("#home-check").is(":checked");
+        localStorage.homeMode = this.home;
+    });
+    var checkbox_home = $("<div class='checkhome'></div>");
+    $(checkbox_home).append(checkbox_labels);
+    $(checkbox_home).append(checkbox_title);
+
     var add_label = $("<div id='add-label'></div>");
     var label_span = $("<button id='add-label-button' class='draw_button'>Crear etiqueta</button>");
     var label_list = $("<ul></ul>");
@@ -241,6 +262,7 @@ function create_data_set(dest, d) {
     }
     $(add_label).append(label_span);
     $(add_label).append(label_list);
+    $(div_options).append(checkbox_home);
     $(div_options).append(add_label);
 
     $(document).on("click","#add-label-button", function() {
@@ -268,6 +290,8 @@ _.prototype.pie= function (obj) {
     _().createCanvas(this.e[0],function() {
         this.data_content = document.querySelectorAll("#graph-data")[0];
         this.canvas = document.querySelectorAll(id+" canvas")[0];
+        if(localStorage.homeMode)this.home = localStorage.homeMode;
+        else this.home = false;
         this.addPieTools();
         this.drawPie(this.canvas,obj.data);
         clinpt().loadFunctions();
@@ -275,6 +299,7 @@ _.prototype.pie= function (obj) {
 
 
 }
+
 
 _.prototype.pie_type_menu = function() {
     var dest = Array.prototype.slice.call(this.e);
@@ -398,7 +423,7 @@ _.prototype.drawPie = function (canvas, data) {
         localStorage.grupos = JSON.stringify(fragmentos);
     }
     else {
-        radio = 200;
+        radio = (this.home === "true")?220:200;
     }
 
     var fuente = new Kinetic.Text({
@@ -419,7 +444,7 @@ _.prototype.drawPie = function (canvas, data) {
         var custom_tags = JSON.parse(localStorage.customTags);
         var layer2 = new Kinetic.Layer();
         var ctx = this.ctx;
-        var font_size = (JSON.parse(localStorage.dimensiones).width == "ancho")? {t:28,p:26} : {t:16,p:12};
+        var font_size = (localStorage.homeMode == "true")? {t:28,p:26} : {t:16,p:12};
 
         _().each(custom_tags, function(i,a) {
             var group = new Kinetic.Group({
@@ -532,8 +557,8 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
                 r = radius+20;
             if(typeof e != "undefined"){
 
-            var x = centerX - e.offsetX;
-            var y = centerY - e.offsetY;
+            var x = centerX - (e.offsetX);
+            var y = centerY - (e.offsetY);
             if((x*x)+(y*y) > (r*r)){
                 text_data.setFill("#333");
             }else{
@@ -661,18 +686,21 @@ _.prototype.writePieText = function (context, i, porciones, r) {
 
 
     //var font_size = {t:16,p:12};
-    var font_size = (JSON.parse(localStorage.dimensiones).width == "ancho")? {t:24,p:24} : {t:16,p:14};
+
+    var font_size = (this.home === "true")? {t:24,p:24} : {t:16,p:14};
     context.fontSize = font_size.t;
     var etiqueta = this.splitLabels (this.data[i]["label"], context, 80, 110);
     var texto = etiqueta.texto;
-    var width = etiqueta.width *3/2;
+
+    var width = (font_size.p == 24)?(etiqueta.width * 3/2)+15:etiqueta.width + 15;
+
     var padding = etiqueta.padding;
     if(font_size.t == 24) padding *= 3/2;
 
     var box = new Kinetic.Rect({
             x: centerx + (dx*radius),
             y: centery+ (dy*radius),
-            width: width + 12,
+            width: width,
             height: padding,
             fill: "#000",
         });

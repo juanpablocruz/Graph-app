@@ -495,9 +495,9 @@ input:focus{                    border-bottom: 3px solid #d3cdc7; outline:none;}
 .data-options{                              flex:2;vertical-align:top;}
 #options-bars{                              flex:1;}
 #options-bars div{                          margin-bottom:1em;}
-#dibujar-check, #destacar_check, #separador-check{display:none;}
+#dibujar-check, #destacar_check, #separador-check, #home-check{display:none;}
 
-.label-dibujar-check,.label-dest-check, .label-separador-check{
+.label-dibujar-check,.label-dest-check, .label-separador-check, .label-home-check{
     cursor:pointer;
     position:relative;
     padding-left:30px;
@@ -506,7 +506,8 @@ input:focus{                    border-bottom: 3px solid #d3cdc7; outline:none;}
 
 .label-dibujar-check:before,
 .label-dest-check:before,
-.label-separador-check:before
+.label-separador-check:before,
+.label-home-check:before
 {
     content:"\e611";
     font-family: 'iconos';
@@ -515,7 +516,8 @@ input:focus{                    border-bottom: 3px solid #d3cdc7; outline:none;}
 
 .label-dibujar-check:after,
 .label-dest-check:after,
-.label-separador-check:after
+.label-separador-check:after,
+.label-home-check:after
 {
     color:"#00ff00";
     content:"\e612";
@@ -540,6 +542,12 @@ input:focus{                    border-bottom: 3px solid #d3cdc7; outline:none;}
 }
 
 #separador-check:checked + .label-separador-check:after{
+    color:#249a14;
+    max-width:25px;
+    opacity:1;
+}
+
+#home-check:checked + .label-home-check:after{
     color:#249a14;
     max-width:25px;
     opacity:1;

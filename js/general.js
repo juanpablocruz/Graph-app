@@ -160,6 +160,7 @@ var data, tipo;
             }
         }
         $(function(){
+            console_welcome();
             if (localStorage.data === "undefined") {
                 localStorage.clear();
             }
@@ -408,4 +409,15 @@ var data, tipo;
         });
 function undo() {
     _().undoAction();
+}
+
+
+function console_welcome() {
+    console.log("  _______ .______          ___      .______    __    __       ___      .______   .______   ");
+    console.log(" /  _____||   _  \\        /   \\     |   _  \\  |  |  |  |     /   \\     |   _  \\  |   _  \\  ");
+    console.log("|  |  __  |  |_)  |      /  ^  \\    |  |_)  | |  |__|  |    /  ^  \\    |  |_)  | |  |_)  | ");
+    console.log("|  | |_ | |      /      /  /_\\  \\   |   ___/  |   __   |   /  /_\\  \\   |   ___/  |   ___/  ");
+    console.log("|  |__| | |  |\\  \\----./  _____  \\  |  |      |  |  |  |  /  _____  \\  |  |      |  |      ");
+    console.log(" \\______| | _| \\`.____/__/     \\__\\ | _|      |__|  |__| /__/     \\__\\ | _|      | _|      ");
+    console.log("                                                                                           ");
 }
