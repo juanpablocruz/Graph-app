@@ -662,20 +662,21 @@ _.prototype.writePieText = function (context, i, porciones, r) {
                 if(typeof e != "undefined"){
                     var x = (context.canvas.width/2) - e.offsetX;
                     var y = (context.canvas.height/2) - e.offsetY;
+
                     if((x*x)+(y*y) > (r*r)){
                         text_data.setFill("#333");
-                    }else{
+                    } else {
                         text_data.setFill(tc);
                     }
 
-                    if(e.offsetX-(width/2) > centerX){
-                        line.setPoints([{x:objectPos.x+posit.x-5, y:objectPos.y+posit.y+10},
-                                        {x:centerX+20, y:objectPos.y+posit.y+10},
+                    if (e.offsetX-(width/2) > centerX) {
+                        line.setPoints([{x:objectPos.x+posit.x-5, y:objectPos.y+posit.y+20},
+                                        {x:centerX+20, y:objectPos.y+posit.y+20},
                                         {x:centerX, y:centerY}]);
                     }
                     else {
-                        line.setPoints([{x:objectPos.x+posit.x+(width), y:objectPos.y+posit.y+10},
-                                        {x:centerX-20, y:objectPos.y+posit.y+10},
+                        line.setPoints([{x:objectPos.x+posit.x+(width), y:objectPos.y+posit.y+20},
+                                        {x:centerX-20, y:objectPos.y+posit.y+20},
                                         {x:centerX, y:centerY}]);
                     }
 
@@ -702,6 +703,16 @@ _.prototype.writePieText = function (context, i, porciones, r) {
             fill: "#000",
             padding: 2,
             paddingLeft: -5,
+        });
+
+        var text_data = new Kinetic.Text({
+            x: centerx + (dx*radius),
+            y: centery+ (dy*radius) + padding-4,
+            fontSize: font_size.p,
+            fontFamily: "'Mic 32 New Rounded',mic32newrd",
+            text: (Math.round(10*((porciones[i]["porcentaje"]*180/Math.PI)*100/360))/10)+"%",
+            fill: tc,
+            padding: 1,
         });
 
     } else {
@@ -745,18 +756,18 @@ _.prototype.writePieText = function (context, i, porciones, r) {
             paddingLeft: -5,
         });
 
+        var text_data = new Kinetic.Text({
+                x: centerx + (dx*radius),
+                y: centery+ (dy*radius) + padding+4,
+                fontSize: font_size.p,
+                fontFamily: "'Mic 32 New Rounded',mic32newrd",
+                text: (Math.round(10*((porciones[i]["porcentaje"]*180/Math.PI)*100/360))/10)+"%",
+                fill: tc,
+                padding: 1,
+            });
+
     }
 
-
-    var text_data = new Kinetic.Text({
-            x: centerx + (dx*radius),
-            y: centery+ (dy*radius) + padding+4,
-            fontSize: font_size.p,
-            fontFamily: "'Mic 32 New Rounded',mic32newrd",
-            text: (Math.round(10*((porciones[i]["porcentaje"]*180/Math.PI)*100/360))/10)+"%",
-            fill: tc,
-            padding: 1,
-        });
     total_angle += endingAngle;
     group.add(box);
     group.add(text_label);

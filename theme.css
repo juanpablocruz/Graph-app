@@ -738,6 +738,13 @@ img {                       width:100%;}
     font-size: 1.2em;
     color: #EEEEEE;
     left: 0.3em;
+    -webkit-user-select: none; /* Chrome/Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
+
+    /* Rules below not implemented in browsers yet */
+    -o-user-select: none;
+    user-select: none;
 }
 
 @media all and ( max-width:800px ){
