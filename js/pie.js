@@ -423,7 +423,7 @@ _.prototype.drawPie = function (canvas, data) {
         localStorage.grupos = JSON.stringify(fragmentos);
     }
     else {
-        radio = (this.home === "true")?220:200;
+        radio = (this.home === "true")?140:200;
     }
 
     var fuente = new Kinetic.Text({
@@ -552,18 +552,18 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
     var group = new Kinetic.Group({
         draggable:true,
         dragBoundFunc: function(pos,e) {
-            var centerX = context.canvas.width/2;
-            var centerY = (context.canvas.height/2);
-                r = radius+20;
-            if(typeof e != "undefined"){
+                var centerX = context.canvas.width/2;
+                var centerY = (context.canvas.height/2);
+                    r = radius+20;
+                if(typeof e != "undefined"){
 
-            var x = centerX - (e.offsetX);
-            var y = centerY - (e.offsetY);
-            if((x*x)+(y*y) > (r*r)){
-                text_data.setFill("#333");
-            }else{
-                text_data.setFill(tc);
-            }
+                var x = centerX - (e.offsetX);
+                var y = centerY - (e.offsetY);
+                if((x*x)+(y*y) > (r*r)){
+                    text_data.setFill("#333");
+                }else{
+                    text_data.setFill(tc);
+                }
             }
             _.layer.draw();
             return pos;
@@ -579,7 +579,7 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
             y: centery+ (dy*radius),
             width: width+22,
             height: 20,
-            fill: "#000",
+            fill: "#FF0000",
         });
     var text_label = new Kinetic.Text({
             x: x +5,
@@ -607,10 +607,12 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
     _.layer.add(group);
     _.layer.draw();
 }
+var total_angle=0;
+
 _.prototype.writePieText = function (context, i, porciones, r) {
     var centerx = Math.floor(context.canvas.width/2);
     var centery = Math.floor(context.canvas.height/2);
-    radius = r+20;
+    radius = r;
 
     var tc;
     try {
@@ -619,73 +621,17 @@ _.prototype.writePieText = function (context, i, porciones, r) {
     } catch(e) {
         tc = "#333";
     }
+
     var startingAngle = (this.sumTo(porciones,i));
-    var arcSize = porciones[i]["porcentaje"]-0.35;
+    var arcSize = porciones[i]["porcentaje"];
     var endingAngle = (startingAngle + arcSize/2)-Math.PI/2;
 
-    var dy = Math.sin(endingAngle)/2;
-    var dx = 2*Math.cos(endingAngle)/3;
+    var dy = 2*(Math.sin(endingAngle))/3;
+    var dx = 2*(Math.cos(endingAngle))/3;
     context.font = '16px "Mic 32 New Rounded",mic32newrd';
     var width = context.measureText( this.data[i]["label"]).width;
 
     context.fillStyle = "#FFF";
-
-    var group = new Kinetic.Group({
-        draggable:true,
-        dragBoundFunc: function(pos,e) {
-        var centerX = context.canvas.width/2;
-        var centerY = (context.canvas.height/2);
-            r = radius - 20;
-        if(typeof e != "undefined"){
-
-        var x = centerX - e.offsetX;
-        var y = centerY - e.offsetY;
-        if((x*x)+(y*y) > (r*r)){
-            text_data.setFill("#333");
-        }else{
-            text_data.setFill(tc);
-        }
-        }
-        _.layer.draw();
-            return pos;
-        },
-        id: "pie_text_"+i,
-        name:"label",
-    });
-
-    /* Split the labels in lines and get the box size  */
-
-/*    var width = context.measureText( this.data[i]["label"]).width;
-    var t =  this.data[i]["label"];
-    var texto = "",w = 0, l1 = 80, l2 = 110,ancho=0,lineas = 1;
-    var mayor = 0;
-
-    _().each(t.split(" "), function (k, te) {   // Iterate through each word
-       w=context.measureText(te[k]).width;      // get each word width
-        if ( mayor < ancho ) mayor = ancho;     // check if the current line width is the longest and if so change it
-        if ((ancho + w) > l1) {                 // if the current line plus the word is longer than the first control limit
-         if ((ancho + w) > l2) {                // check if its greater than the longest limit
-             texto += "\n"+te[k]+" ";           // if so, break the line and add the word
-             if (k != te.length-1) ancho=0;     // if its not the last word reset the line width to 0
-             else ancho = l1;                   // else, set it to the first limit
-             lineas++                           // increase the number of lines written
-         }
-         else {
-            texto+=te[k]+" ";                   // if its smaller than the last limit just add it
-            ancho += w;                         // increase the line width
-         }
-       }
-       else {
-            texto += te[k] + " ";               // if its smaller than the first limit add it
-            ancho += w;                         // increase the line width
-       }
-    });
-
-    if (lineas > 1) width = mayor;              // if there's more than one line set the width to the greatest line width
-    var padding = 20*lineas;*/
-
-
-    //var font_size = {t:16,p:12};
 
     var font_size = (this.home === "true")? {t:24,p:24} : {t:16,p:14};
     context.fontSize = font_size.t;
@@ -697,16 +643,98 @@ _.prototype.writePieText = function (context, i, porciones, r) {
     var padding = etiqueta.padding;
     if(font_size.t == 24) padding *= 3/2;
 
-    var box = new Kinetic.Rect({
+
+    if(localStorage.homeMode === "true") {
+        var line = new Kinetic.Line({
+            points:[(context.canvas.width/2)+ (dx*radius)+50,(context.canvas.height/2)+ (dy*radius)+5,
+                    (context.canvas.width/2)+ (dx*radius),(context.canvas.height/2)+ (dy*radius)+5],
+            stroke: "#666",
+            strokeWidth: 1,
+        });
+        var objectPos = {x:centerx + (dx*radius), y: centery+ (dy*radius)};
+        var group = new Kinetic.Group({
+            draggable:true,
+            dragBoundFunc: function(pos,e) {
+                var centerX = (context.canvas.width/2)+ ((dx)*(radius+50));
+                var centerY = (context.canvas.height/2)+ ((dy)*(radius+50));
+                var r = radius;
+                var posit = this.getAbsolutePosition();
+                if(typeof e != "undefined"){
+                    var x = (context.canvas.width/2) - e.offsetX;
+                    var y = (context.canvas.height/2) - e.offsetY;
+                    if((x*x)+(y*y) > (r*r)){
+                        text_data.setFill("#333");
+                    }else{
+                        text_data.setFill(tc);
+                    }
+
+                    if(e.offsetX-(width/2) > centerX){
+                        line.setPoints([{x:objectPos.x+posit.x-5, y:objectPos.y+posit.y+10},
+                                        {x:centerX+20, y:objectPos.y+posit.y+10},
+                                        {x:centerX, y:centerY}]);
+                    }
+                    else {
+                        line.setPoints([{x:objectPos.x+posit.x+(width), y:objectPos.y+posit.y+10},
+                                        {x:centerX-20, y:objectPos.y+posit.y+10},
+                                        {x:centerX, y:centerY}]);
+                    }
+
+
+                }
+
+                return pos;
+            },
+            id: "pie_text_"+i,
+            name:"label",
+        });
+        var box = new Kinetic.Rect({
+            x: objectPos.x,
+            y: objectPos.y,
+            width: width,
+            height: padding,
+        });
+        var text_label = new Kinetic.Text({
+            x: centerx + (dx*radius),
+            y: centery+ (dy*radius) ,
+            text: texto,
+            fontSize: font_size.t,
+            fontFamily: "'Mic 32 New Rounded',mic32newrd",
+            fill: "#000",
+            padding: 2,
+            paddingLeft: -5,
+        });
+
+    } else {
+        var group = new Kinetic.Group({
+            draggable:true,
+            dragBoundFunc: function(pos,e) {
+            var centerX = context.canvas.width/2;
+            var centerY = (context.canvas.height/2);
+                r = radius - 20;
+            if(typeof e != "undefined"){
+
+            var x = centerX - e.offsetX;
+            var y = centerY - e.offsetY;
+            if((x*x)+(y*y) > (r*r)){
+                text_data.setFill("#333");
+            }else{
+                text_data.setFill(tc);
+            }
+            }
+            _.layer.draw();
+                return pos;
+            },
+            id: "pie_text_"+i,
+            name:"label",
+        });
+        var box = new Kinetic.Rect({
             x: centerx + (dx*radius),
             y: centery+ (dy*radius),
             width: width,
             height: padding,
             fill: "#000",
         });
-
-
-    var text_label = new Kinetic.Text({
+        var text_label = new Kinetic.Text({
             x: centerx + (dx*radius) +5,
             y: centery+ (dy*radius) ,
             text: texto,
@@ -717,6 +745,9 @@ _.prototype.writePieText = function (context, i, porciones, r) {
             paddingLeft: -5,
         });
 
+    }
+
+
     var text_data = new Kinetic.Text({
             x: centerx + (dx*radius),
             y: centery+ (dy*radius) + padding+4,
@@ -726,11 +757,13 @@ _.prototype.writePieText = function (context, i, porciones, r) {
             fill: tc,
             padding: 1,
         });
+    total_angle += endingAngle;
     group.add(box);
     group.add(text_label);
     group.add(text_data);
 
     _.layer.add(group);
+    if(localStorage.homeMode === "true") _.layer.add(line);
 
     var fuente = _.layer.find('.fuente');
     fuente.forEach(function(i){

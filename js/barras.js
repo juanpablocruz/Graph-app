@@ -182,7 +182,6 @@ _.prototype.addBarTools = function(data){
         dest_div.appendChild(destaca_title);
         div_options.appendChild(dest_div);
         $(destaca_labels).on("change",{destc:this.destacado},this.draw_bars_func);
-        //destaca_labels.addEventListener("change",this.draw_bars_func,this.destacado);
 
         check_div.appendChild(checkbox_labels);
         check_div.appendChild(checkbox_title);
@@ -403,7 +402,6 @@ _.prototype.createBarsHorizontalAxis = function(max){
                     else var factor = 15;
                     if (font_size.p == 21)  {
                         var x = ((i+1)*((wBar)+m)) - ((width/2)+35)+accumWidth/5;
-                        console.log(texto,width+35,wBar);
                         if((width+35) > wBar)
                             accumWidth = width;
                         else accumWidth = 0;
@@ -437,9 +435,9 @@ _.prototype.createBarsHorizontalAxis = function(max){
             else {
                 var hpad = 20;
             }
-
+            var xpos = (font_size.p == 23)? ((j)*((wBar)+m)) - ((wBar+m)/2) -((width/2)) : ((j)*((wBar)+m)) + ((wBar+m)/2) +((width/2));
             var year = new Kinetic.Text({
-                x: ((j)*((wBar)+m)) + ((wBar+m)/2) -((width/2)),
+                x: xpos,
                 y: dimensiones.height.cuadrado-hpad,
                 fontSize: font_size.p,
                 fontFamily: "mic32newrd,Helvetica,Arial",
