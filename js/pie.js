@@ -589,7 +589,6 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
     var dy = Math.sin(endingAngle) / 2;
     var dx = 2 * Math.cos(endingAngle) / 3;
     context.font = '16px "Mic 32 New Rounded",mic32newrd';
-    var width = context.measureText( this.grupos[i]["label"]).width;
 
     context.fillStyle = "#FFF";
     var texto = (Math.round(10*((porciones[i]["porcentaje"]*180/Math.PI)*100/360))/10);
@@ -600,12 +599,12 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
         dragBoundFunc: function(pos,e) {
                 var centerX = context.canvas.width/2;
                 var centerY = (context.canvas.height/2);
-                    r = radius+20;
+                var r1 = radius+20;
                 if(typeof e != "undefined"){
 
                 var x = centerX - (e.offsetX);
                 var y = centerY - (e.offsetY);
-                if((x*x)+(y*y) > (r*r)){
+                if((x*x)+(y*y) > (r1*r1)){
                     text_data.setFill("#333");
                 }else{
                     text_data.setFill(tc);
@@ -616,15 +615,17 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
         },
         id: "pie_text_"+i,
         name: "label",
-    }
-                                 );
+    });
+
     var x = centerx + (dx*radius);
     if ( x > centerx*2) x = (centerx*2)-50;
     var font_size = (this.home === "true")? {t:24,p:24} : {t:16,p:14};
-    width = (font_size.p == 24)?
+
+    var width = (font_size.p == 24)?
         (context.measureText( this.grupos[i]["label"]).width * 3/2)+15:
         context.measureText( this.grupos[i]["label"]).width + 15;
-    var hplus = (font_size.p == 24)?2:0;
+
+    var hplus = (font_size.p == 24)? 2 : 0;
     var box = new Kinetic.Rect({
             x: x,
             y: centery+ (dy*radius),
@@ -666,7 +667,7 @@ var total_angle=0;
 _.prototype.writePieText = function (context, i, porciones, r) {
     var centerx = Math.floor(context.canvas.width/2);
     var centery = Math.floor(context.canvas.height/2);
-    radius = r;
+    var radius = r;
 
     var tc;
     try {
@@ -685,8 +686,6 @@ _.prototype.writePieText = function (context, i, porciones, r) {
 
     context.font = '16px "Mic 32 New Rounded",mic32newrd';
 
-    var width = context.measureText( this.data[i]["label"]).width;
-
     context.fillStyle = "#FFF";
 
     var font_size = (this.home === "true")? {t:24,p:24} : {t:16,p:14};
@@ -694,58 +693,71 @@ _.prototype.writePieText = function (context, i, porciones, r) {
     var etiqueta = this.splitLabels (this.data[i]["label"], context, 80, 110);
     var texto = etiqueta.texto;
 
-    width = (font_size.p == 24)?(etiqueta.width * 3/2)+15:etiqueta.width + 15;
+    var width = (font_size.p == 24)? (etiqueta.width * 3/2) + 15:etiqueta.width + 15;
 
     var padding = etiqueta.padding;
-    if(font_size.t == 24) padding *= 3/2;
+    if (font_size.t == 24) padding *= 3/2;
 
-    if((localStorage.homeMode === "true") && (localStorage.homeModeLitle === "false")) {
-
+    /*
+        LABEL DRAWING
+        First case is home with lines
+    */
+    if ((localStorage.homeMode === "true") && (localStorage.homeModeLitle === "false")) {
+        // We first create a line with two points, label start and origin position.
         var line = new Kinetic.Line({
             points:[(centerx)+ (dx*radius)+50,(centery)+ (dy*radius)+5,
                     (centerx)+ (dx*radius),(centery)+ (dy*radius)+5],
             stroke: "#666",
             strokeWidth: 1,
         });
-
+        // Cache the initial position of the label to compare with
         var objectPos = {x: centerx + (dx * radius), y: centery + (dy * radius)};
 
         var group = new Kinetic.Group({
             draggable:true,
             dragBoundFunc: function(pos,e) {
-                var centerX = (centerx)+ ((dx)*(radius+60));
-                var centerY = (centery)+ ((dy)*(radius+60));
-                var r = radius;
+                // Final point of the line
+                var endX = (centerx)+ ((dx)*(radius+60));
+                var endY = (centery)+ ((dy)*(radius+60));
+                var r1 = radius;
+                // Current position of the label
                 var posit = this.getAbsolutePosition();
 
                 if(typeof e != "undefined"){
+                    // We first check if the label is inside the pie and if so keep the color
+                    // if not set black
                     var x = (context.canvas.width / 2) - e.offsetX;
                     var y = (context.canvas.height / 2) - e.offsetY;
 
-                    if((x * x) + (y * y) > (r * r)) text_data.setFill("#333");
+                    if((x * x) + (y * y) > (r1 * r1)) text_data.setFill("#333");
                     else    text_data.setFill(tc);
 
+                    // angle_base is for calculate the pitched line width
                     var angle_base = 20;
-                    if (e.offsetX - (width/2) > centerX) {
-                        if ( ( objectPos.x + posit.x - 5 ) - centerX < angle_base )
-                            angle_base = ( objectPos.x + posit.x - 5 ) - centerX;
-
+                    if (e.offsetX - (width/2) > endX) {
+                        // if the label is closer than 20, set angle_base to the difference
+                        if ( ( objectPos.x + posit.x - 5 ) - endX < angle_base )
+                            angle_base = ( objectPos.x + posit.x - 5 ) - endX;
+                        // update the line points, first point is the start at the label
+                        // second is the line from start to the begining of the pitched line
+                        // third is the pitched line, the line which starts at the height of the label
+                        // and ends in the point of the pie.
                         line.setPoints([{x: objectPos.x + posit.x - 5, y: objectPos.y + posit.y + 20},
-                                        {x: centerX + angle_base, y: objectPos.y + posit.y + 20},
-                                        {x: centerX, y: centerY}]);
+                                        {x: endX + angle_base, y: objectPos.y + posit.y + 20},
+                                        {x: endX, y: endY}]);
                     } else {
-                        if ( centerX - ( objectPos.x + posit.x + width ) < angle_base )
-                            angle_base = centerX - ( objectPos.x + posit.x + width );
+                        if ( endX - ( objectPos.x + posit.x + width ) < angle_base )
+                            angle_base = endX - ( objectPos.x + posit.x + width );
 
                         line.setPoints([
                             {x: objectPos.x + posit.x + width, y: objectPos.y + posit.y + 20},
-                            {x: centerX - angle_base, y: objectPos.y + posit.y + 20},
-                            {x: centerX, y: centerY}]);
+                            {x: endX - angle_base, y: objectPos.y + posit.y + 20},
+                            {x: endX, y: endY}]);
                     }
                 }
                 return pos;
             },
-            id: "pie_text_"+i,
+            id: "pie_text_" + i,
             name:"label",
         });
 
@@ -777,13 +789,14 @@ _.prototype.writePieText = function (context, i, porciones, r) {
         });
 
     } else {
-
+        // this case is for pies whitout lines, be they the small ones or the home ones
         var group = new Kinetic.Group({
             draggable:true,
             dragBoundFunc: function(pos,e) {
                 var centerX = context.canvas.width/2;
                 var centerY = (context.canvas.height/2);
                 var r = radius - 20;
+                // Just check if the label is in the pie for color changing
                 if(typeof e != "undefined"){
                     var x = centerX - e.offsetX;
                     var y = centerY - e.offsetY;
