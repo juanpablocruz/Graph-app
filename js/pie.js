@@ -645,13 +645,16 @@ _.prototype.writePieText = function (context, i, porciones, r) {
 
 
     if(localStorage.homeMode === "true") {
+
         var line = new Kinetic.Line({
             points:[(context.canvas.width/2)+ (dx*radius)+50,(context.canvas.height/2)+ (dy*radius)+5,
                     (context.canvas.width/2)+ (dx*radius),(context.canvas.height/2)+ (dy*radius)+5],
             stroke: "#666",
             strokeWidth: 1,
         });
-        var objectPos = {x:centerx + (dx*radius), y: centery+ (dy*radius)};
+
+        var objectPos = {x: centerx + (dx * radius), y: centery + (dy * radius)};
+
         var group = new Kinetic.Group({
             draggable:true,
             dragBoundFunc: function(pos,e) {
@@ -659,35 +662,41 @@ _.prototype.writePieText = function (context, i, porciones, r) {
                 var centerY = (context.canvas.height/2)+ ((dy)*(radius+50));
                 var r = radius;
                 var posit = this.getAbsolutePosition();
-                if(typeof e != "undefined"){
-                    var x = (context.canvas.width/2) - e.offsetX;
-                    var y = (context.canvas.height/2) - e.offsetY;
 
-                    if((x*x)+(y*y) > (r*r)){
+                if(typeof e != "undefined"){
+                    var x = (context.canvas.width / 2) - e.offsetX;
+                    var y = (context.canvas.height / 2) - e.offsetY;
+
+                    if((x * x) + (y * y) > (r * r)){
                         text_data.setFill("#333");
                     } else {
                         text_data.setFill(tc);
                     }
+                    var angle_base = 20;
 
-                    if (e.offsetX-(width/2) > centerX) {
-                        line.setPoints([{x:objectPos.x+posit.x-5, y:objectPos.y+posit.y+20},
-                                        {x:centerX+20, y:objectPos.y+posit.y+20},
-                                        {x:centerX, y:centerY}]);
+                    if (e.offsetX - (width/2) > centerX) {
+                        if ( ( objectPos.x + posit.x - 5 ) - centerX < angle_base )
+                            angle_base = ( objectPos.x + posit.x - 5 ) - centerX;
+
+                        line.setPoints([{x: objectPos.x + posit.x - 5, y: objectPos.y + posit.y + 20},
+                                        {x: centerX + angle_base, y: objectPos.y + posit.y + 20},
+                                        {x: centerX, y: centerY}]);
                     }
                     else {
-                        line.setPoints([{x:objectPos.x+posit.x+(width), y:objectPos.y+posit.y+20},
-                                        {x:centerX-20, y:objectPos.y+posit.y+20},
-                                        {x:centerX, y:centerY}]);
+                        if ( centerX - ( objectPos.x + posit.x + width ) < angle_base )
+                            angle_base = centerX - ( objectPos.x + posit.x + width );
+
+                        line.setPoints([{x: objectPos.x + posit.x + width, y: objectPos.y + posit.y + 20},
+                                        {x: centerX - angle_base, y: objectPos.y + posit.y + 20},
+                                        {x: centerX, y: centerY}]);
                     }
-
-
                 }
-
                 return pos;
             },
             id: "pie_text_"+i,
             name:"label",
         });
+
         var box = new Kinetic.Rect({
             x: objectPos.x,
             y: objectPos.y,
@@ -716,28 +725,29 @@ _.prototype.writePieText = function (context, i, porciones, r) {
         });
 
     } else {
+
         var group = new Kinetic.Group({
             draggable:true,
             dragBoundFunc: function(pos,e) {
-            var centerX = context.canvas.width/2;
-            var centerY = (context.canvas.height/2);
-                r = radius - 20;
-            if(typeof e != "undefined"){
-
-            var x = centerX - e.offsetX;
-            var y = centerY - e.offsetY;
-            if((x*x)+(y*y) > (r*r)){
-                text_data.setFill("#333");
-            }else{
-                text_data.setFill(tc);
-            }
-            }
-            _.layer.draw();
-                return pos;
+                var centerX = context.canvas.width/2;
+                var centerY = (context.canvas.height/2);
+                var r = radius - 20;
+                if(typeof e != "undefined"){
+                    var x = centerX - e.offsetX;
+                    var y = centerY - e.offsetY;
+                    if( (x * x) + (y * y) > (r * r) ) {
+                        text_data.setFill("#333");
+                    } else {
+                        text_data.setFill(tc);
+                    }
+                }
+                _.layer.draw();
+                    return pos;
             },
             id: "pie_text_"+i,
             name:"label",
         });
+
         var box = new Kinetic.Rect({
             x: centerx + (dx*radius),
             y: centery+ (dy*radius),
@@ -745,6 +755,7 @@ _.prototype.writePieText = function (context, i, porciones, r) {
             height: padding,
             fill: "#000",
         });
+
         var text_label = new Kinetic.Text({
             x: centerx + (dx*radius) +5,
             y: centery+ (dy*radius) ,
@@ -757,15 +768,14 @@ _.prototype.writePieText = function (context, i, porciones, r) {
         });
 
         var text_data = new Kinetic.Text({
-                x: centerx + (dx*radius),
-                y: centery+ (dy*radius) + padding+4,
-                fontSize: font_size.p,
-                fontFamily: "'Mic 32 New Rounded',mic32newrd",
-                text: (Math.round(10*((porciones[i]["porcentaje"]*180/Math.PI)*100/360))/10)+"%",
-                fill: tc,
-                padding: 1,
-            });
-
+            x: centerx + (dx*radius),
+            y: centery+ (dy*radius) + padding+4,
+            fontSize: font_size.p,
+            fontFamily: "'Mic 32 New Rounded',mic32newrd",
+            text: (Math.round(10*((porciones[i]["porcentaje"]*180/Math.PI)*100/360))/10)+"%",
+            fill: tc,
+            padding: 1,
+        });
     }
 
     total_angle += endingAngle;
