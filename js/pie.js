@@ -13,10 +13,14 @@ if (!localStorage.pie_mode) {
 
 function draw_action() {
     var grupos_list = [];
-    _().each(document.querySelectorAll(".grupo_tag"),function(i,a){     // Fetch all the data inside each item
-        grupos_list.push({label:a[i].innerHTML,value:a[i].getAttribute("val"),
-                          color:$(a[i].nextSibling).find(".color_selector").attr("value")});
+
+    _().each( document.querySelectorAll(".grupo_tag"), function(i,a) {     // Fetch all the data inside each item
+        grupos_list.push({
+            label:a[i].innerHTML,value:a[i].getAttribute("val"),
+            color:$(a[i].nextSibling).find(".color_selector").attr("value")
+        });
     });
+
     localStorage.grupos = JSON.stringify(grupos_list);
     var fuent = document.querySelectorAll("#fuente_input")[0].value;
     localStorage.fuente = fuent;
@@ -32,16 +36,19 @@ function draw_action() {
             else values.push(c[j].value);
         });
         if(values[2])color = $(values[2]).find(".color_selector").attr("value");
-        else if(i>=colores.length){
-            colores[(i%colores.length)+2] = new Color($(values[2]).find(".color_selector").attr("value"));
-            if(typeof colores[(i%colores.length)+2] === "undefined")colores[(i%colores.length)+2]  = new Color("#000000");
-            color = colores[(i%colores.length)+2].hex;
-        }
-        else{
-            colores[i] = new Color($(values[2]).find(".color_selector").attr("value"));
-            if(typeof colores[i] === "undefined")colores[i]  = new Color("#000000");
-            color = colores[i].hex
-        }
+        else
+            if(i>=colores.length){
+                colores[(i%colores.length)+2] = new Color($(values[2]).find(".color_selector").attr("value"));
+                if( typeof colores[(i % colores.length) + 2] === "undefined") {
+                    colores[(i%colores.length)+2]  = new Color("#000000");
+                }
+                color = colores[(i%colores.length)+2].hex;
+            }
+            else{
+                colores[i] = new Color($(values[2]).find(".color_selector").attr("value"));
+                if(typeof colores[i] === "undefined") colores[i]  = new Color("#000000");
+                color = colores[i].hex;
+            }
 
       data[i] = {
             label:values[0],
@@ -80,6 +87,7 @@ function create_data_set(dest, d) {
     grupos.className = "data-options";
     var ul = document.createElement("UL");
     grupos.appendChild(create);
+
     //TODO: Añadir borrar grupo
     if (localStorage.grupos && localStorage.grupos != "[]" && pie_mode === "complex") {
         var g = JSON.parse(localStorage.grupos);
@@ -111,7 +119,8 @@ function create_data_set(dest, d) {
                 if (d[i].group !== "" && d[i].group === a[j].label) {
                     if(d[i]["color"])color = d[i]["color"];
                 else if(i>=colores.length){
-                    if(typeof colores[(i%colores.length)+2] === "undefined")colores[(i%colores.length)+2] = new Color("#000000");
+                    if(typeof colores[(i%colores.length)+2] === "undefined")
+                        colores[(i%colores.length)+2] = new Color("#000000");
                     var color = colores[(i%colores.length)+2].hex;
                 }
                 else{
@@ -151,9 +160,10 @@ function create_data_set(dest, d) {
     else{                                               // If there's no groups create one and add everything in
         var li = document.createElement("LI");
         li.className = "sortable-group-list";
-        if(pie_mode == "simple")
+
+        if(pie_mode == "simple") {
            li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie simple_pie' val='0'>Grupo1</span>";
-        else {
+        } else {
             li.innerHTML = "<span contenteditable='true' class='grupo_tag complex_pie' val='0'>Grupo1</span>";
         }
 
@@ -197,11 +207,6 @@ function create_data_set(dest, d) {
                     item = ui.item;
                     newList = oldList = ui.item.parent();
                 },
-                stop: function (event, ui) {
-
-                // perform action here
-
-                },
                 change: function (event, ui) {
                     if (ui.sender) newList = ui.placeholder.parent();
                 },
@@ -226,31 +231,62 @@ function create_data_set(dest, d) {
     fuente_label.appendChild(fuente_inpt);
     div_options.appendChild(fuente_label);
 
-    var checkbox_labels = document.createElement("input");
-        checkbox_labels.type = "checkbox";
-        checkbox_labels.setAttribute("id","home-check");
 
-    var checkbox_title = document.createElement("label");
-        checkbox_title.setAttribute("for","home-check");
-        checkbox_title.setAttribute("class","label-home-check");
-        checkbox_title.innerHTML = "Para home";
-        checkbox_labels.checked = false;
-    if(localStorage.homeMode) {
-        checkbox_labels.checked = (localStorage.homeMode==="false")?false:true;
-    }
-
-    $(checkbox_labels).on("change",function() {
-        this.home = $("#home-check").is(":checked");
-        localStorage.homeMode = this.home;
-    });
-    var checkbox_home = $("<div class='checkhome'></div>");
-    $(checkbox_home).append(checkbox_labels);
-    $(checkbox_home).append(checkbox_title);
 
     var add_label = $("<div id='add-label'></div>");
     var label_span = $("<button id='add-label-button' class='draw_button'>Crear etiqueta</button>");
     var label_list = $("<ul></ul>");
     $(label_list).html("");
+
+    // HOME OPTION CHECKBOX
+
+    var checkbox_labels_home = document.createElement("input");
+        checkbox_labels_home.type = "checkbox";
+        checkbox_labels_home.setAttribute("id","home-check");
+
+    var checkbox_title_home = document.createElement("label");
+        checkbox_title_home.setAttribute("for","home-check");
+        checkbox_title_home.setAttribute("class","label-home-check");
+        checkbox_title_home.innerHTML = "Para home";
+        checkbox_labels_home.checked = false;
+    if(localStorage.homeMode) {
+        checkbox_labels_home.checked = (localStorage.homeMode==="false")?false:true;
+    }
+
+    $(checkbox_labels_home).on("change",function() {
+        this.home = $("#home-check").is(":checked");
+        localStorage.homeMode = this.home;
+    });
+    var checkbox_home = $("<div class='checkhome'></div>");
+    $(checkbox_home).append(checkbox_labels_home);
+    $(checkbox_home).append(checkbox_title_home);
+
+    // LITLE HOME CHECKBOX
+
+    var checkbox_labels_little = document.createElement("input");
+        checkbox_labels_little.type = "checkbox";
+        checkbox_labels_little.setAttribute("id","home-litle-check");
+
+    var checkbox_title_little = document.createElement("label");
+        checkbox_title_little.setAttribute("for","home-litle-check");
+        checkbox_title_little.setAttribute("class","label-home-litle-check");
+        checkbox_title_little.innerHTML = "Pequeño";
+        checkbox_labels_little.checked = false;
+    if(localStorage.homeModeLitle) {
+        checkbox_labels_little.checked = (localStorage.homeModeLitle==="false")?false:true;
+    }
+
+    $(checkbox_labels_little).on("change",function() {
+        this.home_litle = $("#home-litle-check").is(":checked");
+        localStorage.homeModeLitle = this.home_litle;
+    });
+
+    var checkbox_little = $("<div class='checkhome'></div>");
+    $(checkbox_little).append(checkbox_labels_little);
+    $(checkbox_little).append(checkbox_title_little);
+
+    //
+
     if (localStorage.customTags) {
         var custom_tags = JSON.parse(localStorage.customTags);
         _().each(custom_tags, function(i,a) {
@@ -263,6 +299,7 @@ function create_data_set(dest, d) {
     $(add_label).append(label_span);
     $(add_label).append(label_list);
     $(div_options).append(checkbox_home);
+    $(div_options).append(checkbox_little);
     $(div_options).append(add_label);
 
     $(document).on("click","#add-label-button", function() {
@@ -290,16 +327,21 @@ _.prototype.pie= function (obj) {
     _().createCanvas(this.e[0],function() {
         this.data_content = document.querySelectorAll("#graph-data")[0];
         this.canvas = document.querySelectorAll(id+" canvas")[0];
-        if(localStorage.homeMode)this.home = localStorage.homeMode;
-        else this.home = false;
+
+        if(localStorage.homeMode)
+            this.home = localStorage.homeMode;
+        else
+            this.home = false;
+        if(localStorage.homeModeLitle)
+            this.home_litle = localStorage.homeModeLitle;
+        else
+            this.home_litle = false;
+
         this.addPieTools();
         this.drawPie(this.canvas,obj.data);
         clinpt().loadFunctions();
     });
-
-
 }
-
 
 _.prototype.pie_type_menu = function() {
     var dest = Array.prototype.slice.call(this.e);
@@ -334,8 +376,12 @@ _.prototype.addPieTools = function (obj) {
     else complex.className = "menu-button";
     complex.setAttribute("id","pie_complex");
     var simple = document.createElement("DIV");
-    if(pie_mode == "simple")simple.className = "active menu-button";
-    else simple.className = "menu-button";
+
+    if(pie_mode == "simple")
+        simple.className = "active menu-button";
+    else
+        simple.className = "menu-button";
+
     simple.innerHTML = "<div class='icon-spinner icono' title='Gráfico simple'></div><span class='menu-text'>Gráfico simple</span>";
     simple.setAttribute("id","pie_simple");
     f.appendChild(simple);
@@ -423,7 +469,7 @@ _.prototype.drawPie = function (canvas, data) {
         localStorage.grupos = JSON.stringify(fragmentos);
     }
     else {
-        radio = (this.home === "true")?140:200;
+        radio = (this.home === "true")?(this.home_litle === "true")? 220:140:200;
     }
 
     var fuente = new Kinetic.Text({
@@ -574,18 +620,23 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
                                  );
     var x = centerx + (dx*radius);
     if ( x > centerx*2) x = (centerx*2)-50;
+    var font_size = (this.home === "true")? {t:24,p:24} : {t:16,p:14};
+    width = (font_size.p == 24)?
+        (context.measureText( this.grupos[i]["label"]).width * 3/2)+15:
+        context.measureText( this.grupos[i]["label"]).width + 15;
+    var hplus = (font_size.p == 24)?2:0;
     var box = new Kinetic.Rect({
             x: x,
             y: centery+ (dy*radius),
-            width: width+22,
-            height: 20,
-            fill: "#FF0000",
+            width: width,
+            height: 22+hplus,
+            fill: this.grupos[i]["color"],
         });
     var text_label = new Kinetic.Text({
             x: x +5,
             y: centery+ (dy*radius) ,
             text: this.grupos[i]["label"],
-            fontSize: 16,
+            fontSize: font_size.t,
             fontFamily: "'Mic 32 New Rounded',mic32newrd",
             fill: "#fff",
             padding: 2,
@@ -594,19 +645,22 @@ _.prototype.drawPieGroupText = function (context, i, porciones, r) {
 
     var text_data = new Kinetic.Text({
             x: x,
-            y: centery+ (dy*radius) + 24,
-            fontSize: 12,
+            y: centery+ (dy*radius) + 24 +hplus,
+            fontSize: font_size.p,
             fontFamily: "'Mic 32 New Rounded',mic32newrd",
             text: texto+"%",
             fill: tc,
             padding: 1,
         });
+
+
     group.add(box);
     group.add(text_label);
     group.add(text_data);
     _.layer.add(group);
     _.layer.draw();
 }
+
 var total_angle=0;
 
 _.prototype.writePieText = function (context, i, porciones, r) {
@@ -628,7 +682,9 @@ _.prototype.writePieText = function (context, i, porciones, r) {
 
     var dy = 2*(Math.sin(endingAngle))/3;
     var dx = 2*(Math.cos(endingAngle))/3;
+
     context.font = '16px "Mic 32 New Rounded",mic32newrd';
+
     var width = context.measureText( this.data[i]["label"]).width;
 
     context.fillStyle = "#FFF";
@@ -638,17 +694,16 @@ _.prototype.writePieText = function (context, i, porciones, r) {
     var etiqueta = this.splitLabels (this.data[i]["label"], context, 80, 110);
     var texto = etiqueta.texto;
 
-    var width = (font_size.p == 24)?(etiqueta.width * 3/2)+15:etiqueta.width + 15;
+    width = (font_size.p == 24)?(etiqueta.width * 3/2)+15:etiqueta.width + 15;
 
     var padding = etiqueta.padding;
     if(font_size.t == 24) padding *= 3/2;
 
-
-    if(localStorage.homeMode === "true") {
+    if((localStorage.homeMode === "true") && (localStorage.homeModeLitle === "false")) {
 
         var line = new Kinetic.Line({
-            points:[(context.canvas.width/2)+ (dx*radius)+50,(context.canvas.height/2)+ (dy*radius)+5,
-                    (context.canvas.width/2)+ (dx*radius),(context.canvas.height/2)+ (dy*radius)+5],
+            points:[(centerx)+ (dx*radius)+50,(centery)+ (dy*radius)+5,
+                    (centerx)+ (dx*radius),(centery)+ (dy*radius)+5],
             stroke: "#666",
             strokeWidth: 1,
         });
@@ -658,8 +713,8 @@ _.prototype.writePieText = function (context, i, porciones, r) {
         var group = new Kinetic.Group({
             draggable:true,
             dragBoundFunc: function(pos,e) {
-                var centerX = (context.canvas.width/2)+ ((dx)*(radius+50));
-                var centerY = (context.canvas.height/2)+ ((dy)*(radius+50));
+                var centerX = (centerx)+ ((dx)*(radius+60));
+                var centerY = (centery)+ ((dy)*(radius+60));
                 var r = radius;
                 var posit = this.getAbsolutePosition();
 
@@ -667,13 +722,10 @@ _.prototype.writePieText = function (context, i, porciones, r) {
                     var x = (context.canvas.width / 2) - e.offsetX;
                     var y = (context.canvas.height / 2) - e.offsetY;
 
-                    if((x * x) + (y * y) > (r * r)){
-                        text_data.setFill("#333");
-                    } else {
-                        text_data.setFill(tc);
-                    }
-                    var angle_base = 20;
+                    if((x * x) + (y * y) > (r * r)) text_data.setFill("#333");
+                    else    text_data.setFill(tc);
 
+                    var angle_base = 20;
                     if (e.offsetX - (width/2) > centerX) {
                         if ( ( objectPos.x + posit.x - 5 ) - centerX < angle_base )
                             angle_base = ( objectPos.x + posit.x - 5 ) - centerX;
@@ -681,14 +733,14 @@ _.prototype.writePieText = function (context, i, porciones, r) {
                         line.setPoints([{x: objectPos.x + posit.x - 5, y: objectPos.y + posit.y + 20},
                                         {x: centerX + angle_base, y: objectPos.y + posit.y + 20},
                                         {x: centerX, y: centerY}]);
-                    }
-                    else {
+                    } else {
                         if ( centerX - ( objectPos.x + posit.x + width ) < angle_base )
                             angle_base = centerX - ( objectPos.x + posit.x + width );
 
-                        line.setPoints([{x: objectPos.x + posit.x + width, y: objectPos.y + posit.y + 20},
-                                        {x: centerX - angle_base, y: objectPos.y + posit.y + 20},
-                                        {x: centerX, y: centerY}]);
+                        line.setPoints([
+                            {x: objectPos.x + posit.x + width, y: objectPos.y + posit.y + 20},
+                            {x: centerX - angle_base, y: objectPos.y + posit.y + 20},
+                            {x: centerX, y: centerY}]);
                     }
                 }
                 return pos;
@@ -776,6 +828,7 @@ _.prototype.writePieText = function (context, i, porciones, r) {
             fill: tc,
             padding: 1,
         });
+
     }
 
     total_angle += endingAngle;
@@ -784,7 +837,7 @@ _.prototype.writePieText = function (context, i, porciones, r) {
     group.add(text_data);
 
     _.layer.add(group);
-    if(localStorage.homeMode === "true") _.layer.add(line);
+    if((localStorage.homeMode === "true") && (localStorage.homeModeLitle === "false")) _.layer.add(line);
 
     var fuente = _.layer.find('.fuente');
     fuente.forEach(function(i){
