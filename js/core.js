@@ -381,7 +381,7 @@ _.prototype = {
         var fuente = new Kinetic.Text({
             x: ctx.canvas.width - 15,
             y: dimensiones.height.cuadrado - 20 ,
-            text: "Fuente: "+fuente_value,
+            text: fuente_value,
             fontSize: 13,
             fontFamily: "infotext,InfoTextBook,Helvetica,arial",
             fontStyle: "italic",

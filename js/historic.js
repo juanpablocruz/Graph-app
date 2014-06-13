@@ -1,6 +1,6 @@
 var historic = 1;
 "use strict";
-var fuente_value = "Cores";
+var fuente_value = "Fuente: Cores";
 if (localStorage.fuente) {
     fuente_value = localStorage.fuente;
 }else{

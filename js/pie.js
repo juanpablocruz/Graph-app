@@ -1,7 +1,7 @@
 var tartas = 1;
 var pie_mode = "simple";
 "use strict";
-var fuente_value = "Cores";
+var fuente_value = "Fuente: Cores";
 if (localStorage.fuente) {
     fuente_value = localStorage.fuente;
 }
@@ -35,16 +35,16 @@ function draw_action() {
             }
             else values.push(c[j].value);
         });
-        if(values[2])color = $(values[2]).find(".color_selector").attr("value");
+        if (values[2])color = $(values[2]).find(".color_selector").attr("value");
         else
-            if(i>=colores.length){
+            if (i>=colores.length){
                 colores[(i%colores.length)+2] = new Color($(values[2]).find(".color_selector").attr("value"));
                 if( typeof colores[(i % colores.length) + 2] === "undefined") {
                     colores[(i%colores.length)+2]  = new Color("#000000");
                 }
-                color = colores[(i%colores.length)+2].hex;
+                color = colores[(i%colores.length) + 2].hex;
             }
-            else{
+            else {
                 colores[i] = new Color($(values[2]).find(".color_selector").attr("value"));
                 if(typeof colores[i] === "undefined") colores[i]  = new Color("#000000");
                 color = colores[i].hex;
@@ -475,7 +475,7 @@ _.prototype.drawPie = function (canvas, data) {
     var fuente = new Kinetic.Text({
             x: canvas.width - 20,
             y: canvas.height - 5 ,
-            text: "Fuente: "+fuente_value,
+            text: fuente_value,
             fontSize: 15,
             fontFamily: "infotext,Helvetica,arial,InfoTextBook",
             fontStyle: "italic",
@@ -787,7 +787,6 @@ _.prototype.writePieText = function (context, i, porciones, r) {
             fill: tc,
             padding: 1,
         });
-
     } else {
         // this case is for pies whitout lines, be they the small ones or the home ones
         var group = new Kinetic.Group({
@@ -845,6 +844,7 @@ _.prototype.writePieText = function (context, i, porciones, r) {
     }
 
     total_angle += endingAngle;
+
     group.add(box);
     group.add(text_label);
     group.add(text_data);
