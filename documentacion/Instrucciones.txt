@@ -1,0 +1,97 @@
+INSTRUCCIONES DE IMPRESIÓN DE ADOBE INDESIGN PARA EL INFORME DEL PROVEEDOR DE SERVICIOS
+
+NOMBRE DEL DOCUMENTO: Documentación GraphApp.indd
+
+FECHA DEL PAQUETE: 04/04/14 09:44
+Fecha de creación: 04/04/14
+Fecha de modificación: 04/04/14
+
+INFORMACIÓN DE CONTACTO
+
+Nombre de la empresa: 
+Contacto: 
+Dirección: 
+
+
+
+
+
+Teléfono: 
+Fax: 
+Correo electrónico: 
+
+INSTRUCCIONES ESPECIALES Y OTRAS NOTAS
+
+
+
+
+
+
+Plugins externos 1
+
+ExtensisFontManagementIDCS6.InDesignPlugin
+
+
+Objetos no opacos: Ninguno
+
+FUENTES
+4 fuente(s) utilizada(s); 0 No disponibles, 0 incrustada(s), 0 incompleta(s), 0 protegida(s)
+
+Fuentes empaquetadas
+- Nombre: Mic32NewRounded-Medium; Tipo: OpenType Type 1, Estado: OK
+- Nombre: Mic32NewRounded-Regular; Tipo: OpenType Type 1, Estado: OK
+- Nombre: PTSans-Bold; Tipo: OpenType TrueType, Estado: OK
+- Nombre: PTSans-Regular; Tipo: OpenType TrueType, Estado: OK
+
+
+COLORES Y TINTAS
+4 tinta(s) de cuatricromía; 4 tinta(s) plana(s)
+
+- Nombre y tipo: Cian de cuatricromía; Ángulo: 45,000; Líneas/pulgada: 60,000
+- Nombre y tipo: Magenta de cuatricromía; Ángulo: 45,000; Líneas/pulgada: 60,000
+- Nombre y tipo: Amarillo de cuatricromía; Ángulo: 45,000; Líneas/pulgada: 60,000
+- Nombre y tipo: Negro de cuatricromía; Ángulo: 45,000; Líneas/pulgada: 60,000
+- Nombre y tipo: Gris Cores; Ángulo: 45,000; Líneas/pulgada: 60,000
+- Nombre y tipo: Nueva muestra de color; Ángulo: 45,000; Líneas/pulgada: 60,000
+- Nombre y tipo: Nueva muestra de color 2; Ángulo: 45,000; Líneas/pulgada: 60,000
+- Nombre y tipo: PANTONE Black C; Ángulo: 45,000; Líneas/pulgada: 60,000
+
+
+VÍNCULOS E IMÁGENES
+(Sólo vínculos incrustados y que faltan)
+Vínculos e imágenes: 5 vínculo(s) encontrado(s); 0 modificado(s), 0 No disponibles 0 inaccesible(s)
+Imágenes: 0 incrustada(s), 0 con espacio de color RGB
+
+
+CONFIGURACIÓN DE IMPRESIÓN
+PPD: Xerox Phaser 7760GX, (Phaser 7760GX (00:00:aa:a8:7c:36))
+Imprimir en: Impresora
+Número de copias: 1
+Páginas enfrentadas: No
+Páginas pares/impares: Ambas
+Páginas: Todas
+Prueba: No
+Mosaico: Ninguno
+Escala: 100%, 100%
+Posición de la página: Superior izquierda
+Imprimir capas: Capas visibles, imprimibles
+Marcas de impresión: Ninguna
+Sangrado: 0 mm, 0 mm, 0 mm, 0 mm
+Color: CMYK compuesto
+Modo de reventado: Ninguno
+Enviar datos de la imagen: Submuestreo optimizado
+Sustitución de imagen OPI/DCS: No
+Tamaño de página: A4
+Dimensiones del papel: 209,903 mm x 297,039 mm
+Orientación: Apaisado
+Negativo: No
+Modo de volteo: Desactivado
+
+
+LISTA DEL PAQUETE DE ARCHIVOS
+
+1. Documentación GraphApp.indd; tipo: Documento de Adobe InDesign; tamaño: 1588K
+2. Mic32NewRounded-Medium.otf; tipo: Archivo de fuentes; tamaño: 63K
+3. Mic32NewRounded-Regular.otf; tipo: Archivo de fuentes; tamaño: 63K
+4. PTSans-Bold.ttf; tipo: Archivo de fuentes; tamaño: 347K
+5. PTSans-Regular.ttf; tipo: Archivo de fuentes; tamaño: 516K
